@@ -1,0 +1,47 @@
+body{
+    background-color: lightgrey;
+}
+.formContainer{
+    position:absolute;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    width: 25%;
+}
+.formElement{
+    height: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+fieldset{
+    background-color: white;
+    position: relative;
+}
+input{
+    border: none;
+    outline: none;
+    width: 100%;
+}
+input.loginButton{
+    height: 30px;
+    background-color: #1AAD19;
+    width: 99%;
+}
+input.loginButton:hover{
+    background-color: #148B14;
+}
+legend{
+    font-size: 14px;
+    color: gray;
+}
+.floatPlaceholder{
+    position: absolute;
+    top: -11px;
+    color: lightgray;
+}
+#inform{
+    position: absolute;
+    top: -40px;
+    color: red;
+}

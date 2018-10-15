@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>login</title>
+    <link rel="stylesheet" href="/src/public/stylesheets/login-register.css">
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+</head>
+<body>
+<div class="formContainer">
+    <p id="inform"></p>
+    <form class="formElement" id="login" action="/login" method="post" autocomplete="off">
+        <fieldset class="userNameContainer">
+            <input type='text' name="name">
+            <p class="floatPlaceholder">用户名</p>
+        </fieldset>
+        <fieldset class="emailContainer">
+            <input type='email' name="email">
+            <p class="floatPlaceholder">邮箱</p>
+        </fieldset>
+        <fieldset class="passwordContainer">
+            <input type="password" name="password">
+            <p class="floatPlaceholder">密码</p>
+        </fieldset>
+        <input class="loginButton" type="submit" value="login">
+    </form>
+    <div>没有账号？<a href="/register">注册</a></div>
+</div>
+<script src="/src/public/javascripts/login.js"></script>
+</body>
+</html>

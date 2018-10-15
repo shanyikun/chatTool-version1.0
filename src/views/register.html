@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>register</title>
+    <link rel="stylesheet" href="/src/public/stylesheets/login-register.css">
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+</head>
+<body>
+<div class="formContainer">
+    <p id="inform"></p>
+    <form class="formElement" id="register" action="/register" method="post" autocomplete="off"><!--autocomplete关闭输入提示-->
+        <fieldset class="userNameContainer">
+            <input type='text' name="name">
+            <p class="floatPlaceholder">用户名</p>
+        </fieldset>
+        <fieldset class="emailContainer">
+            <input type='email' name="email">
+            <p class="floatPlaceholder">邮箱</p>
+        </fieldset>
+        <fieldset class="passwordContainer">
+            <input type="password" name="passowrd">
+            <p class="floatPlaceholder">密码</p>
+        </fieldset>
+        <input class="loginButton" type="submit" value="register">
+    </form>
+</div>
+<script src="/src/public/javascripts/register.js"></script>
+</body>
+</html>
