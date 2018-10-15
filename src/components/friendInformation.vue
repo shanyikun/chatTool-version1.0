@@ -29,6 +29,7 @@ export default {
                 return item.name===friendName
             })!==undefined){  //若此用户在线则切换至其对话框
                 this.$router.push({path: '/onlineUserList', query: {name: friendName}})
+                this.$store.state.userInfoIconFontSwitchFlag=!this.$store.state.userInfoIconFontSwitchFlag  //用户详情页切换字体图标标志，用以保证在发送消息按钮点击时时能切换到在线用户字体图标
             }
             else {   //若不在线则提示不在线
                 if(this.timeOutFlag){   //清除定时器
@@ -77,7 +78,7 @@ export default {
             this.$store.state.friendInformationName=this.$route.query.name  //存储好友信息
             this.$store.state.friendInformationUrl=this.$route.query.url
         }
-        else if(this.$store.state.routePath[0]==='onlineUserList'||this.$store.state.routePath[0]==='chatPage'){    //若是经过点击好友列表图标切换，且由在线用户页面切换过来时默认显示第一个用户的数据
+        else if(this.$store.state.routePath[0]==='/onlineUserList'||this.$store.state.routePath[0]==='/chatPage'){    //若是经过点击好友列表图标切换，且由在线用户页面切换过来时默认显示第一个用户的数据
             this.friendName=this.$store.state.friendsList[0].name
             this.friendUrl=this.$store.state.friendsList[0].url
             this.$store.state.friendInformationName=this.$store.state.friendsList[0].name  //存储好友信息

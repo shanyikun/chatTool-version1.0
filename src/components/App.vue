@@ -95,7 +95,6 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
 }*/
 
  export default {
-
      data: function(){
          return {
              isDisplayFriendInformation: false,  //是否显示好友信息弹窗
@@ -159,6 +158,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
                      item.borderRight='none'
                  }
              })
+             this.$store.state.userInfoIconFontSwitchFlag=!this.$store.state.userInfoIconFontSwitchFlag  //用户详情页切换字体图标标志，用以保证在关闭弹窗时能切换到正确的字体图标
          },
          accountSettings: function(){
              this.isDisplayAccountSettings=true
@@ -233,6 +233,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
                  else {  //若是在好友详情界面触发
                      this.$router.push({path: '/onlineUserList', query: {name: this.friendName}})
                      this.isDisplayFriendInformation=false
+                     this.$store.state.userInfoIconFontSwitchFlag=!this.$store.state.userInfoIconFontSwitchFlag  //用户详情页切换字体图标标志，用以保证在发送消息按钮点击时时能切换到在线用户字体图标
                  }
              }
              else {  //若好友不在线则显示消息提示，并定时2s消失

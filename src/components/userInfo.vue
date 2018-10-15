@@ -5,9 +5,9 @@
         </div>
         <!--<div class="iconfont icon-account" title="账号信息" @click="openUserPop" ref="userInfo"></div>-->   <!--字体图标-->
         <!--<div class="iconfont icon-zaixianyonghu" title="在线用户" @click="getOnlineUserList"></div>-->
-        <div class="iconfont icon-xiaoxi" title="在线用户" @click="getOnlineUserList"></div>
-        <div class="iconfont icon-tongxunlu" title="好友列表" @click="getFriendsList"></div>
-        <div class="iconfont icon-shezhi" title="设置" @click="getSetPage"></div>
+        <div class="iconfont icon-xiaoxi" title="在线用户" @click="getOnlineUserList" :style="iconFontStyleList[0]"></div>
+        <div class="iconfont icon-tongxunlu" title="好友列表" @click="getFriendsList" :style="iconFontStyleList[1]"></div>
+        <div class="iconfont icon-shezhi" title="设置" @click="getSetPage" :style="iconFontStyleList[2]"></div>
         <div class="logout-link">
             <a href="/logout">退出</a>
         </div>
@@ -27,18 +27,72 @@
     export default {
         data: function(){
             return {
-                isDisplayUserPop: false
+                isDisplayUserPop: false,
+                iconFontStyleList: [{color: ''}, {color: 'green'}, {color: ''}]
+            }
+        },
+        computed: {
+            userInfoIconFontSwitchFlag: function(){
+                return this.$store.state.userInfoIconFontSwitchFlag
+            }
+        },
+        watch: {
+            userInfoIconFontSwitchFlag: function(){   // 监听用户详情字体图标切换标志位， 使图标颜色跟随页面正确变化， 主要监听三处
+                if(this.$route.path==='/onlineUserList'||this.$route.path==='/chatPage'){
+                    this.iconFontStyleList.forEach(function(item, index){
+                        if(index===0){
+                            item.color='green'
+                        }
+                        else {
+                            item.color='darkgray'
+                        }
+                    })
+                }
+                else {
+                    this.iconFontStyleList.forEach(function(item, index){
+                        if(index===1){
+                            item.color='green'
+                        }
+                        else {
+                            item.color='darkgray'
+                        }
+                    })
+                }
             }
         },
         methods: {
             getOnlineUserList: function(){
                 this.$router.push('/onlineUserList')
+                this.iconFontStyleList.forEach(function(item, index){
+                    if(index===0){
+                        item.color='green'
+                    }
+                    else {
+                        item.color='darkgray'
+                    }
+                })
             },
             getFriendsList: function(){
                 this.$router.push('/friendsList')
+                this.iconFontStyleList.forEach(function(item, index){
+                    if(index===1){
+                        item.color='green'
+                    }
+                    else {
+                        item.color='darkgray'
+                    }
+                })
             },
             getSetPage: function(){
                 this.$emit('user-setting-pop')
+                this.iconFontStyleList.forEach(function(item, index){
+                    if(index===2){
+                        item.color='green'
+                    }
+                    else {
+                        item.color='darkgray'
+                    }
+                })
             },
             openUserPop: function(){    //打开或关闭用户信息弹窗
                 var userInfoElement=this.$refs.userInfoPop
@@ -80,25 +134,29 @@
         cursor: pointer;
     }
     .iconfont{                /*字体图标样式*/
-        font-size: 30px;
-        color: white;
+        font-size: 25px;
+        color: darkgray;
         font-weight: lighter;
         margin-top: 30px;
     }
     .logout-link a{          /*退出链接样式*/
         text-decoration: none;
-        border: solid 1px white;
+        border: solid 1px darkgray;
         border-radius: 3px;
-        color: white;
+        color: darkgray;
+        font-size: 14px;
     }
     div.iconfont:hover{
-        color: #9EEA6A;
+        /*color: #9EEA6A;*/
+        color: white !important;
     }
     div.logout-link{
         margin-top: 30px;
     }
     div.logout-link a:hover{
-        color: #9EEA6A;
+        /*color: #9EEA6A;*/
+        color: white;
+        border: solid 1px white;
     }
     #userPop{       /*用户信息弹出框*/
         display: flex;

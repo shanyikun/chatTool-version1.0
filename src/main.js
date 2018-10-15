@@ -49,7 +49,8 @@ var store=new Vuex.Store({        //Vuex存储对象
         nowChatName: '',  //全局存储当前对话人信息，防止chagPage页面刷新时丢失对话人信息，用于对话页面切换时记录对话信息
         friendInformationName: '',  //全局存储当前好友列表详细信息， 防止friendInformation页面刷新时丢失信息，用于好友列表切换时记录好友信息
         friendInformationUrl: '',   //全局存储当前好友列表详细信息
-        firstOfSearchFriendsList:{}  //不刷新地址情况下搜索框所得好友列表中第一个人的信息
+        firstOfSearchFriendsList:{},  //不刷新地址情况下搜索框所得好友列表中第一个人的信息
+        userInfoIconFontSwitchFlag: true  //
     },
     mutations: {
         getUserInformation: function(state, userObj){   //第一个参数一定是state
