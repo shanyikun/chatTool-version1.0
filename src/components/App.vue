@@ -95,6 +95,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
 }*/
 
  export default {
+
      data: function(){
          return {
              isDisplayFriendInformation: false,  //是否显示好友信息弹窗
