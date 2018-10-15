@@ -110,7 +110,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              isDisplayUploadUserHeadPortrait: false,   // 用户设置框内选项切换显示标志
              isDisplayAccountSettings: true,     // 用户设置框内选项切换显示标志
              settingsStyleList: [
-                 {color: 'green', borderRight: 'solid 2px green' },
+                 {color: '#09BB07', borderRight: 'solid 2px #09BB07' },
                  {color: '', borderRight: ''}
                  ]    //设置弹出框动态列表样式
          }
@@ -150,8 +150,8 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              this.isDisplayUploadUserHeadPortrait=false  //其他模块不显示
              this.settingsStyleList.forEach(function(item, index){
                  if(index===0){  //保证账户设置列表项颜色为选中颜色, 保证账户设置列表项存在右边框
-                     item.color='green'
-                     item.borderRight='solid 2px green'
+                     item.color='#09BB07'
+                     item.borderRight='solid 2px #09BB07'
                  }
                  else {    // 同时使别的列表项无选中颜色且无右侧边框
                      item.color='black'
@@ -165,8 +165,8 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              this.isDisplayUploadUserHeadPortrait=false
              this.settingsStyleList.forEach(function(item, index){  // 设置列表项选中颜色和边框并设置未选中列表项无颜色无边框
                  if(index===0){
-                     item.color='green'
-                     item.borderRight='solid 2px green'
+                     item.color='#09BB07'
+                     item.borderRight='solid 2px #09BB07'
                  }
                  else {
                      item.color='black'
@@ -179,8 +179,8 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              this.isDisplayAccountSettings=false
              this.settingsStyleList.forEach(function(item, index){
                  if(index===1){
-                     item.color='green'
-                     item.borderRight='solid 2px green'
+                     item.color='#09BB07'
+                     item.borderRight='solid 2px #09BB07'
                  }
                  else {
                      item.color='black'

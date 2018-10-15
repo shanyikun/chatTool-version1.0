@@ -5,9 +5,12 @@
         </div>
         <!--<div class="iconfont icon-account" title="账号信息" @click="openUserPop" ref="userInfo"></div>-->   <!--字体图标-->
         <!--<div class="iconfont icon-zaixianyonghu" title="在线用户" @click="getOnlineUserList"></div>-->
-        <div class="iconfont icon-xiaoxi" title="在线用户" @click="getOnlineUserList" :style="iconFontStyleList[0]"></div>
-        <div class="iconfont icon-tongxunlu" title="好友列表" @click="getFriendsList" :style="iconFontStyleList[1]"></div>
-        <div class="iconfont icon-shezhi" title="设置" @click="getSetPage" :style="iconFontStyleList[2]"></div>
+        <div class="iconfont icon-xiaoxi" title="在线用户" :style="iconFontStyleList[0]"
+             @click="getOnlineUserList" @mouseover="over(0)" @mouseout="out(0)"></div>
+        <div class="iconfont icon-tongxunlu" title="好友列表" :style="iconFontStyleList[1]"
+             @click="getFriendsList" @mouseover="over(1)" @mouseout="out(1)"></div>
+        <div class="iconfont icon-shezhi" title="设置" :style="iconFontStyleList[2]"
+             @click="getSetPage" @mouseover="over(2)" @mouseout="out(2)"></div>
         <div class="logout-link">
             <a href="/logout">退出</a>
         </div>
@@ -28,7 +31,7 @@
         data: function(){
             return {
                 isDisplayUserPop: false,
-                iconFontStyleList: [{color: ''}, {color: 'green'}, {color: ''}]
+                iconFontStyleList: [{color: ''}, {color: '#09BB07'}, {color: ''}]
             }
         },
         computed: {
@@ -41,7 +44,7 @@
                 if(this.$route.path==='/onlineUserList'||this.$route.path==='/chatPage'){
                     this.iconFontStyleList.forEach(function(item, index){
                         if(index===0){
-                            item.color='green'
+                            item.color='#09BB07'
                         }
                         else {
                             item.color='darkgray'
@@ -51,7 +54,7 @@
                 else {
                     this.iconFontStyleList.forEach(function(item, index){
                         if(index===1){
-                            item.color='green'
+                            item.color='#09BB07'
                         }
                         else {
                             item.color='darkgray'
@@ -65,7 +68,7 @@
                 this.$router.push('/onlineUserList')
                 this.iconFontStyleList.forEach(function(item, index){
                     if(index===0){
-                        item.color='green'
+                        item.color='#09BB07'
                     }
                     else {
                         item.color='darkgray'
@@ -76,7 +79,7 @@
                 this.$router.push('/friendsList')
                 this.iconFontStyleList.forEach(function(item, index){
                     if(index===1){
-                        item.color='green'
+                        item.color='#09BB07'
                     }
                     else {
                         item.color='darkgray'
@@ -87,7 +90,7 @@
                 this.$emit('user-setting-pop')
                 this.iconFontStyleList.forEach(function(item, index){
                     if(index===2){
-                        item.color='green'
+                        item.color='#09BB07'
                     }
                     else {
                         item.color='darkgray'
@@ -111,6 +114,16 @@
             },
             userHeadPortraitPop: function(){  //用户头像弹出框，在父组件上显示
                 this.$emit('user-head-portrait-pop')
+            },
+            over: function(index){
+                if(this.iconFontStyleList[index].color!=='#09BB07'){
+                    this.iconFontStyleList[index].color='white'
+                }
+            },
+            out: function(index){
+                if(this.iconFontStyleList[index].color!=='#09BB07'){
+                    this.iconFontStyleList[index].color='darkgray'
+                }
             }
         },
         created: function(){
@@ -148,7 +161,7 @@
     }
     div.iconfont:hover{
         /*color: #9EEA6A;*/
-        color: white !important;
+        /*color: white !important;*/   /*像这种样式会经过JS改变的，除非设置important,否则内联样式的优先级高，经过JS改变样式后，外部样式无效*/
     }
     div.logout-link{
         margin-top: 30px;
