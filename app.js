@@ -54,7 +54,7 @@ io.on('connection',function(socket){   /*服务端socket只能在服务器启动
 
     socket.on('chat message',function(data){
         if(data.to==='messages'){     //向所有客户端广播消息信息
-            io.emit('chat message',{name: data.name, message: data.message, timeStamp: data.timeStamp, url: data.url}, 'messages')
+            io.emit('chat message',{name: data.name, message: data.message, timeStamp: data.timeStamp, url: data.url, type: data.type}, 'messages')
         }
         else {
             var toName=data.to
@@ -63,8 +63,8 @@ io.on('connection',function(socket){   /*服务端socket只能在服务器启动
             var fromSocket=_.findWhere(io.sockets.sockets, { id: hashName[fromName] })
             /*var toSocket = _.findWhere(io.sockets.sockets, { name: toName })   //也可以用自定义的name属性寻找特定的socket对象
             var fromSocket=_.findWhere(io.sockets.sockets, { name: fromName })  */
-            toSocket.emit('chat message', {name: data.name, message: data.message, timeStamp: data.timeStamp, url: data.url}, data.to)  //向特定的socket用户推送消息
-            fromSocket.emit('chat message', {name: data.name, message: data.message, timeStamp: data.timeStamp, url: data.url}, data.to)
+            toSocket.emit('chat message', {name: data.name, message: data.message, timeStamp: data.timeStamp, url: data.url, type: data.type}, data.to)  //向特定的socket用户推送消息
+            fromSocket.emit('chat message', {name: data.name, message: data.message, timeStamp: data.timeStamp, url: data.url, type: data.type}, data.to)
         }
     })
 })

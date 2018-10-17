@@ -11,7 +11,8 @@
                 <template v-for="message in $store.state.messageList">
                     <li class="selfmsg" v-if="message.name===$store.state.name">
                         <div class="nameAndMsgContainer">
-                            <p class="msg">{{message.message}}</p>
+                            <p class="msg" v-if="message.type==='image'"><img :src="message.message" width="60px"></p> <!--判断消息是否是图片-->
+                            <p class="msg" v-else>{{message.message}}</p>
                         </div>
                         <img class="img" v-if="message.url" :src="message.url"  width="35px" height="35px"
                              @click="getFriendInformation(message)">
@@ -21,7 +22,8 @@
                              @click="getFriendInformation(message)">
                         <div class="nameAndMsgContainer">
                             <p class="username" v-if="currentInterlocutor==='messages'">{{message.name}}</p>
-                            <p class="msg">{{message.message}}</p>
+                            <p class="msg" v-if="message.type==='image'"><img :src="message.message" width="60px"></p> <!--判断消息是否是图片-->
+                            <p class="msg" v-else>{{message.message}}</p>
                         </div>
                     </li>
                 </template>
@@ -30,9 +32,16 @@
         <div id="form-container" ref="formContainer">
             <form action="" id="send" @submit.prevent="sendMessage">
                 <textarea v-model="message" ref="textarea" :style="styleObject"
-                          @focus="focus" @blur="blur" ></textarea>
+                          @focus="focus"
+                          @blur="blur"
+                          @keypress.prevent.enter="sendMessage"></textarea>
                 <input type="submit" value="send">
             </form>
+            <input type="file" id="sendImageInput" @change="uploadImageComplete" @focus="uploadImageFocus">  <!--发送图片-->
+            <label for="sendImageInput">
+                <span class="iconfont icon-tupian"></span>
+            </label>
+            <img :src="sendImageDataURL" width="50px" class="sendImage">  <!--发送消息框中的图片-->
         </div>
     </div>
 </template>
@@ -43,8 +52,11 @@
             return {
                 message:'',
                 styleObject: {
-                    height: '100px'
-                }
+                    height: '100px',
+                    paddingTop: '30px',
+                    paddingLeft: '10px'
+                },
+                sendImageDataURL: ''
             }
         },
         methods: {
@@ -62,13 +74,19 @@
 
                 if(this.message!==''){  //向服务器发送消息广播
                     let timeStamp=new Date()
-                    let sendObject={name: name, to: to, message: this.message, timeStamp: timeStamp, url: url}
+                    let sendObject={name: name, to: to, message: this.message, timeStamp: timeStamp, url: url, type: 'plainText'}
+                    this.$store.state.socket.emit('chat message', sendObject)
+                }
+                else if(this.sendImageDataURL!==''){
+                    let timeStamp=new Date()
+                    let sendObject={name: name, to: to, message: this.sendImageDataURL, timeStamp: timeStamp, url: url, type: 'image'}
                     this.$store.state.socket.emit('chat message', sendObject)
                 }
                 else {
                     alert('输入内容不能为空！')
                 }
-                this.message=''
+                this.message=''   //清空消息框
+                this.sendImageDataURL=''  //清空消息框
             },
             focus: function(){
                 this.$refs.textarea.style.backgroundColor='white'
@@ -78,6 +96,17 @@
             },
             getFriendInformation: function(friend){
                 this.$emit('friend-information-pop', friend)
+            },
+            uploadImageComplete: function(){  //获取base64格式的图片数据
+                let files=event.target.files
+                let fileReader=new FileReader()
+                fileReader.readAsDataURL(files[0])
+                fileReader.onloadend=()=>{   //图片上传完成时触发
+                    this.sendImageDataURL=fileReader.result
+                }
+            },
+            uploadImageFocus: function(){
+                this.$refs.textarea.focus()
             }
         },
         computed: {
@@ -118,6 +147,8 @@
 </script>
 
 <style scoped>
+    @import '../public/stylesheets/tupian-icon-font/iconfont.css';
+
     #chatPageContainer{
         display: flex;
         flex-direction: column;
@@ -134,6 +165,10 @@
         text-align:center;
         border-bottom: solid 1px #E5E5E5;
     }
+    #message-container{
+        height: 62%;
+        overflow: auto;
+    }
     #form-container{
         height: 30%;
         position: relative;
@@ -142,10 +177,6 @@
         border-right: solid 1px #F5F5F5;
         border-bottom: solid 1px #F5F5F5;
         border-top: solid 1px #E5E5E5;
-    }
-    #message-container{
-        height: 62%;
-        overflow: auto;
     }
     #send{
         display: flex;
@@ -157,6 +188,8 @@
         background-color: #F5F5F5;
         outline: none;
         resize: none;
+        font-size: 16px;
+        font-family: sans-serif;
     }
     input[type=submit]{
         position: absolute;
@@ -171,7 +204,26 @@
     input[type=submit]:hover{
         background-color: #09BB07;
     }
-
+    #form-container #sendImageInput{
+        position: absolute;
+        z-index:-99;
+    }
+    #form-container .icon-tupian{
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        font-size: 20px;
+        color: darkgray;
+    }
+    #form-container .icon-tupian:hover{
+        color: black;
+        cursor: pointer;
+    }
+    #form-container .sendImage{
+        position: absolute;
+        top: 15px;
+        left: 0;
+    }
     #message-container ul{
         list-style-type: none;
         padding-left: 0px;

@@ -2,8 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6137af1a-ef71-4ebd-82d1-ee49df8814ff" name="默认" comment="优化">
-      <change beforePath="$PROJECT_DIR$/src/components/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/App.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/userInfo.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/userInfo.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/public/stylesheets/tupian-icon-font/iconfont.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/public/stylesheets/tupian-icon-font/iconfont.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/public/stylesheets/tupian-icon-font/iconfont.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/public/stylesheets/tupian-icon-font/iconfont.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/public/stylesheets/tupian-icon-font/iconfont.woff" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/chatPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/chatPage.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/public/images/shanyikun.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/src/public/images/shanyikun.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/public/images/syk.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/src/public/images/syk.jpg" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -17,23 +25,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="main.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="208">
-              <caret line="52" column="44" selection-start-line="52" selection-start-column="44" selection-end-line="52" selection-end-column="44" />
-              <folding>
-                <element signature="e#0#21#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="onlineUserList.vue" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/components/onlineUserList.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="78">
-              <caret line="42" column="14" lean-forward="true" selection-start-line="42" selection-start-column="14" selection-end-line="42" selection-end-column="14" />
+            <state relative-caret-position="3588">
+              <caret line="138" column="5" selection-start-line="138" selection-start-column="5" selection-end-line="138" selection-end-column="5" />
             </state>
           </provider>
         </entry>
@@ -41,29 +37,17 @@
       <file leaf-file-name="friendsList.vue" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/components/friendsList.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-3640">
+            <state relative-caret-position="520">
               <caret line="20" column="21" selection-start-line="20" selection-start-column="21" selection-end-line="20" selection-end-column="21" />
-              <folding>
-                <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="chatPage.vue" pinned="false" current-in-tab="false">
+      <file leaf-file-name="chatPage.vue" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/components/chatPage.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="104">
-              <caret line="97" column="17" selection-start-line="97" selection-start-column="17" selection-end-line="97" selection-end-column="17" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="friendInformation.vue" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/components/friendInformation.vue">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="437">
-              <caret line="40" column="24" lean-forward="true" selection-start-line="40" selection-start-column="24" selection-end-line="40" selection-end-column="24" />
+            <state relative-caret-position="323">
+              <caret line="190" column="31" selection-start-line="190" selection-start-column="31" selection-end-line="190" selection-end-column="31" />
             </state>
           </provider>
         </entry>
@@ -71,26 +55,38 @@
       <file leaf-file-name="app.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="50" column="47" lean-forward="true" selection-start-line="50" selection-start-column="47" selection-end-line="50" selection-end-column="47" />
+            <state relative-caret-position="361">
+              <caret line="73" column="2" lean-forward="true" selection-start-line="73" selection-start-column="2" selection-end-line="73" selection-end-column="2" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="App.vue" pinned="false" current-in-tab="true">
+      <file leaf-file-name="main.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="182">
+              <caret line="148" column="58" lean-forward="true" selection-start-line="148" selection-start-column="58" selection-end-line="148" selection-end-column="58" />
+              <folding>
+                <element signature="e#0#21#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="friendInformation.vue" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/components/friendInformation.vue">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="26">
+              <caret line="40" column="24" selection-start-line="40" selection-start-column="24" selection-end-line="40" selection-end-column="24" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="App.vue" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/components/App.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="271">
-              <caret line="113" column="45" lean-forward="true" selection-start-line="113" selection-start-column="45" selection-end-line="113" selection-end-column="45" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="userInfo.vue" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/components/userInfo.vue">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="297">
-              <caret line="48" column="30" lean-forward="true" selection-start-line="48" selection-start-column="30" selection-end-line="48" selection-end-column="30" />
+            <state relative-caret-position="156">
+              <caret line="200" column="66" lean-forward="true" selection-start-line="200" selection-start-column="66" selection-end-line="200" selection-end-column="66" />
             </state>
           </provider>
         </entry>
@@ -128,7 +124,6 @@
         <option value="$PROJECT_DIR$/database/user-db.js" />
         <option value="$PROJECT_DIR$/src/router/router.js" />
         <option value="$PROJECT_DIR$/src/components/onlineUserList.vue" />
-        <option value="$PROJECT_DIR$/src/components/chatPage.vue" />
         <option value="$PROJECT_DIR$/login2.html" />
         <option value="$PROJECT_DIR$/src/public/stylesheets/login.css" />
         <option value="$PROJECT_DIR$/src/public/javascripts/register.js" />
@@ -144,11 +139,12 @@
         <option value="$PROJECT_DIR$/src/components/friendsList.vue" />
         <option value="$PROJECT_DIR$/dist/index.html" />
         <option value="$PROJECT_DIR$/test.html" />
-        <option value="$PROJECT_DIR$/app.js" />
         <option value="$PROJECT_DIR$/src/main.js" />
         <option value="$PROJECT_DIR$/src/components/friendInformation.vue" />
         <option value="$PROJECT_DIR$/src/components/userInfo.vue" />
         <option value="$PROJECT_DIR$/src/components/App.vue" />
+        <option value="$PROJECT_DIR$/app.js" />
+        <option value="$PROJECT_DIR$/src/components/chatPage.vue" />
       </list>
     </option>
   </component>
@@ -177,7 +173,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -213,6 +208,21 @@
               <item name="A-vue-node-webpack-socket.io" type="b2602c69:ProjectViewProjectNode" />
               <item name="A-vue-node-webpack-socket.io" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="public" type="462c0819:PsiDirectoryNode" />
+              <item name="stylesheets" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="A-vue-node-webpack-socket.io" type="b2602c69:ProjectViewProjectNode" />
+              <item name="A-vue-node-webpack-socket.io" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="public" type="462c0819:PsiDirectoryNode" />
+              <item name="stylesheets" type="462c0819:PsiDirectoryNode" />
+              <item name="tupian-icon-font" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="A-vue-node-webpack-socket.io" type="b2602c69:ProjectViewProjectNode" />
+              <item name="A-vue-node-webpack-socket.io" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="router" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -228,6 +238,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -242,17 +253,17 @@
     <property name="settings.editor.selected.configurable" value="settings.github" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="E:\A-project\A-vue-node-webpack-socket.io\src\public\stylesheets\search-icon-font" />
-      <recent name="E:\A-project\A-vue-node-webpack-socket.io\src\public\stylesheets\uploadbutton-icon-font" />
-      <recent name="E:\A-project\A-vue-node-webpack-socket.io\src\public\stylesheets\uploadimage-icon-font" />
-      <recent name="E:\A-project\A-vue-node-webpack-socket.io" />
-      <recent name="E:\A-project\A-vue-node-webpack-socket.io\src\public\stylesheets\setting-icon-font" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="E:\A-project\A-vue-node-webpack-socket.io\src\public\javascripts" />
       <recent name="E:\A-project\A-vue-node-webpack-socket.io\src\views" />
       <recent name="E:\A-vue-node-webpack-socket.io\src\views" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\A-project\A-vue-node-webpack-socket.io\src\public\stylesheets\tupian-icon-font" />
+      <recent name="E:\A-project\A-vue-node-webpack-socket.io\src\public\stylesheets\search-icon-font" />
+      <recent name="E:\A-project\A-vue-node-webpack-socket.io\src\public\stylesheets\uploadbutton-icon-font" />
+      <recent name="E:\A-project\A-vue-node-webpack-socket.io\src\public\stylesheets\uploadimage-icon-font" />
+      <recent name="E:\A-project\A-vue-node-webpack-socket.io" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -340,7 +351,9 @@
       <workItem from="1539512324331" duration="11076000" />
       <workItem from="1539570676698" duration="4857000" />
       <workItem from="1539578804039" duration="685000" />
-      <workItem from="1539579605423" duration="18333000" />
+      <workItem from="1539579605423" duration="19762000" />
+      <workItem from="1539663301430" duration="3259000" />
+      <workItem from="1539747757575" duration="11944000" />
     </task>
     <task id="LOCAL-00001" summary="test">
       <created>1539586385167</created>
@@ -360,7 +373,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="498876000" />
+    <option name="totallyTimeSpent" value="515508000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="784" extended-state="6" />
@@ -445,15 +458,10 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="2" />
+      <option name="time" value="3" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://E:/A前端资料/webFont/关闭按钮/demo.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1482" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/public/stylesheets/closeButton-icon-font/iconfont.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="26">
@@ -476,13 +484,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/login2.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="390">
-          <caret line="15" column="7" lean-forward="true" selection-start-line="15" selection-start-column="7" selection-end-line="15" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/login2.html" />
     <entry file="file://$PROJECT_DIR$/src/public/stylesheets/login-register.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1014">
@@ -548,13 +550,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/jquery.min.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="84" lean-forward="true" selection-start-column="84" selection-end-column="84" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/jquery.min.js" />
     <entry file="file://$PROJECT_DIR$/test/1539073575237-22_120418181656_1[1].jpg" />
     <entry file="file://$PROJECT_DIR$/src/public/javascripts/login.js">
       <provider selected="true" editor-type-id="text-editor">
@@ -578,17 +574,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ajax-file-upload.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="245">
-          <caret line="135" lean-forward="true" selection-start-line="135" selection-end-line="135" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/ajax-file-upload.js" />
     <entry file="file://$PROJECT_DIR$/test/1539081736893-IMG_0854.JPG" />
-    <entry file="file://$PROJECT_DIR$/test/test.jpg">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/test/test.jpg" />
     <entry file="file://$PROJECT_DIR$/database/user-db.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="130">
@@ -640,20 +628,8 @@
     <entry file="file://$PROJECT_DIR$/src/components/messageContainer.vue">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/test1.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="156">
-          <caret line="6" column="6" lean-forward="true" selection-start-line="6" selection-start-column="6" selection-end-line="6" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="156">
-          <caret line="6" column="52" lean-forward="true" selection-start-line="6" selection-start-column="52" selection-end-line="6" selection-end-column="52" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/test1.js" />
+    <entry file="file://$PROJECT_DIR$/test.js" />
     <entry file="file://$PROJECT_DIR$/dist/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="520">
@@ -661,28 +637,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test2.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="52">
-          <caret line="2" selection-start-line="2" selection-end-line="2" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="338">
-          <caret line="13" column="43" selection-start-line="13" selection-start-column="43" selection-end-line="13" selection-end-column="43" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#p#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#ul#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#li#0;n#ul#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#li#1;n#ul#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/test2.js" />
+    <entry file="file://$PROJECT_DIR$/test.html" />
     <entry file="file://$PROJECT_DIR$/.idea/misc.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="78">
@@ -697,16 +653,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="208">
-          <caret line="52" column="44" selection-start-line="52" selection-start-column="44" selection-end-line="52" selection-end-column="44" />
-          <folding>
-            <element signature="e#0#21#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/router/router.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="234">
@@ -714,55 +660,67 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="50" column="47" lean-forward="true" selection-start-line="50" selection-start-column="47" selection-end-line="50" selection-end-column="47" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/friendInformation.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="437">
-          <caret line="40" column="24" lean-forward="true" selection-start-line="40" selection-start-column="24" selection-end-line="40" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/chatPage.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="104">
-          <caret line="97" column="17" selection-start-line="97" selection-start-column="17" selection-end-line="97" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/components/friendsList.vue">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3640">
+        <state relative-caret-position="520">
           <caret line="20" column="21" selection-start-line="20" selection-start-column="21" selection-end-line="20" selection-end-column="21" />
-          <folding>
-            <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/components/onlineUserList.vue">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="78">
-          <caret line="42" column="14" lean-forward="true" selection-start-line="42" selection-start-column="14" selection-end-line="42" selection-end-column="14" />
+        <state relative-caret-position="3588">
+          <caret line="138" column="5" selection-start-line="138" selection-start-column="5" selection-end-line="138" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/components/friendInformation.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="26">
+          <caret line="40" column="24" selection-start-line="40" selection-start-column="24" selection-end-line="40" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/public/stylesheets/tupian-icon-font/iconfont.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-156" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="182">
+          <caret line="148" column="58" lean-forward="true" selection-start-line="148" selection-start-column="58" selection-end-line="148" selection-end-column="58" />
+          <folding>
+            <element signature="e#0#21#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="361">
+          <caret line="73" column="2" lean-forward="true" selection-start-line="73" selection-start-column="2" selection-end-line="73" selection-end-column="2" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/components/userInfo.vue">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="297">
-          <caret line="48" column="30" lean-forward="true" selection-start-line="48" selection-start-column="30" selection-end-line="48" selection-end-column="30" />
+        <state relative-caret-position="650">
+          <caret line="161" column="23" lean-forward="true" selection-start-line="161" selection-start-column="23" selection-end-line="161" selection-end-column="23" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/components/App.vue">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="271">
-          <caret line="113" column="45" lean-forward="true" selection-start-line="113" selection-start-column="45" selection-end-line="113" selection-end-column="45" />
+        <state relative-caret-position="156">
+          <caret line="200" column="66" lean-forward="true" selection-start-line="200" selection-start-column="66" selection-end-line="200" selection-end-column="66" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/components/chatPage.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="190" column="31" selection-start-line="190" selection-start-column="31" selection-end-line="190" selection-end-column="31" />
         </state>
       </provider>
     </entry>
