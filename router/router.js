@@ -151,6 +151,24 @@ router.post('/updateUserHeadPortrait', upload.array('userHeadPortrait', 40), fun
     })
 })
 
+router.get('/getEmotionsList', function(request, response){   // 表情包base64格式列表请求
+    fs.readFile(path.join(__dirname, '../src/public/images/emotionsBase64.json'), function(err, data){
+        if(err){
+            return response.json({
+                err_code: 500,
+                message: 'server eooro'
+            })
+        }
+        else {
+            let emotionsList=JSON.parse(data.toString())
+            return response.json({
+                err_code: 0,
+                message: emotionsList
+            })
+        }
+    })
+})
+
 
 /*io.on('connection',function(socket){
     socket.on('name',function(name){

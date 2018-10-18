@@ -251,6 +251,29 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
          userinfo: userInfo
      },
      created: function(){
+         /*let emotionsList=JSON.parse(window.localStorage.getItem('emotionsList of '+this.$store.state.name))||[]
+         if(emotionsList.length===0){
+             this.$http.get('/getEmotionsList').then((data)=>{
+                 if(data.body.err_code===500){
+                     alert(data.body.message)
+                 }
+                 else {
+                      window.localStorage.setItem('emotionsList of '+this.$store.state.name, JSON.stringify(data.body.message)) // localStorage存储空间不够
+                     this.$store.state.emotionSrcList=data.body.message
+                 }
+             })
+         }
+         else {
+             this.$store.state.emotionSrcList=emotionsList
+         }*/  // 由于localStorage存储空间不够，所以不能把表情包存储在本地
+         this.$http.get('/getEmotionsList').then((data)=>{   // 获取表情包base64格式列表，并存储于$store中
+             if(data.body.err_code===500){
+                 alert(data.body.message)
+             }
+             else {
+                 this.$store.state.emotionSrcList=data.body.message
+             }
+         })
      },
      beforeMount: function(){
      }

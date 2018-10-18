@@ -50,7 +50,44 @@ var store=new Vuex.Store({        //Vuex存储对象
         friendInformationName: '',  //全局存储当前好友列表详细信息， 防止friendInformation页面刷新时丢失信息，用于好友列表切换时记录好友信息
         friendInformationUrl: '',   //全局存储当前好友列表详细信息
         firstOfSearchFriendsList:{},  //不刷新地址情况下搜索框所得好友列表中第一个人的信息
-        userInfoIconFontSwitchFlag: true  //
+        userInfoIconFontSwitchFlag: true,  //  用户图标切换标志位
+        emotionSrcList: [
+            '/src/public/images/emotions/picture0.gif',
+            '/src/public/images/emotions/picture1.gif',
+            '/src/public/images/emotions/picture2.gif',
+            '/src/public/images/emotions/picture3.gif',
+            '/src/public/images/emotions/picture4.gif',
+            '/src/public/images/emotions/picture5.gif',
+            '/src/public/images/emotions/picture6.gif',
+            '/src/public/images/emotions/picture7.gif',
+            '/src/public/images/emotions/picture8.gif',
+            '/src/public/images/emotions/picture9.gif',
+            '/src/public/images/emotions/picture10.gif',
+            '/src/public/images/emotions/picture11.gif',
+            '/src/public/images/emotions/picture12.gif',
+            '/src/public/images/emotions/picture13.gif',
+            '/src/public/images/emotions/picture14.gif',
+            '/src/public/images/emotions/picture15.gif',
+            '/src/public/images/emotions/picture16.gif',
+            '/src/public/images/emotions/picture17.gif',
+            '/src/public/images/emotions/picture18.gif',
+            '/src/public/images/emotions/picture19.gif',
+            '/src/public/images/emotions/picture20.gif',
+            '/src/public/images/emotions/picture21.gif',
+            '/src/public/images/emotions/picture22.gif',
+            '/src/public/images/emotions/picture23.gif',
+            '/src/public/images/emotions/picture24.gif',
+            '/src/public/images/emotions/picture25.gif',
+            '/src/public/images/emotions/picture26.gif',
+            '/src/public/images/emotions/picture27.gif',
+            '/src/public/images/emotions/picture28.gif',
+            '/src/public/images/emotions/picture29.gif',
+            '/src/public/images/emotions/picture30.gif',
+            '/src/public/images/emotions/picture31.gif',
+            '/src/public/images/emotions/picture32.gif',
+            '/src/public/images/emotions/picture33.gif',
+            '/src/public/images/emotions/picture34.gif',
+            ]  // 表情包base64格式数据列表， 在App.vue的created函数中通过get请求获取
     },
     mutations: {
         getUserInformation: function(state, userObj){   //第一个参数一定是state

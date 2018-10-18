@@ -34,14 +34,28 @@
                 <textarea v-model="message" ref="textarea" :style="styleObject"
                           @focus="focus"
                           @blur="blur"
-                          @keypress.prevent.enter="sendMessage"></textarea>
+                          @keypress.prevent.enter="sendMessage"
+                          @keydown.backspace="deleteImage"></textarea>  <!--回车发送消息， 退格键删除图片-->
                 <input type="submit" value="send">
             </form>
-            <input type="file" id="sendImageInput" @change="uploadImageComplete" @focus="uploadImageFocus">  <!--发送图片-->
-            <label for="sendImageInput">
+
+            <input type="file" id="sendImageInput" @change="uploadImageComplete" @focus="uploadImageFocus">  <!--发送图片,隐藏z-index=-99-->
+            <label for="sendImageInput">   <!--发送图片字体图标， 绝对定位-->
                 <span class="iconfont icon-tupian"></span>
             </label>
-            <img :src="sendImageDataURL" width="50px" class="sendImage">  <!--发送消息框中的图片-->
+            <div class="iconfont icon-biaoqing" @click="openEmotionsPop"></div>   <!--发送表情图标， 绝对定位-->
+
+            <div class="emotionsPop" v-if="isDisplayEmotionsPop">   <!--表情弹窗， 绝对定位，不影响正文-->
+                <div class="closeButtonContainer">
+                    <div class="iconfont icon-tubiaoguifan" @click="closeEmotionsPop"></div>
+                </div>
+                <div class="emotionsContainer">
+                    <img v-for="src in $store.state.emotionSrcList" class="emotionImage" :src="src" width="50px" height="50px"
+                         @click="selectEmotion(src)">
+                </div>
+            </div>
+
+            <img :src="sendImageDataURL" width="50px" class="sendImage">  <!--发送消息框中的图片, 绝对定位-->
         </div>
     </div>
 </template>
@@ -54,9 +68,11 @@
                 styleObject: {
                     height: '100px',
                     paddingTop: '30px',
-                    paddingLeft: '10px'
+                    /*paddingLeft: '10px'*/
                 },
-                sendImageDataURL: ''
+                sendImageDataURL: '',
+                isDisplayEmotionsPop: false,
+                emotionSrcList: []
             }
         },
         methods: {
@@ -87,6 +103,7 @@
                 }
                 this.message=''   //清空消息框
                 this.sendImageDataURL=''  //清空消息框
+                this.$refs.textarea.focus()  // 输入框获得焦点
             },
             focus: function(){
                 this.$refs.textarea.style.backgroundColor='white'
@@ -105,8 +122,26 @@
                     this.sendImageDataURL=fileReader.result
                 }
             },
-            uploadImageFocus: function(){
+            uploadImageFocus: function(){   // 点击上传图片时， 文本框获得焦点
                 this.$refs.textarea.focus()
+            },
+            openEmotionsPop: function(){  //打开表情包弹窗， 并使文本框获得焦点
+                this.isDisplayEmotionsPop=true
+                this.$refs.textarea.focus()
+            },
+            closeEmotionsPop: function(){  // 关闭表情包弹窗， 并使文本框获得焦点
+                this.isDisplayEmotionsPop=false
+                this.$refs.textarea.focus()
+            },
+            selectEmotion: function(src){  // 选择表情，并关闭表情包弹窗，使文本框获得焦点
+                this.sendImageDataURL=src
+                this.isDisplayEmotionsPop=false
+                this.$refs.textarea.focus()
+            },
+            deleteImage: function(){   // 删除选中图片
+                if(this.message===''){
+                    this.sendImageDataURL=''
+                }
             }
         },
         computed: {
@@ -148,6 +183,8 @@
 
 <style scoped>
     @import '../public/stylesheets/tupian-icon-font/iconfont.css';
+    @import '../public/stylesheets/emotion-icon-font/iconfont.css';
+    @import '../public/stylesheets/closeButton-icon-font/iconfont.css';
 
     #chatPageContainer{
         display: flex;
@@ -219,9 +256,52 @@
         color: black;
         cursor: pointer;
     }
+    #form-container .icon-biaoqing{
+        position: absolute;
+        top: 10px;
+        left: 40px;
+        font-size: 20px;
+        color: darkgray;
+    }
+    #form-container .icon-biaoqing:hover{
+        color: black;
+        cursor: pointer;
+    }
+    #form-container .emotionsPop{
+        position: absolute;
+        left: -20%;
+        bottom: 100%;
+        width: 400px;
+        height: 300px;
+        background-color: white;
+        border-radius: 3px;
+        box-shadow: 0 0 3px gray;
+    }
+    #form-container .emotionsPop .closeButtonContainer{
+        display: flex;
+        justify-content: flex-end;
+    }
+    #form-container .emotionsPop .closeButtonContainer .icon-tubiaoguifan{
+        padding: 4px;
+    }
+    #form-container .emotionsPop .closeButtonContainer .icon-tubiaoguifan:hover{
+        background-color: red;
+        color: white;
+    }
+    #form-container .emotionsPop .emotionsContainer{
+        margin: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        height: 200px;
+        overflow: auto;
+    }
+    .emotionsPop .emotionsContainer .emotionImage:hover{
+        box-shadow: 0 0 3px gray;
+    }
     #form-container .sendImage{
         position: absolute;
-        top: 15px;
+        top: 30px;
         left: 0;
     }
     #message-container ul{
