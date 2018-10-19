@@ -12,7 +12,8 @@
             </div>
             <div id="messageContainer">
                 <router-view name="chatPage" :key="flag()"
-                             @friend-information-pop="friendInformationPop"> <!--监听好友信息弹窗自定义事件-->
+                             @friend-information-pop="friendInformationPop"
+                             @picture-message-enlargement="pictureMessagePop"> <!--监听好友信息弹窗自定义事件, 监听图片信息点击放大事件-->
                 </router-view>    <!--渲染同一个组件时禁止复用-->
             </div>
         </div>
@@ -84,6 +85,13 @@
             <div class="promptMessage" ref="updatePromptMessage"></div>
         </div>
 
+        <div class="pictureMessagePop" v-if="isDisplayPictureMessagePop">
+            <div class="popButton">
+                <div @click="closePictureMessagePop" class="closeButton iconfont icon-tubiaoguifan"></div>
+            </div>
+            <img :src="pictureMessageURL" width="250px">
+        </div>
+
     </div>
 </template>
 
@@ -101,7 +109,8 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              isDisplayFriendHeadPortrait: false,  //是否显示好友头像弹出框
              isDisplayUserHeadPortrait: false,    //是否显示用户头像弹出框
              isDisplayPromptMessage: false,     //是否显示用户不在线提示消息
-             isDisplayUserSettingPop: false,
+             isDisplayUserSettingPop: false,   // 是否显示用户设置弹窗
+             isDisplayPictureMessagePop: false,  // 是否像是图片消息放大弹窗
              timeOutReturnValue: null,      //消息提示定时器返回值
              friendName: '',   //好友名
              friendUrl: '',     //好友头像链接
@@ -112,7 +121,8 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              settingsStyleList: [
                  {color: '#09BB07', borderRight: 'solid 2px #09BB07' },
                  {color: '', borderRight: ''}
-                 ]    //设置弹出框动态列表样式
+                 ],   //设置弹出框动态列表样式
+             pictureMessageURL: ''   // 图片消息base64格式
          }
      },
      methods: {
@@ -131,6 +141,10 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
          userHeadPortraitPop: function(){    //显示放大版用户头像
              this.isDisplayUserHeadPortrait=true
          },
+         pictureMessagePop: function(pictureMessageURL){   // 显示图片消息放大版
+             this.isDisplayPictureMessagePop=true
+             this.pictureMessageURL=pictureMessageURL
+         },
          closeFriendInformationPop: function(){   //关闭好友信息弹窗
              this.isDisplayFriendInformation=false
          },
@@ -140,7 +154,10 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
          closeUserHeadPortraitPop: function(){    //关闭用户头像弹窗
              this.isDisplayUserHeadPortrait=false
          },
-         userSettingPop: function(){
+         closePictureMessagePop: function(){   // 关闭图片消息放大弹窗
+             this.isDisplayPictureMessagePop=false
+         },
+         userSettingPop: function(){   // 打开用户设置弹窗
              this.isDisplayUserSettingPop=true
          },
          closeUserSettingPop: function(){
@@ -362,7 +379,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
         color: red;
         font-size: 14px;
     }
-    .biggerFriendHeadPortraitPop, .biggerUserHeadPortraitPop{
+    .biggerFriendHeadPortraitPop, .biggerUserHeadPortraitPop, .pictureMessagePop{
         position: absolute;
         left: 50%;
         top: 50%;
@@ -373,14 +390,14 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
         border-radius: 3px;
         background-color: white;
     }
-    .biggerFriendHeadPortraitPop .popButton, .biggerUserHeadPortraitPop .popButton{
+    .biggerFriendHeadPortraitPop .popButton, .biggerUserHeadPortraitPop .popButton, .pictureMessagePop .popButton{
         display: flex;
         justify-content: flex-end;
     }
-    .biggerFriendHeadPortraitPop .popButton .closeButton, .biggerUserHeadPortraitPop .popButton .closeButton{
+    .biggerFriendHeadPortraitPop .popButton .closeButton, .biggerUserHeadPortraitPop .popButton .closeButton, .pictureMessagePop .popButton .closeButton{
         padding: 4px;
     }
-    .biggerFriendHeadPortraitPop .popButton .closeButton:hover, .biggerUserHeadPortraitPop .popButton .closeButton:hover{
+    .biggerFriendHeadPortraitPop .popButton .closeButton:hover, .biggerUserHeadPortraitPop .popButton .closeButton:hover, .pictureMessagePop .popButton .closeButton:hover{
         background-color: red;
         color: white;
     }

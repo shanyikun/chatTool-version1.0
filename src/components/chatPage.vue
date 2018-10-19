@@ -11,7 +11,9 @@
                 <template v-for="message in $store.state.messageList">
                     <li class="selfmsg" v-if="message.name===$store.state.name">
                         <div class="nameAndMsgContainer">
-                            <p class="msg" v-if="message.type==='image'"><img :src="message.message" width="60px"></p> <!--判断消息是否是图片-->
+                            <p class="msg" v-if="message.type==='image'">
+                                <img :src="message.message" width="60px" class="messagePicture" @click="enlargePictureMessage(message.message)">
+                            </p>    <!--判断消息是否是图片-->
                             <p class="msg" v-else>{{message.message}}</p>
                         </div>
                         <img class="img" v-if="message.url" :src="message.url"  width="35px" height="35px"
@@ -22,7 +24,9 @@
                              @click="getFriendInformation(message)">
                         <div class="nameAndMsgContainer">
                             <p class="username" v-if="currentInterlocutor==='messages'">{{message.name}}</p>
-                            <p class="msg" v-if="message.type==='image'"><img :src="message.message" width="60px"></p> <!--判断消息是否是图片-->
+                            <p class="msg" v-if="message.type==='image'">
+                                <img :src="message.message" width="60px" class="messagePicture" @click="enlargePictureMessage(message.message)">
+                            </p> <!--判断消息是否是图片-->
                             <p class="msg" v-else>{{message.message}}</p>
                         </div>
                     </li>
@@ -142,6 +146,9 @@
                 if(this.message===''){
                     this.sendImageDataURL=''
                 }
+            },
+            enlargePictureMessage: function(pictureURL){
+                this.$emit('picture-message-enlargement', pictureURL)
             }
         },
         computed: {
@@ -342,6 +349,9 @@
         border-radius: 6px;
         word-break: break-all;
     }
+    .selfmsg .nameAndMsgContainer .msg .messagePicture:hover{
+        cursor: pointer;
+    }
     .selfmsg .img{
         margin-top: 4px;
         border-radius: 2px;
@@ -362,6 +372,9 @@
         margin: 2px;
         border-radius: 6px;
         word-break: break-all;
+    }
+    .othermsg .nameAndMsgContainer .msg .messagePicture:hover{
+        cursor: pointer;
     }
     .othermsg .img{
         margin-top: 4px;
