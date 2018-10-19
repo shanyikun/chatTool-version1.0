@@ -293,7 +293,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
          },
          popPictureMouseDown: function(e){    // 拖放图片
              let mouseDownEvent=e
-             let clientX=mouseDownEvent.clientX   // 鼠标的文档坐标
+             let clientX=mouseDownEvent.clientX   // 鼠标的视窗坐标
              let clientY=mouseDownEvent.clientY
              let initialLeft=parseFloat(this.popPictureStyle.left)  //初始图片绝对定位左侧距离
              let initialTop=parseFloat(this.popPictureStyle.top)
@@ -579,4 +579,19 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
     padding,若本身不是内联元素，而是设置display为内联，则之间的间隔属于padding的作用范畴，
     比如背景色会显示出来,若设置为inline-block则背景色不会显示出来，本身是内联元素的一律不会
     显示背景色,但是并不能通过设置padding为零来消除，可以通过float来消除内联元素之间的间隔
+-->
+
+<!--关于视窗坐标，和文档坐标：
+   element.getBoundingClient()得到的是元素的视窗坐标， 鼠标事件对象的属性event.clientX，得到的是鼠标的视窗坐标
+   element.offsetLeft, element.offsetTop得到的是非固定定位和静态定位元素相对于文档或其最近的非固定定位和静态定位元素的坐标，
+   也即是element.style.left和element.style.top,区别是坐标不带单位，且在没有用style属性设置的情况下也能读取，而左侧距离和
+   右侧距离只有在用style属性设置的情况下才能读取，也可以用window.getComputedStyle(element).left来获取
+   所有坐标都不带单位，
+   -->
+
+<!--关于滚动条的一些问题
+   window.pageXOffset和window.scrollX是一样的， 是滑动条从左侧划过的距离，与element.getBoundingClient()相加即可得到
+   文档坐标， element.scrollHeight和element.scrollWidth分别是元素中滑动条能展示的最大元素高度和宽度，也即是不设置隐藏情况下
+   元素的实际高度和宽度， window没有这两个属性,只有文档元素有，document也没有，从最祖先的body有 element.scrollTop和element.scrollLeft分别是
+   滑动条划过的距离， 和window.scrollX对于窗口的功能是一样的，window也没有这两个属性
 -->
