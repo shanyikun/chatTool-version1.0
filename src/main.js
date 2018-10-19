@@ -111,7 +111,7 @@ var store=new Vuex.Store({        //Vuex存储对象
                     }).url
                 }
                 let messageList=JSON.parse(window.localStorage.getItem(item))||[]
-                if(messageList!==[]){ //如果有对话消息
+                if(messageList.length!==0){ //如果有对话消息
                     let timeStamp=messageList[messageList.length-1].timeStamp, objectTimeStamp
                     if(timeStamp){  //如果消息中有时间戳
                         objectTimeStamp=new Date(timeStamp)  //时间字符串转换成时间对象， 时间对象经JSON.stringify()转换后再经JSON.parse()解析得到的是字符串

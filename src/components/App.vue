@@ -37,14 +37,22 @@
             <div class="popButton">
                 <div @click="closeFriendHeadPortraitPop" class="closeButton iconfont icon-tubiaoguifan"></div>
             </div>
-            <img :src="friendUrl" width="250px">
+            <div class="popPictureContainer">
+                <img class="picture" :src="friendUrl" :width="pictureWidth" :style="popPictureStyle"
+                     @mousewheel="mouseWheelUpdatePictureSize"
+                     @mousedown.prevent="popPictureMouseDown">  <!--鼠标滚轮缩放图片， mousedown事件拖放图像-->
+            </div>                            <!--不同于键盘的keypress事件一直按下会多次触发，mousedown只会触发一次-->
         </div>
 
         <div class="biggerUserHeadPortraitPop" v-if="isDisplayUserHeadPortrait">  <!--用户头像放大框，绝对定位-->
             <div class="popButton">
                 <div @click="closeUserHeadPortraitPop" class="closeButton iconfont icon-tubiaoguifan"></div>
             </div>
-            <img :src="$store.state.url" width="250px">
+            <div class="popPictureContainer">
+                <img class="picture" :src="$store.state.url" :width="pictureWidth" :style="popPictureStyle"
+                     @mousewheel="mouseWheelUpdatePictureSize"
+                     @mousedown.prevent="popPictureMouseDown"> <!--鼠标滚轮缩放图片， mousedown事件拖放图像-->
+            </div>
         </div>
 
         <div class="userSettingPop" v-if="isDisplayUserSettingPop">    <!--用户设置弹出框，绝对定位-->
@@ -85,11 +93,15 @@
             <div class="promptMessage" ref="updatePromptMessage"></div>
         </div>
 
-        <div class="pictureMessagePop" v-if="isDisplayPictureMessagePop">
+        <div class="pictureMessagePop" v-if="isDisplayPictureMessagePop">  <!--图片消息放大弹出框-->
             <div class="popButton">
                 <div @click="closePictureMessagePop" class="closeButton iconfont icon-tubiaoguifan"></div>
             </div>
-            <img :src="pictureMessageURL" width="250px">
+            <div class="popPictureContainer">
+                <img class="picture" :src="pictureMessageURL" :width="pictureWidth" :style="popPictureStyle"
+                     @mousewheel="mouseWheelUpdatePictureSize"
+                     @mousedown.prevent="popPictureMouseDown">  <!--鼠标滚轮缩放图片， mousedown事件拖放图像-->
+            </div>
         </div>
 
     </div>
@@ -122,7 +134,9 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
                  {color: '#09BB07', borderRight: 'solid 2px #09BB07' },
                  {color: '', borderRight: ''}
                  ],   //设置弹出框动态列表样式
-             pictureMessageURL: ''   // 图片消息base64格式
+             pictureMessageURL: '',   // 图片消息base64格式
+             pictureWidth: '250px',
+             popPictureStyle: {left: 0,top: 0}
          }
      },
      methods: {
@@ -150,12 +164,18 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
          },
          closeFriendHeadPortraitPop: function(){   //关闭好友头像弹窗
              this.isDisplayFriendHeadPortrait=false
+             this.pictureWidth='250px'
+             this.popPictureStyle={left: 0, top: 0}
          },
          closeUserHeadPortraitPop: function(){    //关闭用户头像弹窗
              this.isDisplayUserHeadPortrait=false
+             this.pictureWidth='250px'
+             this.popPictureStyle={left: 0, top: 0}
          },
          closePictureMessagePop: function(){   // 关闭图片消息放大弹窗
              this.isDisplayPictureMessagePop=false
+             this.pictureWidth='250px'
+             this.popPictureStyle={left: 0, top: 0}
          },
          userSettingPop: function(){   // 打开用户设置弹窗
              this.isDisplayUserSettingPop=true
@@ -261,6 +281,35 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
                  this.timeOutReturnValue=setTimeout(()=>{
                      this.isDisplayPromptMessage=false
                  }, 2000)
+             }
+         },
+         mouseWheelUpdatePictureSize: function(){   // 鼠标滚轮缩放图片
+             if(event.wheelDelta>0){
+                 this.pictureWidth=parseFloat(this.pictureWidth)+10
+             }
+             else {
+                 this.pictureWidth=parseFloat(this.pictureWidth)-10
+             }
+         },
+         popPictureMouseDown: function(e){    // 拖放图片
+             let mouseDownEvent=e
+             let clientX=mouseDownEvent.clientX   // 鼠标的文档坐标
+             let clientY=mouseDownEvent.clientY
+             let initialLeft=parseFloat(this.popPictureStyle.left)  //初始图片绝对定位左侧距离
+             let initialTop=parseFloat(this.popPictureStyle.top)
+             mouseDownEvent.target.onmousemove=(e)=>{
+                 let mouseMoveEvent=e
+                 let nowClientX=mouseMoveEvent.clientX
+                 let nowClientY=mouseMoveEvent.clientY
+                 this.popPictureStyle.left=initialLeft+nowClientX-clientX+'px'
+                 this.popPictureStyle.top=initialTop+nowClientY-clientY+'px'
+                 mouseMoveEvent.preventDefault()    // 一定要阻止默认事件
+             }
+             mouseDownEvent.target.onmouseup=(e)=>{
+                 let mouseUpEvent=e
+                 mouseDownEvent.target.onmousemove=null
+                 mouseDownEvent.target.onmouseup=null
+                 mouseUpEvent.preventDefault()   // 一定要阻止默认事件
              }
          }
      },
@@ -389,6 +438,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
         box-shadow: 0px 0px 3px gray;
         border-radius: 3px;
         background-color: white;
+        overflow: hidden;   /*因为元素图片容器高度设置为100%，所以会有部分溢出，所以此部分要设置为溢出隐藏*/
     }
     .biggerFriendHeadPortraitPop .popButton, .biggerUserHeadPortraitPop .popButton, .pictureMessagePop .popButton{
         display: flex;
@@ -400,6 +450,17 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
     .biggerFriendHeadPortraitPop .popButton .closeButton:hover, .biggerUserHeadPortraitPop .popButton .closeButton:hover, .pictureMessagePop .popButton .closeButton:hover{
         background-color: red;
         color: white;
+    }
+    .biggerFriendHeadPortraitPop .popPictureContainer, .biggerUserHeadPortraitPop .popPictureContainer, .pictureMessagePop .popPictureContainer{
+        position: relative;  /*绝对定位， 保证图片在图片容器中移动*/
+        overflow: hidden;    /*防止图片溢出*/
+        height: 100%;     /*在子元素图片为绝对定位且为溢出隐藏时，一定要设置高度，否则内部图片元素高度降为零*/
+    }                    /*此容器高度会溢出父元素，所以其父元素也要设置溢出隐藏*/
+    .biggerFriendHeadPortraitPop .popPictureContainer .picture, .biggerUserHeadPortraitPop .popPictureContainer .picture, .pictureMessagePop .popPictureContainer .picture{
+        position: absolute;
+    }
+    .biggerFriendHeadPortraitPop .popPictureContainer .picture:hover, .biggerUserHeadPortraitPop .popPictureContainer .picture:hover, .pictureMessagePop .popPictureContainer .picture:hover{
+        cursor: all-scroll;
     }
     .userSettingPop{
         position: absolute;

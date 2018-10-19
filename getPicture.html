@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<input type="file"  multiple>
+
+<script>
+    let inputElement=document.getElementsByTagName('input')[0]
+    inputElement.onchange=function(){
+        let files=inputElement.files
+        let formData=new FormData()
+        for(let i=0;i<files.length;i++){
+            formData.append('userHeadPortrait', files[i])
+        }
+        let request=new XMLHttpRequest()
+        request.open('post', '/test', true)
+        request.onreadystatechange=function(){
+            if(request.readyState===4){
+                alert(request.responseText)
+            }
+        }
+        request.send(formData)
+    }
+</script>
+</body>
+</html>
