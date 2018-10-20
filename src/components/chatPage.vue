@@ -125,6 +125,7 @@
                 fileReader.onloadend=()=>{   //图片上传完成时触发
                     this.sendImageDataURL=fileReader.result
                 }
+                event.target.value=''  // 清空file上传控件的内容， 若不清空,下次上传同样路径的图片时，change事件不会触发
             },
             uploadImageFocus: function(){   // 点击上传图片时， 文本框获得焦点
                 this.$refs.textarea.focus()

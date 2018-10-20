@@ -182,7 +182,12 @@ var vm=new Vue({
                 if(this.$route.query.name===undefined||this.$route.query.name==='messages'){  //判断监听所得消息是否在当前对话框
                     var messages=JSON.parse(window.localStorage.getItem('messages'))||[]
                     messages.push(data)
-                    window.localStorage.setItem('messages', JSON.stringify(messages))
+                    try{   // 防止localStorage空间不足出现错误
+                        window.localStorage.setItem('messages', JSON.stringify(messages))
+                    }
+                    catch(e){
+                        window.alert('空间不足，请先清理缓存！')
+                    }
                     this.$store.state.messageList=messages
                     objectTimeStamp=new Date(data.timeStamp)
                     this.$store.commit('formatTimeStamp', objectTimeStamp)
@@ -194,7 +199,12 @@ var vm=new Vue({
                     this.$store.state.badgeFlag='messages'+'#'+this.$store.state.badgeFlagNumber++  //更改消息提醒徽标标志
                     var messages=JSON.parse(window.localStorage.getItem('messages'))||[]
                     messages.push(data)
-                    window.localStorage.setItem('messages', JSON.stringify(messages))
+                    try{
+                        window.localStorage.setItem('messages', JSON.stringify(messages))
+                    }
+                    catch(e){
+                        window.alert('空间不足，请先清理缓存！')
+                    }
                     /*this.$store.state.messageList=messages*/
                     objectTimeStamp=new Date(data.timeStamp)
                     this.$store.commit('formatTimeStamp', objectTimeStamp)
@@ -207,7 +217,12 @@ var vm=new Vue({
                 if(this.$route.query.name===data.name){
                     var otherMessage=JSON.parse(window.localStorage.getItem(data.name))||[]
                     otherMessage.push(data)
-                    window.localStorage.setItem(data.name, JSON.stringify(otherMessage))
+                    try{
+                        window.localStorage.setItem(data.name, JSON.stringify(otherMessage))
+                    }
+                    catch(e){
+                        window.alert('空间不足，请先清理缓存！')
+                    }
                     this.$store.state.messageList=otherMessage
                     objectTimeStamp=new Date(data.timeStamp)
                     this.$store.commit('formatTimeStamp', objectTimeStamp)
@@ -219,7 +234,12 @@ var vm=new Vue({
                     this.$store.state.badgeFlag=data.name+'#'+this.$store.state.badgeFlagNumber++
                     var otherMessage=JSON.parse(window.localStorage.getItem(data.name))||[]
                     otherMessage.push(data)
-                    window.localStorage.setItem(data.name, JSON.stringify(otherMessage))
+                    try{
+                        window.localStorage.setItem(data.name, JSON.stringify(otherMessage))
+                    }
+                    catch(e){
+                        window.alert('空间不足，请先清理缓存！')
+                    }
                     /*this.$store.state.messageList=otherMessage*/
                     objectTimeStamp=new Date(data.timeStamp)
                     this.$store.commit('formatTimeStamp', objectTimeStamp)
@@ -231,7 +251,12 @@ var vm=new Vue({
             else {
                 var selfMessage=JSON.parse(window.localStorage.getItem(to))||[]
                 selfMessage.push(data)
-                window.localStorage.setItem(to, JSON.stringify(selfMessage))
+                try{
+                    window.localStorage.setItem(to, JSON.stringify(selfMessage))
+                }
+                catch(e){
+                    window.alert('空间不足，请先清理缓存！')
+                }
                 this.$store.state.messageList=selfMessage
                 objectTimeStamp=new Date(data.timeStamp)
                 this.$store.commit('formatTimeStamp', objectTimeStamp)
