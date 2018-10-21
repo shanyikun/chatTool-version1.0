@@ -94,7 +94,7 @@
                 </div>
                 <div class="settingContainer" v-if="isDisplayClearLocalStorageCache">  <!--只能显示一个-->
                     <div class="clearCacheSettings">
-                        <button class="clearCacheButton" @click="clearLocalStorageCache">清理缓存</button>
+                        <button class="clearCacheButton" @click="clearLocalStorageCache">清理缓存({{computeLocalStorageCacheSize()}})</button>
                     </div>
                 </div>
 
@@ -146,8 +146,8 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
                  {color: '', borderRight: ''}
                  ],   //设置弹出框动态列表样式
              pictureMessageURL: '',   // 图片消息base64格式
-             pictureWidth: '250px',
-             popPictureStyle: {left: 0,top: 0}
+             pictureWidth: '250px',   // 图片弹出框图片尺寸
+             popPictureStyle: {left: 0,top: 0},  // 图片弹出框图片定位样式
          }
      },
      methods: {
@@ -253,6 +253,24 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
                      item.borderRight='none'
                  }
              })
+         },
+         computeLocalStorageCacheSize: function(){  // 计算localStorage已用缓存大小
+             let cacheString=''
+             let localStorageLength=window.localStorage.length
+             for(let i=0; i<localStorageLength; i++){
+                 let key=window.localStorage.key(i)
+                 cacheString+=window.localStorage.getItem(key)
+             }
+             let byteSize=cacheString.length
+             if(byteSize<1000){
+                 return byteSize+'B'
+             }
+             else if(byteSize>=1000&&byteSize<1000000){
+                 return (byteSize/1000).toFixed(2)+'KB'
+             }
+             else {
+                 return (byteSize/(1000*1000)).toFixed(2)+'MB'
+             }
          },
          clearLocalStorageCache: function(){  // 清空localStorage中的聊天记录
              let promptResult=window.confirm('确定要清空所有聊天记录？')

@@ -6,7 +6,7 @@
                 <span>{{currentInterlocutor}}</span>
             </h4>
         </div>
-        <div id="message-container" ref="messageContainer">
+        <div id="message-container" ref="messagecontainer">
             <ul>
                 <template v-for="message in $store.state.messageList">
                     <li class="selfmsg" v-if="message.name===$store.state.name">
@@ -161,7 +161,7 @@
                     this.$store.state.nowChatName=this.$route.query.name
                     return this.$route.query.name
                 }
-                else if(this.$store.state.routePath[0]==='/friendsList'||this.$store.state.routePath[0]==='/friendInformation'){
+                else if(this.$store.state.routePath[0]==='/friendsList'||this.$store.state.routePath[0]==='/friendInformation'||this.$store.state.routePath[0]==='/'){
                     this.$store.state.nowChatName='messages'
                     return 'messages'    //经由在线用户列表图标切换过来， 前页面是用户列表或者是用户详情
                 }
@@ -179,12 +179,12 @@
             }
         },
         mounted: function(){
-            this.$refs.messageContainer.scrollTop=this.$refs.messageContainer.scrollHeight //保证对话框滑动条位于最底部
+            this.$refs.messagecontainer.scrollTop=this.$refs.messagecontainer.scrollHeight //保证对话框滑动条位于最底部
             let formContainerElement=this.$refs.formContainer
             this.styleObject.height=window.getComputedStyle(formContainerElement).height
         },
         updated: function(){  //数据更新时执行此函数，重新执行生命周期时不执行此函数
-            this.$refs.messageContainer.scrollTop=this.$refs.messageContainer.scrollHeight //保证对话框滑动条位于最底部
+            this.$refs.messagecontainer.scrollTop=this.$refs.messagecontainer.scrollHeight //保证对话框滑动条位于最底部
         }
     }
 </script>
