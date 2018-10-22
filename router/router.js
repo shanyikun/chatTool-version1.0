@@ -78,6 +78,10 @@ router.post('/register',function(request, response){
     })
 })
 
+router.get('/login', function(request, response){
+    response.render('login.html')
+})
+
 router.post('/login',function(request,response){
     users.findOne({
         name: request.body.name,
