@@ -413,6 +413,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
     }
     #container{                     /*内容容器*/
         width: 55%;
+        min-width: 675px;
         display: flex;
         justify-content: space-around;
         height: 500px;
@@ -643,7 +644,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
 </style>
 <!--
  +++关于div p li ul标签嵌套的问题， div嵌套div时，内层div没有margin, div嵌套p时，p有margin
-    p不能嵌套div, p也不可以嵌套p, li可以嵌套div且div没有margin, li也可以嵌套p且p没有margin
+    p不能嵌套div, p也不可以嵌套p, li可以嵌套div且div没有margin, li也可以嵌套p且p没有margin(display: flex时有margin)
     ul嵌套li时，li也没有margin, 只是此时ul有padding-left*,div嵌套ul时，ul有margin 默认都是没有
     padding的,ul嵌套li时ul的padding-left除外
  +++关于内联元素的一些特性， 内联元素即使在同一行，之间也会有间隔，这个间隔既不是margin也不是
@@ -658,6 +659,8 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
    也即是element.style.left和element.style.top,区别是坐标不带单位，且在没有用style属性设置的情况下也能读取，而左侧距离和
    右侧距离只有在用style属性设置的情况下才能读取，也可以用window.getComputedStyle(element).left来获取
    所有坐标都不带单位，
+
+   另外： element.offsetWidth和element.offsetHeight可以获取元素的高度和宽度,且没有单位， window没有此属性
    -->
 
 <!--关于滚动条的一些问题
@@ -665,4 +668,13 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
    文档坐标， element.scrollHeight和element.scrollWidth分别是元素中滑动条能展示的最大元素高度和宽度，也即是不设置隐藏情况下
    元素的实际高度和宽度， window没有这两个属性,只有文档元素有，document也没有，从最祖先的body有 element.scrollTop和element.scrollLeft分别是
    滑动条划过的距离， 和window.scrollX对于窗口的功能是一样的，window也没有这两个属性
+-->
+
+<!--关于元素宽度-->
+
+<!--关于flex盒模型：
+   flex-direction控制伸缩方向， 默认为横向伸缩，此时flex容器就是盒的最大宽度，例如容器width: 500px;则内部元素不允许超出500px，
+   即是内部盒的总宽度(即width+padding+margin+border)超出500px，超出的部分会被截断，且先缩小的是内容区的宽度，纵向默认是充满容器
+   的，除非设定高度。 若flex-direction: column,则与上述情况相反，此时纵向可伸缩，横向不可伸缩， 详细例子见chagPage.vue中的文
+   本框(<textarea></textarea>>)的详细布局
 -->

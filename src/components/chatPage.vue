@@ -59,7 +59,7 @@
                 </div>
             </div>
 
-            <img :src="sendImageDataURL" width="50px" class="sendImage">  <!--发送消息框中的图片, 绝对定位-->
+            <img :src="sendImageDataURL" width="60px" class="sendImage">  <!--发送消息框中的图片, 绝对定位-->
         </div>
     </div>
 </template>
@@ -70,9 +70,7 @@
             return {
                 message:'',
                 styleObject: {
-                    height: '100px',
                     paddingTop: '30px',
-                    /*paddingLeft: '10px'*/
                 },
                 sendImageDataURL: '',
                 isDisplayEmotionsPop: false,
@@ -180,8 +178,6 @@
         },
         mounted: function(){
             this.$refs.messagecontainer.scrollTop=this.$refs.messagecontainer.scrollHeight //保证对话框滑动条位于最底部
-            let formContainerElement=this.$refs.formContainer
-            this.styleObject.height=window.getComputedStyle(formContainerElement).height
         },
         updated: function(){  //数据更新时执行此函数，重新执行生命周期时不执行此函数
             this.$refs.messagecontainer.scrollTop=this.$refs.messagecontainer.scrollHeight //保证对话框滑动条位于最底部
@@ -218,18 +214,18 @@
         height: 30%;
         position: relative;
         display: flex;
-        flex-direction: column;
         border-right: solid 1px #F5F5F5;
         border-bottom: solid 1px #F5F5F5;
         border-top: solid 1px #E5E5E5;
     }
     #send{
         display: flex;
-        flex-direction: column;
+        width: 100%;
     }
     textarea{
         border-color: #F5F5F5;
-        width: 99%;
+        width: 100%;
+        padding-left: 10px;
         background-color: #F5F5F5;
         outline: none;
         resize: none;
@@ -309,8 +305,8 @@
     }
     #form-container .sendImage{
         position: absolute;
-        top: 30px;
-        left: 0;
+        top: 35px;
+        left: 10px;
     }
     #message-container ul{
         list-style-type: none;
