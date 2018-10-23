@@ -13,7 +13,7 @@
                     <img :src="item.url" width="35px" height="35px">
                     <div class="nameAndTimeAndLastMessageContainer">
                         <div class="nameAndTimeContainer">
-                            <div class="userName">{{item.name}}</div>
+                            <div class="userName">{{item.name | formatName}}</div>
                             <div class="timeStamp">{{item.timeStamp}}</div>
                         </div>
                         <div class="lastMessageContainer">
@@ -83,6 +83,29 @@
                 this.getChatPage(this.friendname)
             }
         },
+        filters: {
+            formatName: function(name){   // 格式化名字
+                let byteLength=0, formatName=''
+                let nameLength=name.length
+                for(let i=0; i<nameLength; i++){
+                    if(name.charCodeAt(i)>=0x4E00&&name.charCodeAt(i)<=0x9FFF){
+                        byteLength+=2       // 若是汉字，则长度加2，因为一个汉字为2byte且占据宽度为两倍的英文字母
+                        formatName+=name[i]
+                    }
+                    else {
+                        byteLength++
+                        formatName+=name[i]
+                    }
+
+                    if(byteLength>=8&&i<nameLength-1){
+                        return formatName+'...'
+                    }
+                    else if(i===nameLength-1){
+                        return formatName
+                    }
+                }
+            }
+        },
         created: function(){
         },
         mounted: function(){
@@ -127,7 +150,7 @@
         align-items: center;
         position: relative;
         /*margin: 0px;*/
-        padding: 6px 8px;
+        padding: 8px 8px;
     }
     #userList-ul li:hover{
        /* background-color:#DCDDDE !important;*/   /*也可以用CSS设置悬浮样式，不过不够灵活，且不设置优先级的话默认很低*/

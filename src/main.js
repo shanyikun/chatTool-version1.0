@@ -149,16 +149,30 @@ var store=new Vuex.Store({        //Vuex存储对象
             formatSecond=second.length===2?second:('0'+second)
             state.timeStamp=formatHours+':'+formatMinute+':'+formatSecond
         },
-        formatLastMessage: function(state, lastMessageObject){
+        formatLastMessage: function(state, lastMessageObject){  // 格式化最后一条信息, 也可以用VUE过滤器处理
             if(lastMessageObject.type==='image'){
                 state.lastMessage='[图片]'
             }
             else {
-                if(lastMessageObject.message.length>8){
-                    state.lastMessage=lastMessageObject.message.slice(0, 8)+'...'
-                }
-                else {
-                    state.lastMessage=lastMessageObject.message
+                let byteLength=0, lastMessage=''
+                let messageLength=lastMessageObject.message.length
+                for(let i=0; i<messageLength; i++){
+                    if(lastMessageObject.message.charCodeAt(i)>=0x4E00&&lastMessageObject.message.charCodeAt(i)<=0x9FFF){
+                        byteLength+=2       // 若是汉字，则长度加2，因为一个汉字为2byte且占据宽度为两倍的英文字母
+                        lastMessage+=lastMessageObject.message[i]
+                    }
+                    else {
+                        byteLength++
+                        lastMessage+=lastMessageObject.message[i]
+                    }
+
+                    if(byteLength>=15&&i<messageLength-1){
+                        state.lastMessage=lastMessage+'...'
+                        break
+                    }
+                    else if(i===messageLength-1){
+                        state.lastMessage=lastMessage
+                    }
                 }
             }
         }
