@@ -44,6 +44,7 @@ var store=new Vuex.Store({        //Vuex存储对象
         badgeFlag: '',       //消息徽标标志
         badgeFlagNumber: 0,   //消息徽标标志附加位，为了区分同一个对话框下的多条不同的消息
         timeStamp:'',   //存储时间戳的临时变量
+        lastMessage: '', // 存储上一条消息的临时变量
         routePath: [],  // 路由路径，有两条记录
         routeQuery: [],  //查询字符串，有两条记录
         nowChatName: '',  //全局存储当前对话人信息，防止chagPage页面刷新时丢失对话人信息，用于对话页面切换时记录对话信息
@@ -112,23 +113,25 @@ var store=new Vuex.Store({        //Vuex存储对象
                 }
                 let messageList=JSON.parse(window.localStorage.getItem(item))||[]
                 if(messageList.length!==0){ //如果有对话消息
-                    let timeStamp=messageList[messageList.length-1].timeStamp, objectTimeStamp
+                    let lastMessageObject=messageList[messageList.length-1]
+                    let timeStamp=lastMessageObject.timeStamp, objectTimeStamp
+                    this.commit('formatLastMessage', lastMessageObject)   // 格式化最后一条消息，以用于添加到onlineUserList中
                     if(timeStamp){  //如果消息中有时间戳
                         objectTimeStamp=new Date(timeStamp)  //时间字符串转换成时间对象， 时间对象经JSON.stringify()转换后再经JSON.parse()解析得到的是字符串
                         if(objectTimeStamp.toLocaleDateString()!==new Date().toLocaleDateString()){ //如果时间不是今天，则只显示日期
-                            return {name: item, timeStamp: objectTimeStamp.toLocaleDateString(), url: url}
+                            return {name: item, timeStamp: objectTimeStamp.toLocaleDateString(), url: url, lastMessage: state.lastMessage}
                         }
                         else {     //如果时间是今天则只显示时间
                             this.commit('formatTimeStamp', objectTimeStamp)
-                            return {name: item, timeStamp: state.timeStamp, url: url}
+                            return {name: item, timeStamp: state.timeStamp, url: url, lastMessage: state.lastMessage}
                         }
                     }
                     else {  //消息中没有时间戳
-                        return {name: item, timeStamp: '', url: url}
+                        return {name: item, timeStamp: '', url: url, lastMessage: state.lastMessage}
                     }
                 }
                 else {  //没有对话消息
-                    return {name: item, timeStamp: '', url: url}
+                    return {name: item, timeStamp: '', url: url, lastMessage: ' '}
                 }
             })
 
@@ -145,6 +148,19 @@ var store=new Vuex.Store({        //Vuex存储对象
             formatMinute=minute.length===2?minute:('0'+minute)
             formatSecond=second.length===2?second:('0'+second)
             state.timeStamp=formatHours+':'+formatMinute+':'+formatSecond
+        },
+        formatLastMessage: function(state, lastMessageObject){
+            if(lastMessageObject.type==='image'){
+                state.lastMessage='[图片]'
+            }
+            else {
+                if(lastMessageObject.message.length>8){
+                    state.lastMessage=lastMessageObject.message.slice(0, 8)+'...'
+                }
+                else {
+                    state.lastMessage=lastMessageObject.message
+                }
+            }
         }
     },
     getters: {
@@ -190,10 +206,14 @@ var vm=new Vue({
                     }
                     this.$store.state.messageList=messages
                     objectTimeStamp=new Date(data.timeStamp)
-                    this.$store.commit('formatTimeStamp', objectTimeStamp)
+                    this.$store.commit('formatTimeStamp', objectTimeStamp)   // 格式化时间戳，用于更新在线用户列表中的timeStamp
+                    this.$store.commit('formatLastMessage', data)    // 格式化消息，用于更新在线用户列表中的lastMessage
                     this.$store.state.onlineUserList[this.$store.state.onlineUserList.findIndex(function(item){
                         return item.name==='messages'    //改变时间戳
                     })].timeStamp=this.$store.state.timeStamp
+                    this.$store.state.onlineUserList[this.$store.state.onlineUserList.findIndex(function(item){
+                        return item.name==='messages'    //改变最后一条消息
+                    })].lastMessage=this.$store.state.lastMessage
                 }
                 else {
                     this.$store.state.badgeFlag='messages'+'#'+this.$store.state.badgeFlagNumber++  //更改消息提醒徽标标志
@@ -208,9 +228,13 @@ var vm=new Vue({
                     /*this.$store.state.messageList=messages*/
                     objectTimeStamp=new Date(data.timeStamp)
                     this.$store.commit('formatTimeStamp', objectTimeStamp)
+                    this.$store.commit('formatLastMessage', data)    // 格式化消息，用于更新在线用户列表中的lastMessage
                     this.$store.state.onlineUserList[this.$store.state.onlineUserList.findIndex(function(item){
                         return item.name==='messages'
                     })].timeStamp=this.$store.state.timeStamp
+                    this.$store.state.onlineUserList[this.$store.state.onlineUserList.findIndex(function(item){
+                        return item.name==='messages'
+                    })].lastMessage=this.$store.state.lastMessage
                 }
             }
             else if(to===this.$store.state.name){   //别人向自己发送
@@ -226,9 +250,13 @@ var vm=new Vue({
                     this.$store.state.messageList=otherMessage
                     objectTimeStamp=new Date(data.timeStamp)
                     this.$store.commit('formatTimeStamp', objectTimeStamp)
+                    this.$store.commit('formatLastMessage', data)    // 格式化消息，用于更新在线用户列表中的lastMessage
                     this.$store.state.onlineUserList[this.$store.state.onlineUserList.findIndex(function(item){
                         return item.name===data.name
                     })].timeStamp=this.$store.state.timeStamp
+                    this.$store.state.onlineUserList[this.$store.state.onlineUserList.findIndex(function(item){
+                        return item.name===data.name
+                    })].lastMessage=this.$store.state.lastMessage
                 }
                 else {
                     this.$store.state.badgeFlag=data.name+'#'+this.$store.state.badgeFlagNumber++
@@ -243,9 +271,13 @@ var vm=new Vue({
                     /*this.$store.state.messageList=otherMessage*/
                     objectTimeStamp=new Date(data.timeStamp)
                     this.$store.commit('formatTimeStamp', objectTimeStamp)
+                    this.$store.commit('formatLastMessage', data)    // 格式化消息，用于更新在线用户列表中的lastMessage
                     this.$store.state.onlineUserList[this.$store.state.onlineUserList.findIndex(function(item){
                         return item.name===data.name
                     })].timeStamp=this.$store.state.timeStamp
+                    this.$store.state.onlineUserList[this.$store.state.onlineUserList.findIndex(function(item){
+                        return item.name===data.name
+                    })].lastMessage=this.$store.state.lastMessage
                 }
             }
             else {
@@ -260,9 +292,13 @@ var vm=new Vue({
                 this.$store.state.messageList=selfMessage
                 objectTimeStamp=new Date(data.timeStamp)
                 this.$store.commit('formatTimeStamp', objectTimeStamp)
+                this.$store.commit('formatLastMessage', data)    // 格式化消息，用于更新在线用户列表中的lastMessage
                 this.$store.state.onlineUserList[this.$store.state.onlineUserList.findIndex(function(item){
                     return item.name===to
                 })].timeStamp=this.$store.state.timeStamp
+                this.$store.state.onlineUserList[this.$store.state.onlineUserList.findIndex(function(item){
+                    return item.name===to
+                })].lastMessage=this.$store.state.lastMessage
             }
         })
     },

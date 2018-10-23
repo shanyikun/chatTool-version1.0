@@ -11,8 +11,15 @@
                     @mouseout="out(item.name)"
                     @click="getChatPage(item.name)">
                     <img :src="item.url" width="35px" height="35px">
-                    <p class="userName">{{item.name}}</p>
-                    <p class="timeStamp">{{item.timeStamp}}</p>
+                    <div class="nameAndTimeAndLastMessageContainer">
+                        <div class="nameAndTimeContainer">
+                            <div class="userName">{{item.name}}</div>
+                            <div class="timeStamp">{{item.timeStamp}}</div>
+                        </div>
+                        <div class="lastMessageContainer">
+                            {{item.lastMessage}}
+                        </div>
+                    </div>
                     <p class="message-inform-badge">0</p>
                 </li>
 
@@ -120,7 +127,7 @@
         align-items: center;
         position: relative;
         /*margin: 0px;*/
-        padding: 0 8px;
+        padding: 6px 8px;
     }
     #userList-ul li:hover{
        /* background-color:#DCDDDE !important;*/   /*也可以用CSS设置悬浮样式，不过不够灵活，且不设置优先级的话默认很低*/
@@ -129,13 +136,28 @@
         /*display: flex;
         flex-direction: column;*/
     }
+    .nameAndTimeAndLastMessageContainer{
+        display: flex;
+        flex-direction: column;
+        padding-left: 8px;
+        width: 100%;
+        justify-content: space-between;
+    }
+    .nameAndTimeContainer{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .lastMessageContainer{
+        color: gray;
+        font-size: 10px;
+    }
     .userName{
-        padding-left: 4px;
+
     }
     .timeStamp{
         color: gray;
         font-size: 10px;
-        padding-left: 10px;
     }
     .message-inform-badge{
         display: none;
