@@ -48,7 +48,7 @@ router.post('/register',function(request, response){
         if(err){
             return response.json({
                 err_code: 500,
-                message: 'server error'
+                message: 'find server error'
             })
         }
         else if(data){
@@ -63,14 +63,24 @@ router.post('/register',function(request, response){
                 if(err){
                     return response.json({
                         err_code: 500,
-                        message: 'server error'
+                        message: 'save server error'
                     })
                 }
                 else {
-                    request.session.user=data
-                    return response.json({
-                        err_code: 0,
-                        message: request.session.user.name   //返回用户名信息以用于重定向进入chat页面时向服务端发送用户信息
+                    fs.mkdir(path.join(__dirname, '../src/public/userFile/'+data.name), function(err){  // 创建用户文件夹，用于存放用户相关信息
+                        if(err){
+                            return response.json({
+                                err_code: 500,
+                                message: 'mkdir error'
+                            })
+                        }
+                        else {
+                            request.session.user=data
+                            return response.json({
+                                err_code: 0,
+                                message: request.session.user.name   //返回用户名信息以用于重定向进入chat页面时向服务端发送用户信息
+                            })
+                        }
                     })
                 }
             })

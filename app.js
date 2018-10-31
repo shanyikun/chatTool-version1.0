@@ -3,6 +3,7 @@ var app=express()
 var http=require('http').Server(app)
 var io=require('socket.io')(http)
 var path=require('path')
+var fs=require('fs')
 var router=require('./router/router.js')
 var bodyParser=require('body-parser')
 var session=require('express-session')
@@ -53,18 +54,77 @@ io.on('connection',function(socket){   /*服务端socket只能在服务器启动
     })
 
     socket.on('chat message',function(data){
-        if(data.to==='messages'){     //向所有客户端广播消息信息
-            io.emit('chat message',{name: data.name, message: data.message, timeStamp: data.timeStamp, url: data.url, type: data.type}, 'messages')
+        if(data.type==='video'){   // 若消息是视频类型
+            fs.stat(path.join(__dirname, './src/public/userFile/'+data.name+'/video'), function(err, stats){
+                if(err){  // 检测是否有video文件夹，若没有，则创建文件夹
+                    fs.mkdir(path.join(__dirname, './src/public/userFile/'+data.name+'/video'), function(err){
+                        if(err){
+                            console.log('mkdir error')
+                        }
+                        else {  // 写入图片二进制数据并以图片名字命名此图片文件
+                            fs.writeFile(path.join(__dirname, './src/public/userFile/'+data.name+'/video/'+data.messageName), data.message, function(err){
+                                if(err){
+                                    console.log('write error')
+                                }
+                                else {
+                                    let message='/src/public/userFile/'+data.name+'/video/'+data.messageName
+                                    if(data.to==='messages'){     //向所有客户端广播消息信息
+                                        io.emit('chat message',{name: data.name, message: message, timeStamp: data.timeStamp, url: data.url, type: data.type}, 'messages')
+                                    }
+                                    else {
+                                        var toName=data.to
+                                        var fromName=data.name
+                                        var toSocket = _.findWhere(io.sockets.sockets, { id: hashName[toName] })   //利用socket.id寻找特定的socket对象
+                                        var fromSocket=_.findWhere(io.sockets.sockets, { id: hashName[fromName] })
+                                        /*var toSocket = _.findWhere(io.sockets.sockets, { name: toName })   //也可以用自定义的name属性寻找特定的socket对象
+                                        var fromSocket=_.findWhere(io.sockets.sockets, { name: fromName })  */
+                                        toSocket.emit('chat message', {name: data.name, message: message, timeStamp: data.timeStamp, url: data.url, type: data.type}, data.to)  //向特定的socket用户推送消息
+                                        fromSocket.emit('chat message', {name: data.name, message: message, timeStamp: data.timeStamp, url: data.url, type: data.type}, data.to)
+                                    }
+                                }
+                            })
+                        }
+                    })
+                }
+                else {  // 若已有video文件夹则直接写入图片二进制文件
+                    fs.writeFile(path.join(__dirname, './src/public/userFile/'+data.name+'/video/'+data.messageName), data.message, function(err){
+                        if(err){
+                            console.log('write error')
+                        }
+                        else {
+                            let message='/src/public/userFile/'+data.name+'/video/'+data.messageName
+                            if(data.to==='messages'){     //向所有客户端广播消息信息
+                                io.emit('chat message',{name: data.name, message: message, timeStamp: data.timeStamp, url: data.url, type: data.type}, 'messages')
+                            }
+                            else {
+                                var toName=data.to
+                                var fromName=data.name
+                                var toSocket = _.findWhere(io.sockets.sockets, { id: hashName[toName] })   //利用socket.id寻找特定的socket对象
+                                var fromSocket=_.findWhere(io.sockets.sockets, { id: hashName[fromName] })
+                                /*var toSocket = _.findWhere(io.sockets.sockets, { name: toName })   //也可以用自定义的name属性寻找特定的socket对象
+                                var fromSocket=_.findWhere(io.sockets.sockets, { name: fromName })  */
+                                toSocket.emit('chat message', {name: data.name, message: message, timeStamp: data.timeStamp, url: data.url, type: data.type}, data.to)  //向特定的socket用户推送消息
+                                fromSocket.emit('chat message', {name: data.name, message: message, timeStamp: data.timeStamp, url: data.url, type: data.type}, data.to)
+                            }
+                        }
+                    })
+                }
+            })
         }
-        else {
-            var toName=data.to
-            var fromName=data.name
-            var toSocket = _.findWhere(io.sockets.sockets, { id: hashName[toName] })   //利用socket.id寻找特定的socket对象
-            var fromSocket=_.findWhere(io.sockets.sockets, { id: hashName[fromName] })
-            /*var toSocket = _.findWhere(io.sockets.sockets, { name: toName })   //也可以用自定义的name属性寻找特定的socket对象
-            var fromSocket=_.findWhere(io.sockets.sockets, { name: fromName })  */
-            toSocket.emit('chat message', {name: data.name, message: data.message, timeStamp: data.timeStamp, url: data.url, type: data.type}, data.to)  //向特定的socket用户推送消息
-            fromSocket.emit('chat message', {name: data.name, message: data.message, timeStamp: data.timeStamp, url: data.url, type: data.type}, data.to)
+        else {  // 若不是视频文件
+            if(data.to==='messages'){     //向所有客户端广播消息信息
+                io.emit('chat message',{name: data.name, message: data.message, timeStamp: data.timeStamp, url: data.url, type: data.type}, 'messages')
+            }
+            else {
+                var toName=data.to
+                var fromName=data.name
+                var toSocket = _.findWhere(io.sockets.sockets, { id: hashName[toName] })   //利用socket.id寻找特定的socket对象
+                var fromSocket=_.findWhere(io.sockets.sockets, { id: hashName[fromName] })
+                /*var toSocket = _.findWhere(io.sockets.sockets, { name: toName })   //也可以用自定义的name属性寻找特定的socket对象
+                var fromSocket=_.findWhere(io.sockets.sockets, { name: fromName })  */
+                toSocket.emit('chat message', {name: data.name, message: data.message, timeStamp: data.timeStamp, url: data.url, type: data.type}, data.to)  //向特定的socket用户推送消息
+                fromSocket.emit('chat message', {name: data.name, message: data.message, timeStamp: data.timeStamp, url: data.url, type: data.type}, data.to)
+            }
         }
     })
 })

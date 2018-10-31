@@ -131,7 +131,7 @@ var store=new Vuex.Store({        //Vuex存储对象
                     }
                 }
                 else {  //没有对话消息
-                    return {name: item, timeStamp: '', url: url, lastMessage: ' '}
+                    return {name: item, timeStamp: '', url: url, lastMessage: '[没有消息]'}
                 }
             })
 
@@ -152,6 +152,9 @@ var store=new Vuex.Store({        //Vuex存储对象
         formatLastMessage: function(state, lastMessageObject){  // 格式化最后一条信息, 也可以用VUE过滤器处理
             if(lastMessageObject.type==='image'){
                 state.lastMessage='[图片]'
+            }
+            else if(lastMessageObject.type==='video'){
+                state.lastMessage='[视频]'
             }
             else {
                 let byteLength=0, lastMessage=''

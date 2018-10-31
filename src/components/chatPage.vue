@@ -14,6 +14,9 @@
                             <p class="msg" v-if="message.type==='image'">
                                 <img :src="message.message" width="60px" class="messagePicture" @click="enlargePictureMessage(message.message)">
                             </p>    <!--判断消息是否是图片-->
+                            <video class="msg" width="150px" controls v-else-if="message.type==='video'">
+                                <source :src="message.message">
+                            </video>   <!--判断消息是否是视频-->
                             <p class="msg" v-else>{{message.message}}</p>
                         </div>
                         <img class="img" v-if="message.url" :src="message.url"  width="35px" height="35px"
@@ -27,6 +30,9 @@
                             <p class="msg" v-if="message.type==='image'">
                                 <img :src="message.message" width="60px" class="messagePicture" @click="enlargePictureMessage(message.message)">
                             </p> <!--判断消息是否是图片-->
+                            <video class="msg" width="150px" controls v-else-if="message.type==='video'">
+                                <source :src="message.message">
+                            </video>  <!--判断消息是否是视频， 视频的message存储的是视频的url，通过<source>get请求得到-->
                             <p class="msg" v-else>{{message.message}}</p>
                         </div>
                     </li>
@@ -39,7 +45,8 @@
                           @focus="focus"
                           @blur="blur"
                           @keypress.prevent.enter="sendMessage"
-                          @keydown.backspace="deleteImage"></textarea>  <!--回车发送消息， 退格键删除图片-->
+                          @keydown.backspace="deleteImage"
+                          @paste.stop="pasteEvent"></textarea>  <!--回车发送消息， 退格键删除图片, 粘贴事件-->
                 <input type="submit" value="send">
             </form>
 
@@ -60,6 +67,9 @@
             </div>
 
             <img :src="sendImageDataURL" width="60px" class="sendImage">  <!--发送消息框中的图片, 绝对定位-->
+            <video width="80px" height="80px" class="sendVideo" v-if="isDisplayPreviewVideo">  <!--发送消息框中的视频，绝对定位，开始要设置不显示，和图片不同-->
+                <source :src="sendVideoDataURL">
+            </video>
         </div>
     </div>
 </template>
@@ -73,8 +83,12 @@
                     paddingTop: '30px',
                 },
                 sendImageDataURL: '',
+                sendVideoDataURL: '',
+                sendVideoBinaryData: '',  // 二进制格式的视频文件
+                sendVideoBinaryDataName: '', // 二进制格式视频文件的名字
                 isDisplayEmotionsPop: false,
-                emotionSrcList: []
+                emotionSrcList: [],
+                isDisplayPreviewVideo: false   // 是否预览视频消息
             }
         },
         methods: {
@@ -100,11 +114,19 @@
                     let sendObject={name: name, to: to, message: this.sendImageDataURL, timeStamp: timeStamp, url: url, type: 'image'}
                     this.$store.state.socket.emit('chat message', sendObject)
                 }
+                else if(this.sendVideoBinaryData!==''){
+                    let timeStamp=new Date()
+                    let sendObject={name: name, to: to, message: this.sendVideoBinaryData, messageName: this.sendVideoBinaryDataName,timeStamp: timeStamp, url: url, type: 'video'}
+                    this.$store.state.socket.emit('chat message', sendObject)
+                }
                 else {
                     alert('输入内容不能为空！')
                 }
                 this.message=''   //清空消息框
                 this.sendImageDataURL=''  //清空消息框
+                this.sendVideoDataURL=''  //清空消息框
+                this.sendVideoBinaryData=''  // 清空二进制视频数据
+                this.isDisplayPreviewVideo=false   // 视频预览设置为不可见
                 this.$refs.textarea.focus()  // 输入框获得焦点
             },
             focus: function(){
@@ -118,12 +140,32 @@
             },
             uploadImageComplete: function(){  //获取base64格式的图片数据
                 let files=event.target.files
-                let fileReader=new FileReader()
-                fileReader.readAsDataURL(files[0])
-                fileReader.onloadend=()=>{   //图片上传完成时触发
-                    this.sendImageDataURL=fileReader.result
+                if(files[0].type.indexOf('image')!==-1){  // 判断是否是图片
+                    let fileReader=new FileReader()
+                    fileReader.readAsDataURL(files[0])
+                    fileReader.onloadend=()=>{   //图片上传完成时触发
+                        this.sendImageDataURL=fileReader.result
+                    }
+                    event.target.value=''  // 清空file上传控件的内容， 若不清空,下次上传同样路径的图片时，change事件不会触发
                 }
-                event.target.value=''  // 清空file上传控件的内容， 若不清空,下次上传同样路径的图片时，change事件不会触发
+                else if(files[0].type.indexOf('video')!==-1){   // 判断是否是视频
+                    let eventObject=event
+                    this.sendVideoBinaryDataName=files[0].name
+                    let fileReader=new FileReader()
+                    fileReader.readAsDataURL(files[0])
+                    fileReader.onloadend=()=>{
+                        this.sendVideoDataURL=fileReader.result
+                        this.isDisplayPreviewVideo=true
+                        if(true){   // 防止与外层fileReader产生冲突， 加一层块级作用域隔离
+                            let fileReader=new FileReader()
+                            fileReader.readAsArrayBuffer(files[0])   // 以二进制格式读取视频文件用于上传到服务器
+                            fileReader.onloadend=()=>{
+                                this.sendVideoBinaryData=fileReader.result
+                            }
+                            eventObject.target.value=''
+                        }
+                    }
+                }
             },
             uploadImageFocus: function(){   // 点击上传图片时， 文本框获得焦点
                 this.$refs.textarea.focus()
@@ -144,6 +186,16 @@
             deleteImage: function(){   // 删除选中图片
                 if(this.message===''){
                     this.sendImageDataURL=''
+                }
+            },
+            pasteEvent: function(){  // 暂时只支持图片的复制，且需要打开复制
+                let clipboardData=event.clipboardData||window.clipboardData
+                if(clipboardData.files.length!==0){
+                    let fileReader=new FileReader()
+                    fileReader.readAsDataURL(clipboardData.files[0])
+                    fileReader.onloadend=()=>{
+                        this.sendImageDataURL=fileReader.result
+                    }
                 }
             },
             enlargePictureMessage: function(pictureURL){
@@ -304,6 +356,11 @@
         box-shadow: 0 0 3px gray;
     }
     #form-container .sendImage{
+        position: absolute;
+        top: 35px;
+        left: 10px;
+    }
+    #form-container .sendVideo{
         position: absolute;
         top: 35px;
         left: 10px;
