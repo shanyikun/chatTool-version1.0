@@ -186,6 +186,10 @@
             deleteImage: function(){   // 删除选中图片
                 if(this.message===''){
                     this.sendImageDataURL=''
+                    this.sendVideoBinaryData=''
+                    this.sendVideoDataURL=''
+                    this.sendVideoBinaryDataName=''
+                    this.isDisplayPreviewVideo=false
                 }
             },
             pasteEvent: function(){  // 暂时只支持图片的复制，且需要打开复制
