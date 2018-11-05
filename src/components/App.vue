@@ -75,6 +75,10 @@
                             @click="clearCache">
                             清理缓存
                         </li>
+                        <li class="addFriend" :style="settingsStyleList[3]"
+                            @click="addFriend">
+                            添加好友
+                        </li>
                     </ul>
                 </div>
 
@@ -96,6 +100,9 @@
                     <div class="clearCacheSettings">
                         <button class="clearCacheButton" @click="clearLocalStorageCache">清理缓存({{computeLocalStorageCacheSize()}})</button>
                     </div>
+                </div>
+                <div class="settingContainer" v-if="isDisplayAddFriend">
+                    添加好友
                 </div>
 
             </div>
@@ -140,8 +147,10 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              isDisplayUploadUserHeadPortrait: false,   // 用户设置框内选项切换显示标志
              isDisplayAccountSettings: true,     // 用户设置框内选项切换显示标志
              isDisplayClearLocalStorageCache: false,  // 用户设置框内清理缓存选项显示标志
+             isDisplayAddFriend: false,   // 用户设置添加好友切换显示标志
              settingsStyleList: [
                  {color: '#09BB07', borderRight: 'solid 2px #09BB07' },
+                 {color: '', borderRight: ''},
                  {color: '', borderRight: ''},
                  {color: '', borderRight: ''}
                  ],   //设置弹出框动态列表样式
@@ -197,6 +206,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              this.isDisplayAccountSettings=true  //设置账户设置模块在下次设置弹窗弹出时默认显示
              this.isDisplayUploadUserHeadPortrait=false  //其他模块不显示
              this.isDisplayClearLocalStorageCache=false   //其他模块不显示
+             this.isDisplayAddFriend=false    //其他模块不显示
              this.settingsStyleList.forEach(function(item, index){
                  if(index===0){  //保证账户设置列表项颜色为选中颜色, 保证账户设置列表项存在右边框
                      item.color='#09BB07'
@@ -213,6 +223,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              this.isDisplayAccountSettings=true
              this.isDisplayUploadUserHeadPortrait=false
              this.isDisplayClearLocalStorageCache=false
+             this.isDisplayAddFriend=false
              this.settingsStyleList.forEach(function(item, index){  // 设置列表项选中颜色和边框并设置未选中列表项无颜色无边框
                  if(index===0){
                      item.color='#09BB07'
@@ -228,6 +239,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              this.isDisplayUploadUserHeadPortrait=true
              this.isDisplayAccountSettings=false
              this.isDisplayClearLocalStorageCache=false
+             this.isDisplayAddFriend=false
              this.settingsStyleList.forEach(function(item, index){
                  if(index===1){
                      item.color='#09BB07'
@@ -243,8 +255,25 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              this.isDisplayClearLocalStorageCache=true
              this.isDisplayAccountSettings=false
              this.isDisplayUploadUserHeadPortrait=false
+             this.isDisplayAddFriend=false
              this.settingsStyleList.forEach(function(item, index){
                  if(index===2){
+                     item.color='#09BB07'
+                     item.borderRight='solid 2px #09BB07'
+                 }
+                 else {
+                     item.color='black'
+                     item.borderRight='none'
+                 }
+             })
+         },
+         addFriend: function(){
+             this.isDisplayAddFriend=true
+             this.isDisplayClearLocalStorageCache=false
+             this.isDisplayAccountSettings=false
+             this.isDisplayUploadUserHeadPortrait=false
+             this.settingsStyleList.forEach(function(item, index){
+                 if(index===3){
                      item.color='#09BB07'
                      item.borderRight='solid 2px #09BB07'
                  }
