@@ -31,6 +31,7 @@ var store=new Vuex.Store({        //Vuex存储对象
             {name:'shan', url: '/src/public/images/shan.jpg'},
             {name: 'xiaowang', url: '/src/public/images/shanyikun.jpg'}
             ],
+        ableFriendsList: [],
         onlineUserList: [
             {name: 'messages', timeStamp: new Date().toLocaleTimeString(), url: '/src/public/images/messages.gif'},
             {name: 'xiaowang', timeStamp: new Date().toLocaleTimeString(), url: '/src/public/images/default.jpg'},
@@ -100,8 +101,13 @@ var store=new Vuex.Store({        //Vuex存储对象
             onlineUserList.splice(onlineUserList.findIndex(function(item){   //去除用户本身
                 return item===state.name
             }),1)
-
-            let withTimeStampOnlineUserList=onlineUserList.map((item)=>{  //为每个在线用户添加时间戳
+            let ableOnlineUserList=[]
+            ableOnlineUserList=onlineUserList.filter(function(userName){
+                return state.friendsList.some(function(item){
+                    return item.name===userName
+                })||userName==='messages'
+            })
+            let withTimeStampOnlineUserList=ableOnlineUserList.map((item)=>{  //为每个在线用户添加时间戳
                 let url
                 if(item==='messages'){   //群聊不属于用户，所以单独加上群聊头像
                      url='/src/public/images/messages.gif'
@@ -138,7 +144,11 @@ var store=new Vuex.Store({        //Vuex存储对象
             state.onlineUserList=withTimeStampOnlineUserList
         },
         getFriendsList: function(state, friendsList){
-            state.friendsList=friendsList
+            let ableFriendsList=[]
+            ableFriendsList=friendsList.filter((item)=>{
+                return state.ableFriendsList.indexOf(item.name)!==-1
+            })
+            state.friendsList=ableFriendsList
         },
         formatTimeStamp: function(state, timeStamp){     //把时间对象转换成时分秒格式，有的浏览器的toLocaleTimeString()就有此作用
             let hours=timeStamp.getHours().toString(),formatHours
@@ -199,13 +209,21 @@ var vm=new Vue({
             var userObj={name: name, email: email, url: url}
             this.$store.commit('getUserInformation', userObj)  //传参时只能传一个参数，可以是对象或数组或字符串或数字
         }).then(()=>{
-            this.$http.get('/getFriendsList').then(function(data){  //回调函数中的this仍然是外部的this，无需使用箭头函数
-                this.$store.commit('getFriendsList', data.body.message)                 //若回调函数中还有函数，则内层函数需要使用箭头函数
-            }).then(function(){
-                socket.on('login', (data)=>{    //先监听后广播   用箭头函数表示上层this  获取在线用户列表
-                    this.$store.commit('getOnlineUserList', data)
+            this.$http.get('/getAbleFriendsList').then((data)=>{
+                if(data.body.err_code===500){
+                    return alert('server error')
+                }
+                else {
+                    this.$store.state.ableFriendsList=data.body.message
+                }
+                this.$http.get('/getFriendsList').then((data)=>{  //回调函数中的this仍然是外部的this，无需使用箭头函数
+                    this.$store.commit('getFriendsList', data.body.message)                 //若回调函数中还有函数，则内层函数需要使用箭头函数
+                }).then(()=>{
+                    socket.on('login', (data)=>{    //先监听后广播   用箭头函数表示上层this  获取在线用户列表
+                        this.$store.commit('getOnlineUserList', data)
+                    })
+                    socket.emit('login', this.$store.state.name)    //向服务器广播用户登陆事件，并传递用户名
                 })
-                socket.emit('login', this.$store.state.name)    //向服务器广播用户登陆事件，并传递用户名
             })
          })
 

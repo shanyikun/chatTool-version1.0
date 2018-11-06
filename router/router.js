@@ -75,10 +75,30 @@ router.post('/register',function(request, response){
                             })
                         }
                         else {
-                            request.session.user=data
-                            return response.json({
-                                err_code: 0,
-                                message: request.session.user.name   //返回用户名信息以用于重定向进入chat页面时向服务端发送用户信息
+                            fs.mkdir(path.join(__dirname, '../src/public/userFile/'+data.name+'/friendsList'), function(err){  // 创建好友列表文件夹
+                                if(err){
+                                    return response.json({
+                                        err_code: 500,
+                                        message: 'mkdir error'
+                                    })
+                                }
+                                else {
+                                    fs.writeFile(path.join(__dirname, '../src/public/userFile/'+data.name+'/friendsList/ableFriendsList.json.json'), JSON.stringify([data.name]), function(err){  // 默认好友只有自己
+                                        if(err){
+                                            return response.json({
+                                                err_code: 500,
+                                                message: 'write error'
+                                            })
+                                        }
+                                        else {
+                                            request.session.user=data
+                                            return response.json({
+                                                err_code: 0,
+                                                message: request.session.user.name   //返回用户名信息以用于重定向进入chat页面时向服务端发送用户信息
+                                            })
+                                        }
+                                    })
+                                }
                             })
                         }
                     })
@@ -137,6 +157,23 @@ router.get('/getFriendsList', function(request, response){    //获取用户列�
     })
 })
 
+router.get('/getAbleFriendsList', function(request, response){
+    fs.readFile(path.join(__dirname, '../src/public/userFile/'+request.session.user.name+'/friendsList/ableFriendsList.json'), function(err, data){
+        if(err){
+            return response.json({
+                err_code: 500,
+                message: 'server error'
+            })
+        }
+        else {
+            return response.json({
+                err_code: 0,
+                message: JSON.parse(data.toString())
+            })
+        }
+    })
+})
+
 router.get('/getUserInformation', function(request, response){   //通过$http.get在生命周期钩子中获取用户信息
     return response.json({
         message: request.session.user
@@ -161,6 +198,80 @@ router.post('/updateUserHeadPortrait', upload.array('userHeadPortrait', 40), fun
             else {
                 return response.send('upload fail!')
             }
+        }
+    })
+})
+
+router.post('/searchFriend', function(request, response){
+    users.findOne({name: request.body.name}, function(err, data){
+        if(err){
+            return response.json({
+                err_code: 500,
+                message: 'server error'
+            })
+        }
+        else if(!data){
+            return response.json({
+                err_code: 1,
+                message: '用户不存在！'
+            })
+        }
+        else {
+            return response.json({
+                err_code: 0,
+                message: data
+            })
+        }
+    })
+})
+
+router.post('/addFriendRequest', function(request, response){
+    fs.readFile(path.join(__dirname, '../src/public/userFile/'+request.session.user.name+'/friendsList/ableFriendsList.json'), function(err, data){
+        if(err){
+            return response.json({
+                err_code: 500,
+                message: 'readFile error'
+            })
+        }
+        else {
+            let ableFriendsList=[]
+            ableFriendsList=JSON.parse(data.toString())
+            ableFriendsList.push(request.body.name)
+            fs.writeFile(path.join(__dirname, '../src/public/userFile/'+request.session.user.name+'/friendsList/ableFriendsList.json'), JSON.stringify(ableFriendsList), function(err){
+                if(err){
+                    return response.json({
+                        err_code: 500,
+                        message: 'writeFile error'
+                    })
+                }
+            })
+        }
+    })
+    fs.readFile(path.join(__dirname, '../src/public/userFile/'+request.body.name+'/friendsList/ableFriendsList.json'), function(err, data){
+        if(err){
+            return response.json({
+                err_code: 500,
+                message: 'readFile error'
+            })
+        }
+        else {
+            let ableFriendsList=[]
+            ableFriendsList=JSON.parse(data.toString())
+            ableFriendsList.push(request.session.user.name)
+            fs.writeFile(path.join(__dirname, '../src/public/userFile/'+request.body.name+'/friendsList/ableFriendsList.json'), JSON.stringify(ableFriendsList), function(err){
+                if(err){
+                    return response.json({
+                        err_code: 500,
+                        message: 'writeFile error'
+                    })
+                }
+                else {
+                    return response.json({
+                        err_code: 0,
+                        message: 'add success!'
+                    })
+                }
+            })
         }
     })
 })

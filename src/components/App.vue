@@ -101,8 +101,46 @@
                         <button class="clearCacheButton" @click="clearLocalStorageCache">清理缓存({{computeLocalStorageCacheSize()}})</button>
                     </div>
                 </div>
-                <div class="settingContainer" v-if="isDisplayAddFriend">
-                    添加好友
+                <div class="settingContainer" v-if="isDisplayAddFriend">    <!--只能显示一个-->
+                    <div class="searchContainer">
+                        <input type="text" class="searchInput" v-model="searchContent">
+                        <button class="searchButton" @click="searchInformation">搜索</button>
+                        <button class="addHistoryButton">添加历史</button>
+                    </div>
+                </div>
+                <div class="settingContainer" v-if="isDisplaySearchInformation">  <!--这是searchContainer的二级页面，搜索详情页，显示时覆盖搜索页面-->
+                    <template v-if="isSearchResultNull">
+                        <div class="searchInformationContainer">
+                            <div class="returnButtonContainer">
+                                <div class="iconfont icon-fanhui" @click="returnSearchContainer"></div>
+                            </div>
+                            <div class="friendInformationContainer">
+                                <div class="noUserPrompt">
+                                    用户不存在！
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <template v-else>
+                        <div class="searchInformationContainer">
+                            <div class="returnButtonContainer">
+                                <div class="iconfont icon-fanhui" @click="returnSearchContainer"></div>
+                            </div>
+                            <div class="friendInformationContainer">
+                                <div class="friendName"> {{friendName}} </div>
+                                <img :src="friendUrl" class="friendHeadPortrait" width="45px" height="45px">
+                            </div>
+                            <div class="addFriendButtonContainer">
+                                <template v-if="isAddFriendButton">
+                                    <button class="addFriendButton" @click="sendAddFriendRequest">添加好友</button>
+                                </template>
+                                <template v-else>
+                                    <button class="addFriendButton" @click="sendMessage">发送消息</button>
+                                    <div class="addFriendPromptMessage" v-if="isDisplayPromptMessage">此用户不在线！</div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
                 </div>
 
             </div>
@@ -144,10 +182,14 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              friendUrl: '',     //好友头像链接
              sendMessageFlag: false,    //好友信息弹出框发送信息标志位，用于向onlineUserList子组件传递发送信息标志以触发子组件内的getChatPage函数
              imageName: '',   //上传图片名字
+             searchContent: '',
              isDisplayUploadUserHeadPortrait: false,   // 用户设置框内选项切换显示标志
              isDisplayAccountSettings: true,     // 用户设置框内选项切换显示标志
              isDisplayClearLocalStorageCache: false,  // 用户设置框内清理缓存选项显示标志
              isDisplayAddFriend: false,   // 用户设置添加好友切换显示标志
+             isDisplaySearchInformation: false,   // 用户设置添加好友搜索详情页标志
+             isSearchResultNull: '',    // 搜索好友结果是否为空
+             isAddFriendButton: '',
              settingsStyleList: [
                  {color: '#09BB07', borderRight: 'solid 2px #09BB07' },
                  {color: '', borderRight: ''},
@@ -207,6 +249,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              this.isDisplayUploadUserHeadPortrait=false  //其他模块不显示
              this.isDisplayClearLocalStorageCache=false   //其他模块不显示
              this.isDisplayAddFriend=false    //其他模块不显示
+             this.isDisplaySearchInformation=false  //其他模块不显示
              this.settingsStyleList.forEach(function(item, index){
                  if(index===0){  //保证账户设置列表项颜色为选中颜色, 保证账户设置列表项存在右边框
                      item.color='#09BB07'
@@ -224,6 +267,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              this.isDisplayUploadUserHeadPortrait=false
              this.isDisplayClearLocalStorageCache=false
              this.isDisplayAddFriend=false
+             this.isDisplaySearchInformation=false
              this.settingsStyleList.forEach(function(item, index){  // 设置列表项选中颜色和边框并设置未选中列表项无颜色无边框
                  if(index===0){
                      item.color='#09BB07'
@@ -240,6 +284,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              this.isDisplayAccountSettings=false
              this.isDisplayClearLocalStorageCache=false
              this.isDisplayAddFriend=false
+             this.isDisplaySearchInformation=false
              this.settingsStyleList.forEach(function(item, index){
                  if(index===1){
                      item.color='#09BB07'
@@ -256,6 +301,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              this.isDisplayAccountSettings=false
              this.isDisplayUploadUserHeadPortrait=false
              this.isDisplayAddFriend=false
+             this.isDisplaySearchInformation=false
              this.settingsStyleList.forEach(function(item, index){
                  if(index===2){
                      item.color='#09BB07'
@@ -272,6 +318,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              this.isDisplayClearLocalStorageCache=false
              this.isDisplayAccountSettings=false
              this.isDisplayUploadUserHeadPortrait=false
+             this.isDisplaySearchInformation=false
              this.settingsStyleList.forEach(function(item, index){
                  if(index===3){
                      item.color='#09BB07'
@@ -282,6 +329,77 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
                      item.borderRight='none'
                  }
              })
+         },
+         searchInformation: function(){
+             if(this.searchContent===''){
+                 this.$refs.updatePromptMessage.textContent='请输入好友名称！'
+                 if(this.timeOutReturnValue){
+                     clearTimeout(this.timeOutReturnValue)
+                 }
+                 this.timeOutReturnValue=setTimeout(()=>{
+                     this.$refs.updatePromptMessage.textContent=''
+                 }, 2000)
+                 return undefined
+             }
+             else {
+                 this.$http.post('/searchFriend', {name: this.searchContent}).then((data)=>{
+                     if(data.body.err_code===500){
+                         this.$refs.updatePromptMessage.textContent=data.body.message
+                         if(this.timeOutReturnValue){
+                             clearTimeout(this.timeOutReturnValue)
+                         }
+                         this.timeOutReturnValue=setTimeout(()=>{
+                             this.$refs.updatePromptMessage.textContent=''
+                         }, 2000)
+                         this.searchContent=''
+                         return undefined
+                     }
+                     else if(data.body.err_code===1){
+                         this.searchContent=''
+                         this.isSearchResultNull=true
+                         this.isDisplayAddFriend=false
+                         this.isDisplaySearchInformation = true
+                     }
+                     else {
+                         let isFriendFlag
+                         isFriendFlag=this.$store.state.friendsList.some(function(item){
+                             return item.name===data.body.message.name
+                         })    //  判断搜索结果是否已是好友
+                         this.isAddFriendButton=!isFriendFlag
+                         this.searchContent=''
+                         this.isSearchResultNull=false
+                         this.friendName=data.body.message.name
+                         this.friendUrl=data.body.message.url
+                         this.isDisplayAddFriend=false
+                         this.isDisplaySearchInformation = true
+                     }
+                 })
+             }
+         },
+         sendAddFriendRequest: function(){
+             this.$http.post('/addFriendRequest', {name:this.friendName}).then((data)=>{
+                 if(data.body.err_code!==0){
+                     this.$refs.updatePromptMessage.textContent=data.body.message
+                     if(this.timeOutReturnValue){
+                         clearTimeout(this.timeOutReturnValue)
+                     }
+                     this.timeOutReturnValue=setTimeout(()=>{
+                         this.$refs.updatePromptMessage.textContent=''
+                     }, 2000)
+                     this.searchContent=''
+                     return undefined
+                 }
+                 else {
+                     let flag=window.confirm('好友添加成功，是否刷新页面？')
+                     if(flag){
+                         window.location.href='/chat'
+                     }
+                 }
+             })
+         },
+         returnSearchContainer: function(){
+             this.isDisplayAddFriend=true
+             this.isDisplaySearchInformation=false
          },
          computeLocalStorageCacheSize: function(){  // 计算localStorage已用缓存大小
              let cacheString=''
@@ -348,11 +466,13 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              })!==undefined){   //判断好友是否在线，若在线则发送跳转至发送消息界面
                  if(this.$route.path==='/onlineUserList'||this.$route.path==='/chatPage'){ //判断是在聊天界面还是在好友详情界面触发
                      this.sendMessageFlag=!this.sendMessageFlag  //改变好友信息弹出框发送信息标志位，用于向onlineUserList子组件传递发送信息标志以触发子组件内的getChatPage函数
-                     this.isDisplayFriendInformation=false
+                     this.isDisplayFriendInformation=false  // 关闭用户信息弹窗
+                     this.closeUserSettingPop()  // 关闭用户设置弹窗
                  }
                  else {  //若是在好友详情界面触发
                      this.$router.push({path: '/onlineUserList', query: {name: this.friendName}})
                      this.isDisplayFriendInformation=false
+                     this.closeUserSettingPop()  // 关闭用户设置弹窗
                      this.$store.state.userInfoIconFontSwitchFlag=!this.$store.state.userInfoIconFontSwitchFlag  //用户详情页切换字体图标标志，用以保证在发送消息按钮点击时时能切换到在线用户字体图标
                  }
              }
@@ -365,6 +485,8 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
                      this.isDisplayPromptMessage=false
                  }, 2000)
              }
+         },
+         sendMessageAtAddFriend: function(){
          },
          mouseWheelUpdatePictureSize: function(){   // 鼠标滚轮缩放图片
              if(event.wheelDelta>0){
@@ -434,6 +556,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
     @import '../public/stylesheets/message-icon-font/iconfont.css';   /*引入消息按钮字体图标*/
     @import '../public/stylesheets/uploadimage-icon-font/iconfont.css';  /*引入上传图片字体图标*/
     @import '../public/stylesheets/uploadbutton-icon-font/iconfont.css';  /*引入上传按钮字体图标*/
+    @import '../public/stylesheets/return-icon-font/iconfont.css';   /*引入返回按钮字体图标*/
 
     #page{                           /*页面*/
         display: flex;
@@ -665,6 +788,92 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
     }
     .userSettingPop .settingListContainer .settingContainer .clearCacheSettings .clearCacheButton:hover{
         background-color: darkgray;
+        cursor: pointer;
+    }
+    .userSettingPop .settingListContainer .settingContainer .searchContainer{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+    .userSettingPop .settingListContainer .settingContainer .searchContainer .searchInput{
+        width: 120px;
+    }
+    .userSettingPop .settingListContainer .settingContainer .searchContainer .searchButton{
+        margin: 20px 0;
+        width: 120px;
+        border: lightgray solid 1px;
+        background-color: lightgray;
+        color: black;
+        padding: 3px 20px;
+        font-size: 14px;
+        outline: none;
+    }
+    .userSettingPop .settingListContainer .settingContainer .searchContainer .searchButton:hover{
+        background-color: darkgray;
+        cursor: pointer;
+    }
+    .userSettingPop .settingListContainer .settingContainer .searchContainer .addHistoryButton{
+        width: 120px;
+        border: lightgray solid 1px;
+        background-color: lightgray;
+        color: black;
+        padding: 3px 20px;
+        font-size: 14px;
+        outline: none;
+    }
+    .userSettingPop .settingListContainer .settingContainer .searchContainer .addHistoryButton:hover{
+        background-color: darkgray;
+        cursor: pointer;
+    }
+    .userSettingPop .settingListContainer .settingContainer .searchInformationContainer{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+    }
+    .userSettingPop .settingListContainer .settingContainer .searchInformationContainer .returnButtonContainer{
+        width: 100%;
+        display: flex;
+    }
+    .userSettingPop .settingListContainer .settingContainer .searchInformationContainer .returnButtonContainer .icon-fanhui{
+        font-size: 18px;
+        color: darkgray;
+    }
+    .userSettingPop .settingListContainer .settingContainer .searchInformationContainer .returnButtonContainer .icon-fanhui:hover{
+        color: black;
+        cursor: pointer;
+    }
+    .userSettingPop .settingListContainer .settingContainer .searchInformationContainer .friendInformationContainer{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        margin: 20px 0;
+    }
+    .userSettingPop .settingListContainer .settingContainer .searchInformationContainer .friendInformationContainer .noUserPrompt{
+        width: 100%;
+        text-align: center;
+    }
+    .userSettingPop .settingListContainer .settingContainer .searchInformationContainer .addFriendButtonContainer{
+
+    }
+    .userSettingPop .settingListContainer .settingContainer .searchInformationContainer .addFriendButtonContainer .addFriendButton{
+        width: 120px;
+        border: lightgray solid 1px;
+        background-color: lightgray;
+        color: black;
+        padding: 3px 20px;
+        font-size: 14px;
+        outline: none;
+    }
+    .userSettingPop .settingListContainer .settingContainer .searchInformationContainer .addFriendButtonContainer .addFriendButton:hover{
+        background-color: darkgray;
+        cursor: pointer;
+    }
+    .userSettingPop .settingListContainer .settingContainer .searchInformationContainer .addFriendButtonContainer .addFriendPromptMessage{
+        color: red;
     }
     .userSettingPop .promptMessage{
         margin: 20px 30px 0 30px;

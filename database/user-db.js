@@ -1,5 +1,5 @@
 var mongoose=require('mongoose')
-mongoose.connect('mongodb://localhost/chat-socket')
+mongoose.connect('mongodb://localhost/chat-socket',{ useNewUrlParser: true })
 var Schema=mongoose.Schema
 
 var userSchema=new Schema({
