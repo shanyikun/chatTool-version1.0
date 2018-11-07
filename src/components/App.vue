@@ -105,7 +105,7 @@
                     <div class="searchContainer">
                         <input type="text" class="searchInput" v-model="searchContent">
                         <button class="searchButton" @click="searchInformation">搜索</button>
-                        <button class="addHistoryButton">添加历史</button>
+                        <button class="addHistoryButton" @click="addHistoryInformation">添加历史</button>
                     </div>
                 </div>
                 <div class="settingContainer" v-if="isDisplaySearchInformation">  <!--这是searchContainer的二级页面，搜索详情页，显示时覆盖搜索页面-->
@@ -133,6 +133,7 @@
                             <div class="addFriendButtonContainer">
                                 <template v-if="isAddFriendButton">
                                     <button class="addFriendButton" @click="sendAddFriendRequest">添加好友</button>
+                                    <div class="addFriendPromptMessage" v-if="isDisplayPromptMessage">好友请求已发送！</div>
                                 </template>
                                 <template v-else>
                                     <button class="addFriendButton" @click="sendMessage">发送消息</button>
@@ -141,6 +142,47 @@
                             </div>
                         </div>
                     </template>
+                </div>
+                <div class="settingContainer" v-if="isDisplayAddHistoryInformation">  <!--这是searchContainer的二级页面，添加好友历史，显示时覆盖搜索页面-->
+                    <div class="addHistoryContainer">
+                        <div class="returnButtonContainer">
+                            <div class="iconfont icon-fanhui" @click="returnSearchContainer"></div>
+                        </div>
+                        <div class="historyFriendContainer">
+                            <div class="requestFriendsList">
+                                <div class="title">自己发起的请求</div>
+                                <ul>
+                                    <template v-if="requestFriendsList.length!==0">
+                                        <li v-for="item in requestFriendsList" :key="flag()">
+                                            <img width="45px" height="45px" :src="item.url">
+                                            <div :title="item.name">{{item.name | formatName}}</div>
+                                            <div v-if="item.isAccept" class="isAccept">已接受</div>
+                                            <div v-else class="isAccept">未接受</div>
+                                        </li>
+                                    </template>
+                                    <template v-else>
+                                        <li class="noRequest">暂无请求数据！</li>
+                                    </template>
+                                </ul>
+                            </div>
+                            <div class="acceptFriendsList">
+                                <div class="title">对方发起的请求</div>
+                                <ul>
+                                    <template v-if="acceptFriendsList.length!==0">
+                                        <li v-for="item in acceptFriendsList" :key="flag()">
+                                            <img width="45px" height="45px" :src="item.url">
+                                            <div :title="item.name">{{item.name | formatName}}</div>
+                                            <div v-if="item.isAccept" class="isAccept">已接受</div>
+                                            <div v-else><button @click="acceptFriendRequest(item)">接受</button></div>
+                                        </li>
+                                    </template>
+                                    <template v-else>
+                                        <li class="noRequest">暂无请求数据!</li>
+                                    </template>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -188,6 +230,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              isDisplayClearLocalStorageCache: false,  // 用户设置框内清理缓存选项显示标志
              isDisplayAddFriend: false,   // 用户设置添加好友切换显示标志
              isDisplaySearchInformation: false,   // 用户设置添加好友搜索详情页标志
+             isDisplayAddHistoryInformation: false, // 用户设置添加历史详情页标志
              isSearchResultNull: '',    // 搜索好友结果是否为空
              isAddFriendButton: '',
              settingsStyleList: [
@@ -199,6 +242,8 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              pictureMessageURL: '',   // 图片消息base64格式
              pictureWidth: '250px',   // 图片弹出框图片尺寸
              popPictureStyle: {left: 0,top: 0},  // 图片弹出框图片定位样式
+             requestFriendsList: [],
+             acceptFriendsList: []
          }
      },
      methods: {
@@ -250,6 +295,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              this.isDisplayClearLocalStorageCache=false   //其他模块不显示
              this.isDisplayAddFriend=false    //其他模块不显示
              this.isDisplaySearchInformation=false  //其他模块不显示
+             this.isDisplayAddHistoryInformation=false //其他模块不显示
              this.settingsStyleList.forEach(function(item, index){
                  if(index===0){  //保证账户设置列表项颜色为选中颜色, 保证账户设置列表项存在右边框
                      item.color='#09BB07'
@@ -268,6 +314,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              this.isDisplayClearLocalStorageCache=false
              this.isDisplayAddFriend=false
              this.isDisplaySearchInformation=false
+             this.isDisplayAddHistoryInformation=false
              this.settingsStyleList.forEach(function(item, index){  // 设置列表项选中颜色和边框并设置未选中列表项无颜色无边框
                  if(index===0){
                      item.color='#09BB07'
@@ -285,6 +332,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              this.isDisplayClearLocalStorageCache=false
              this.isDisplayAddFriend=false
              this.isDisplaySearchInformation=false
+             this.isDisplayAddHistoryInformation=false
              this.settingsStyleList.forEach(function(item, index){
                  if(index===1){
                      item.color='#09BB07'
@@ -302,6 +350,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              this.isDisplayUploadUserHeadPortrait=false
              this.isDisplayAddFriend=false
              this.isDisplaySearchInformation=false
+             this.isDisplayAddHistoryInformation=false
              this.settingsStyleList.forEach(function(item, index){
                  if(index===2){
                      item.color='#09BB07'
@@ -319,6 +368,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              this.isDisplayAccountSettings=false
              this.isDisplayUploadUserHeadPortrait=false
              this.isDisplaySearchInformation=false
+             this.isDisplayAddHistoryInformation=false
              this.settingsStyleList.forEach(function(item, index){
                  if(index===3){
                      item.color='#09BB07'
@@ -376,8 +426,20 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
                  })
              }
          },
+         addHistoryInformation: function(){
+             this.isDisplayAddFriend=false
+             this.isDisplayAddHistoryInformation=true
+         },
          sendAddFriendRequest: function(){
-             this.$http.post('/addFriendRequest', {name:this.friendName}).then((data)=>{
+             this.$store.state.socket.emit('addFriendRequest', {name: this.$store.state.name, url: this.$store.state.url}, {name: this.friendName, url: this.friendUrl})
+             this.isDisplayPromptMessage=true
+             if(this.timeOutReturnValue){
+                 clearTimeout(this.timeOutReturnValue)
+             }
+             this.timeOutReturnValue=setTimeout(()=>{
+                 this.isDisplayPromptMessage=false
+             }, 2000)
+            /* this.$http.post('/addFriendRequest', {name:this.friendName}).then((data)=>{
                  if(data.body.err_code!==0){
                      this.$refs.updatePromptMessage.textContent=data.body.message
                      if(this.timeOutReturnValue){
@@ -395,11 +457,15 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
                          window.location.href='/chat'
                      }
                  }
-             })
+             })*/
+         },
+         acceptFriendRequest: function(item){
+             this.$store.state.socket.emit('acceptFriendRequest', {name: this.$store.state.name, url: this.$store.state.url}, {name: item.name, url: item.url})
          },
          returnSearchContainer: function(){
              this.isDisplayAddFriend=true
              this.isDisplaySearchInformation=false
+             this.isDisplayAddHistoryInformation=false
          },
          computeLocalStorageCacheSize: function(){  // 计算localStorage已用缓存大小
              let cacheString=''
@@ -518,6 +584,29 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              }
          }
      },
+     filters: {
+         formatName: function(name){   // 格式化名字
+             let byteLength=0, formatName=''
+             let nameLength=name.length
+             for(let i=0; i<nameLength; i++){
+                 if(name.charCodeAt(i)>=0x4E00&&name.charCodeAt(i)<=0x9FFF){
+                     byteLength+=2       // 若是汉字，则长度加2，因为一个汉字为2byte且占据宽度为两倍的英文字母
+                     formatName+=name[i]
+                 }
+                 else {
+                     byteLength++
+                     formatName+=name[i]
+                 }
+
+                 if(byteLength>=4&&i<nameLength-1){
+                     return formatName+'...'
+                 }
+                 else if(i===nameLength-1){
+                     return formatName
+                 }
+             }
+         }
+     },
      components: {
          userinfo: userInfo
      },
@@ -544,6 +633,77 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              else {
                  this.$store.state.emotionSrcList=data.body.message
              }
+         })
+
+         this.$http.get('/getRequestFriendsList').then((data)=>{
+             if(data.body.err_code!==0){
+                 alert(data.body.message)
+             }
+             else {
+                 this.requestFriendsList=data.body.message
+             }
+         })
+
+         this.$http.get('/getAcceptFriendsList').then((data)=>{
+             if(data.body.err_code!==0){
+                 alert(data.body.message)
+             }
+             else {
+                 this.acceptFriendsList=data.body.message
+             }
+         })
+
+         this.$store.state.socket.on('addFriendRequest', ()=>{
+             this.$http.get('/getRequestFriendsList').then((data)=>{
+                 if(data.body.err_code!==0){
+                     alert(data.body.message)
+                 }
+                 else {
+                     this.requestFriendsList=data.body.message
+                 }
+             })
+
+             this.$http.get('/getAcceptFriendsList').then((data)=>{
+                 if(data.body.err_code!==0){
+                     alert(data.body.message)
+                 }
+                 else {
+                     this.acceptFriendsList=data.body.message
+                 }
+             })
+         })
+
+         this.$store.state.socket.on('acceptFriendRequest', (userList)=>{
+             this.$http.get('/getAbleFriendsList').then((data)=>{
+                 if(data.body.err_code===500){
+                     return alert('server error')
+                 }
+                 else {
+                     this.$store.state.ableFriendsList=data.body.message
+                 }
+                 this.$http.get('/getFriendsList').then((data)=>{  //回调函数中的this仍然是外部的this，无需使用箭头函数
+                     this.$store.commit('getFriendsList', data.body.message)                 //若回调函数中还有函数，则内层函数需要使用箭头函数
+                 }).then(()=>{
+                     this.$store.commit('getOnlineUserList', userList)
+                     this.$http.get('/getRequestFriendsList').then((data)=>{
+                         if(data.body.err_code!==0){
+                             alert(data.body.message)
+                         }
+                         else {
+                             this.requestFriendsList=data.body.message
+                         }
+                     })
+
+                     this.$http.get('/getAcceptFriendsList').then((data)=>{
+                         if(data.body.err_code!==0){
+                             alert(data.body.message)
+                         }
+                         else {
+                             this.acceptFriendsList=data.body.message
+                         }
+                     })
+                 })
+             })
          })
      },
      beforeMount: function(){
@@ -697,7 +857,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
         color: white;
     }
     .userSettingPop .settingListContainer{
-        margin: 20px 30px 0 30px;
+        margin: 20px 30px 20px 30px;
         display: flex;
         justify-content: space-between;
     }
@@ -721,7 +881,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
     }
     .userSettingPop .settingListContainer .settingContainer{
         width: 78%;
-        margin-left: 10%;
+        margin-left: 7%;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -857,7 +1017,8 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
         text-align: center;
     }
     .userSettingPop .settingListContainer .settingContainer .searchInformationContainer .addFriendButtonContainer{
-
+        width: 100%;
+        text-align: center;
     }
     .userSettingPop .settingListContainer .settingContainer .searchInformationContainer .addFriendButtonContainer .addFriendButton{
         width: 120px;
@@ -874,6 +1035,97 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
     }
     .userSettingPop .settingListContainer .settingContainer .searchInformationContainer .addFriendButtonContainer .addFriendPromptMessage{
         color: red;
+    }
+    .userSettingPop .settingListContainer .settingContainer .addHistoryContainer{
+        width: 100%;
+        height: 100%;
+    }
+    .userSettingPop .settingListContainer .settingContainer .addHistoryContainer .returnButtonContainer{
+        display: flex;
+    }
+    .userSettingPop .settingListContainer .settingContainer .addHistoryContainer .returnButtonContainer .icon-fanhui{
+        font-size: 18px;
+        color: darkgray;
+    }
+    .userSettingPop .settingListContainer .settingContainer .addHistoryContainer .returnButtonContainer .icon-fanhui:hover{
+        color: black;
+        cursor: pointer;
+    }
+    .userSettingPop .settingListContainer .settingContainer .addHistoryContainer .historyFriendContainer{
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+    }
+    .userSettingPop .settingListContainer .settingContainer .addHistoryContainer .historyFriendContainer .requestFriendsList{
+        width: 100%;
+        margin-right: 20px;
+    }
+    .userSettingPop .settingListContainer .settingContainer .addHistoryContainer .historyFriendContainer .requestFriendsList .title{
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+    .userSettingPop .settingListContainer .settingContainer .addHistoryContainer .historyFriendContainer .requestFriendsList ul{
+        list-style-type: none;
+        padding-left: 0;
+        margin: 0;
+        overflow: auto;
+    }
+    .userSettingPop .settingListContainer .settingContainer .addHistoryContainer .historyFriendContainer .requestFriendsList ul li{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 5px 0;
+        border-top: solid 1px lightgray;
+    }
+    .userSettingPop .settingListContainer .settingContainer .addHistoryContainer .historyFriendContainer .requestFriendsList ul li.noRequest{
+        justify-content: center;
+    }
+    .userSettingPop .settingListContainer .settingContainer .addHistoryContainer .historyFriendContainer .requestFriendsList ul li:first-child{
+        border-top: none;
+    }
+    .userSettingPop .settingListContainer .settingContainer .addHistoryContainer .historyFriendContainer .requestFriendsList ul li .isAccept{
+        color: darkgray;
+    }
+    .userSettingPop .settingListContainer .settingContainer .addHistoryContainer .historyFriendContainer .acceptFriendsList{
+        width: 100%;
+    }
+    .userSettingPop .settingListContainer .settingContainer .addHistoryContainer .historyFriendContainer .acceptFriendsList .title{
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+    .userSettingPop .settingListContainer .settingContainer .addHistoryContainer .historyFriendContainer .acceptFriendsList ul{
+        list-style-type: none;
+        padding-left: 0;
+        margin: 0;
+        overflow: auto;
+    }
+    .userSettingPop .settingListContainer .settingContainer .addHistoryContainer .historyFriendContainer .acceptFriendsList ul li{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 5px 0;
+        border-top: solid 1px lightgray;
+    }
+    .userSettingPop .settingListContainer .settingContainer .addHistoryContainer .historyFriendContainer .acceptFriendsList ul li:first-child{
+        border-top: none;
+    }
+    .userSettingPop .settingListContainer .settingContainer .addHistoryContainer .historyFriendContainer .acceptFriendsList ul li .isAccept{
+        color: darkgray;
+    }
+    .userSettingPop .settingListContainer .settingContainer .addHistoryContainer .historyFriendContainer .acceptFriendsList ul li button{
+        /*border: 1px solid #d5d5d5;*/
+        background-color: #1AAD19;
+        color: white;
+        outline: none;
+        border: none;
+        height: 30px;
+    }
+    .userSettingPop .settingListContainer .settingContainer .addHistoryContainer .historyFriendContainer .acceptFriendsList ul li button:hover{
+        background-color: #148B14;
+        cursor: pointer;
+    }
+    .userSettingPop .settingListContainer .settingContainer .addHistoryContainer .historyFriendContainer .acceptFriendsList ul li.noRequest{
+        justify-content: center;
     }
     .userSettingPop .promptMessage{
         margin: 20px 30px 0 30px;

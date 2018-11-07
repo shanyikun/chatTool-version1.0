@@ -13,7 +13,7 @@
                     <img :src="item.url" width="35px" height="35px">
                     <div class="nameAndTimeAndLastMessageContainer">
                         <div class="nameAndTimeContainer">
-                            <div class="userName">{{item.name | formatName}}</div>
+                            <div class="userName" :title="item.name">{{item.name | formatName}}</div>
                             <div class="timeStamp">{{item.timeStamp}}</div>
                         </div>
                         <div class="lastMessageContainer">

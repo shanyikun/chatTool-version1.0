@@ -294,6 +294,40 @@ router.get('/getEmotionsList', function(request, response){   // 表情包base64
     })
 })
 
+router.get('/getRequestFriendsList', function(request, response){
+    fs.readFile(path.join(__dirname, '../src/public/userFile/'+request.session.user.name+'/friendsList/requestFriendsList.json'), function(err, data){
+        if(err){
+            return response.json({
+                err_code: 500,
+                message: 'read error'
+            })
+        }
+        else {
+            return response.json({
+                err_code: 0,
+                message: JSON.parse(data.toString())
+            })
+        }
+    })
+})
+
+router.get('/getAcceptFriendsList', function(request, response){
+    fs.readFile(path.join(__dirname, '../src/public/userFile/'+request.session.user.name+'/friendsList/acceptFriendsList.json'), function(err, data){
+        if(err){
+            return response.json({
+                err_code: 500,
+                message: 'read error'
+            })
+        }
+        else {
+            return response.json({
+                err_code: 0,
+                message: JSON.parse(data.toString())
+            })
+        }
+    })
+})
+
 
 /*io.on('connection',function(socket){
     socket.on('name',function(name){

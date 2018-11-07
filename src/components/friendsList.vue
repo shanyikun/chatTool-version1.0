@@ -97,9 +97,9 @@
         },
         watch: {
             friendsList: function(){           //实际的friendsList是异步获取的，所以要监听改变
-                if(this.$route.path==='/'){    //清空$refs对象， 如果不是重启生命周期，只是改变列表数据的话，之前的ref并不会
+               /* if(this.$route.path==='/'){ */   //清空$refs对象， 如果不是重启生命周期，只是改变列表数据的话，之前的ref并不会
                     this.$refs={}              //被丢弃，而是仍在$refs对象中，同名的ref会被后者替代，但是顺序仍然是之前的
-                }                              //顺序，不存在的列表项所在ref对应一个空的对象，渲染所得的ref是一个空数组
+                /*}  */                            //顺序，不存在的列表项所在ref对应一个空的对象，渲染所得的ref是一个空数组
             },
             searchInputValue: function(){   //监听搜索框输入
                 if(this.searchInputValue===''){   // 若为空，则显示全部好友列表，清空refs

@@ -127,6 +127,192 @@ io.on('connection',function(socket){   /*服务端socket只能在服务器启动
             }
         }
     })
+
+    socket.on('addFriendRequest', function(selfData, otherData){
+        let requestListData, acceptListData, requestFriendsList, acceptFriendsList
+
+        requestListData=fs.readFileSync(path.join(__dirname, './src/public/userFile/'+selfData.name+'/friendsList/requestFriendsList.json'))
+        requestFriendsList=JSON.parse(requestListData.toString())
+        requestFriendsList.push({name: otherData.name, url: otherData.url, isAccept: false})
+        fs.writeFileSync(path.join(__dirname, './src/public/userFile/'+selfData.name+'/friendsList/requestFriendsList.json'), JSON.stringify(requestFriendsList))
+
+        acceptListData=fs.readFileSync(path.join(__dirname, './src/public/userFile/'+otherData.name+'/friendsList/acceptFriendsList.json'))
+        acceptFriendsList=JSON.parse(acceptListData.toString())
+        acceptFriendsList.push({name: selfData.name, url: selfData.url, isAccept: false})
+        fs.writeFileSync(path.join(__dirname, './src/public/userFile/'+otherData.name+'/friendsList/acceptFriendsList.json'),JSON.stringify(acceptFriendsList))
+
+        let selfSocket = _.findWhere(io.sockets.sockets, { id: hashName[selfData.name] })   //利用socket.id寻找特定的socket对象
+        let otherSocket=_.findWhere(io.sockets.sockets, { id: hashName[otherData.name] })
+        selfSocket.emit('addFriendRequest')
+        if(otherSocket){
+            otherSocket.emit('addFriendRequest')
+        }
+
+        /*fs.readFile(path.join(__dirname, './src/public/userFile/'+selfData.name+'/friendsList/requestFriendsList.json'), function(err, data){
+            if(err){
+                console.log('read error')
+            }
+            else {
+                let requestFriendsList=[]
+                requestFriendsList=JSON.parse(data.toString())
+                requestFriendsList.push({name: otherData.name, url: otherData.url, isAccept: false})
+                fs.writeFile(path.join(__dirname, './src/public/userFile/'+selfData.name+'/friendsList/requestFriendsList.json'),JSON.stringify(requestFriendsList), function(err){
+                    if(err){
+                        console.log('write error')
+                    }
+                    else {
+                    }
+                })
+            }
+        })
+        fs.readFile(path.join(__dirname, './src/public/userFile/'+otherData.name+'/friendsList/acceptFriendsList.json'),function(err, data){
+            if(err){
+                console.log('read error')
+            }
+            else {
+                let acceptFriendsList=[]
+                acceptFriendsList=JSON.parse(data.toString())
+                acceptFriendsList.push({name: selfData.name, url: selfData.url, isAccept: false})
+                fs.writeFile(path.join(__dirname, './src/public/userFile/'+otherData.name+'/friendsList/acceptFriendsList.json'), JSON.stringify(acceptFriendsList), function(err){
+                    if(err){
+                        console.log('write error')
+                    }
+                    else {
+                        let selfSocket = _.findWhere(io.sockets.sockets, { id: hashName[selfData.name] })   //利用socket.id寻找特定的socket对象
+                        let otherSocket=_.findWhere(io.sockets.sockets, { id: hashName[otherData.name] })
+                        selfSocket.emit('addFriendRequest')
+                        if(otherSocket){
+                            otherSocket.emit('addFriendRequest')
+                        }
+                    }
+                })
+            }
+        })*/
+    })
+
+    socket.on('acceptFriendRequest', function(selfData, otherData){
+        let ableFriendsListData, ableFriendsList
+        ableFriendsListData=fs.readFileSync(path.join(__dirname, './src/public/userFile/'+selfData.name+'/friendsList/ableFriendsList.json'))
+        ableFriendsList=JSON.parse(ableFriendsListData.toString())
+        ableFriendsList.push(otherData.name)
+        fs.writeFileSync(path.join(__dirname, './src/public/userFile/'+selfData.name+'/friendsList/ableFriendsList.json'), JSON.stringify(ableFriendsList))
+
+        let acceptFriendsListData, acceptFriendsList, index
+        acceptFriendsListData=fs.readFileSync(path.join(__dirname, './src/public/userFile/'+selfData.name+'/friendsList/acceptFriendsList.json'))
+        acceptFriendsList=JSON.parse(acceptFriendsListData.toString())
+        index=acceptFriendsList.findIndex(function(item){
+            return item.name===otherData.name
+        })
+        acceptFriendsList.splice(index, 1, {name: otherData.name, url: otherData.url, isAccept: true})
+        fs.writeFileSync(path.join(__dirname, './src/public/userFile/'+selfData.name+'/friendsList/acceptFriendsList.json'), JSON.stringify(acceptFriendsList))
+
+        ableFriendsListData=fs.readFileSync(path.join(__dirname, './src/public/userFile/'+otherData.name+'/friendsList/ableFriendsList.json'))
+        ableFriendsList=JSON.parse(ableFriendsListData.toString())
+        ableFriendsList.push(selfData.name)
+        fs.writeFileSync(path.join(__dirname, './src/public/userFile/'+otherData.name+'/friendsList/ableFriendsList.json'), JSON.stringify(ableFriendsList))
+
+        let requestFriendsListData, requestFriendsList
+        requestFriendsListData=fs.readFileSync(path.join(__dirname, './src/public/userFile/'+otherData.name+'/friendsList/requestFriendsList.json'))
+        requestFriendsList=JSON.parse(requestFriendsListData.toString())
+        index=requestFriendsList.findIndex(function(item){
+            return item.name===selfData.name
+        })
+        requestFriendsList.splice(index, 1, {name: selfData.name, url: selfData.url, isAccept: true})
+        fs.writeFileSync(path.join(__dirname, './src/public/userFile/'+otherData.name+'/friendsList/requestFriendsList.json'), JSON.stringify(requestFriendsList))
+        let selfSocket = _.findWhere(io.sockets.sockets, { id: hashName[selfData.name] })   //利用socket.id寻找特定的socket对象
+        let otherSocket=_.findWhere(io.sockets.sockets, { id: hashName[otherData.name] })
+        selfSocket.emit('acceptFriendRequest', userList)
+        if(otherSocket){
+            otherSocket.emit('acceptFriendRequest', userList)
+        }
+
+       /* fs.readFile(path.join(__dirname, './src/public/userFile/'+selfData.name+'/friendsList/ableFriendsList.json'), function(err, data){
+            if(err){
+                console.log('read error')
+            }
+            else {
+                let ableFriendsList=[]
+                ableFriendsList=JSON.parse(data.toString())
+                ableFriendsList.push(otherData.name)
+                fs.writeFile(path.join(__dirname, './src/public/userFile/'+selfData.name+'/friendsList/ableFriendsList.json'), JSON.stringify(ableFriendsList), function(err){
+                    if(err){
+                        console.log('write error')
+                    }
+                    else {
+
+                    }
+                })
+            }
+        })*/
+
+        /*fs.readFile(path.join(__dirname, './src/public/userFile/'+selfData.name+'/friendsList/acceptFriendsList.json'), function(err, data){
+            if(err){
+                console.log('read error')
+            }
+            else {
+                let acceptFriendsList=[], index
+                acceptFriendsList=JSON.parse(data.toString())
+                index=acceptFriendsList.findIndex(function(item){
+                    return item.name===otherData.name
+                })
+                acceptFriendsList.splice(index, 1, {name: otherData.name, url: otherData.url, isAccept: true})
+                fs.writeFile(path.join(__dirname, './src/public/userFile/'+selfData.name+'/friendsList/acceptFriendsList.json'), JSON.stringify(acceptFriendsList), function(err){
+                    if(err){
+                        console.log('write error')
+                    }
+                    else {
+
+                    }
+                })
+            }
+        })*/
+
+       /* fs.readFile(path.join(__dirname, './src/public/userFile/'+otherData.name+'/friendsList/ableFriendsList.json'), function(err, data){
+            if(err){
+                console.log('read error')
+            }
+            else {
+                let ableFriendsList=[]
+                ableFriendsList=JSON.parse(data.toString())
+                ableFriendsList.push(selfData.name)
+                fs.writeFile(path.join(__dirname, './src/public/userFile/'+otherData.name+'/friendsList/ableFriendsList.json'), JSON.stringify(ableFriendsList), function(err){
+                    if(err){
+                        console.log('write error')
+                    }
+                    else {
+
+                    }
+                })
+            }
+        })*/
+
+        /*fs.readFile(path.join(__dirname, './src/public/userFile/'+otherData.name+'/friendsList/requestFriendsList.json'), function(err, data){
+            if(err){
+                console.log('read error')
+            }
+            else {
+                let requestFriendsList=[], index
+                requestFriendsList=JSON.parse(data.toString())
+                index=requestFriendsList.findIndex(function(item){
+                    return item.name===selfData.name
+                })
+                requestFriendsList.splice(index, 1, {name: selfData.name, url: selfData.url, isAccept: true})
+                fs.writeFile(path.join(__dirname, './src/public/userFile/'+otherData.name+'/friendsList/requestFriendsList.json'), JSON.stringify(requestFriendsList), function(err){
+                    if(err){
+                        console.log('write error')
+                    }
+                    else {
+                        let selfSocket = _.findWhere(io.sockets.sockets, { id: hashName[selfData.name] })   //利用socket.id寻找特定的socket对象
+                        let otherSocket=_.findWhere(io.sockets.sockets, { id: hashName[otherData.name] })
+                        selfSocket.emit('acceptFriendRequest')
+                        if(otherSocket){
+                            otherSocket.emit('acceptFriendRequest', userList)
+                        }
+                    }
+                })
+            }
+        })*/
+    })
 })
 
 http.listen(5000,function(){
