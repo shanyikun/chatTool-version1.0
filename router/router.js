@@ -82,8 +82,16 @@ router.post('/register',function(request, response){
                                         message: 'mkdir error'
                                     })
                                 }
-                                else {
-                                    fs.writeFile(path.join(__dirname, '../src/public/userFile/'+data.name+'/friendsList/ableFriendsList.json.json'), JSON.stringify([data.name]), function(err){  // 默认好友只有自己
+                                else {   // 同步创建所需的文件
+                                    fs.writeFileSync(path.join(__dirname, '../src/public/userFile/'+data.name+'/friendsList/ableFriendsList.json'),JSON.stringify([data.name]))
+                                    fs.writeFileSync(path.join(__dirname, '../src/public/userFile/'+data.name+'/friendsList/acceptFriendsList.json'), JSON.stringify([]))
+                                    fs.writeFileSync(path.join(__dirname, '../src/public/userFile/'+data.name+'/friendsList/requestFriendsList.json'), JSON.stringify([]))
+                                    request.session.user=data
+                                    return response.json({
+                                        err_code: 0,
+                                        message: request.session.user.name   //返回用户名信息以用于重定向进入chat页面时向服务端发送用户信息
+                                    })
+                                    /*fs.writeFile(path.join(__dirname, '../src/public/userFile/'+data.name+'/friendsList/ableFriendsList.json'), JSON.stringify([data.name]), function(err){  // 默认好友只有自己
                                         if(err){
                                             return response.json({
                                                 err_code: 500,
@@ -97,7 +105,7 @@ router.post('/register',function(request, response){
                                                 message: request.session.user.name   //返回用户名信息以用于重定向进入chat页面时向服务端发送用户信息
                                             })
                                         }
-                                    })
+                                    })*/  // 异步创建文件的方式
                                 }
                             })
                         }
@@ -140,7 +148,7 @@ router.post('/login',function(request,response){
     })
 })
 
-router.get('/getFriendsList', function(request, response){    //获取用户列表
+router.get('/getFriendsList', function(request, response){    //获取用户列表， 包括用户的所有信息，从数据库中获取
     users.find(function(err,data){
         if(err){
             return response.json({
@@ -157,7 +165,7 @@ router.get('/getFriendsList', function(request, response){    //获取用户列�
     })
 })
 
-router.get('/getAbleFriendsList', function(request, response){
+router.get('/getAbleFriendsList', function(request, response){    // 获取已加好友列表， 只有名字
     fs.readFile(path.join(__dirname, '../src/public/userFile/'+request.session.user.name+'/friendsList/ableFriendsList.json'), function(err, data){
         if(err){
             return response.json({
@@ -185,7 +193,7 @@ router.get('/logout', function(request,response){
     return response.redirect('/chat')
 })
 
-router.post('/updateUserHeadPortrait', upload.array('userHeadPortrait', 40), function(request, response){
+router.post('/updateUserHeadPortrait', upload.array('userHeadPortrait', 40), function(request, response){  // 更新头像
     let files=request.files        //更新数据库中用户的url
     users.update({name: request.body.name}, {url: '/src/public/images/'+request.body.name+'.jpg'},function(err, result){
         if(err){
@@ -202,7 +210,7 @@ router.post('/updateUserHeadPortrait', upload.array('userHeadPortrait', 40), fun
     })
 })
 
-router.post('/searchFriend', function(request, response){
+router.post('/searchFriend', function(request, response){   // 搜索用户，以用于后续添加
     users.findOne({name: request.body.name}, function(err, data){
         if(err){
             return response.json({
@@ -225,7 +233,7 @@ router.post('/searchFriend', function(request, response){
     })
 })
 
-router.post('/addFriendRequest', function(request, response){
+router.post('/addFriendRequest', function(request, response){  // 添加好友请求， 这是直接添加的方式，无需同意直接添加
     fs.readFile(path.join(__dirname, '../src/public/userFile/'+request.session.user.name+'/friendsList/ableFriendsList.json'), function(err, data){
         if(err){
             return response.json({
@@ -294,7 +302,7 @@ router.get('/getEmotionsList', function(request, response){   // 表情包base64
     })
 })
 
-router.get('/getRequestFriendsList', function(request, response){
+router.get('/getRequestFriendsList', function(request, response){   // 获取请求好友列表，包括名字，头像url以及是否接受添加标志位
     fs.readFile(path.join(__dirname, '../src/public/userFile/'+request.session.user.name+'/friendsList/requestFriendsList.json'), function(err, data){
         if(err){
             return response.json({
@@ -311,7 +319,7 @@ router.get('/getRequestFriendsList', function(request, response){
     })
 })
 
-router.get('/getAcceptFriendsList', function(request, response){
+router.get('/getAcceptFriendsList', function(request, response){   // 获取接受好友列表，包括名字，头像url以及是否接受添加标志位
     fs.readFile(path.join(__dirname, '../src/public/userFile/'+request.session.user.name+'/friendsList/acceptFriendsList.json'), function(err, data){
         if(err){
             return response.json({

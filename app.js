@@ -128,19 +128,19 @@ io.on('connection',function(socket){   /*服务端socket只能在服务器启动
         }
     })
 
-    socket.on('addFriendRequest', function(selfData, otherData){
+    socket.on('addFriendRequest', function(selfData, otherData){    // 监听添加好友请求， 包括请求者的信息，发起者的信息
         let requestListData, acceptListData, requestFriendsList, acceptFriendsList
-
+        // 同步读取并重新写入请求列表信息， 发起者文件夹
         requestListData=fs.readFileSync(path.join(__dirname, './src/public/userFile/'+selfData.name+'/friendsList/requestFriendsList.json'))
         requestFriendsList=JSON.parse(requestListData.toString())
         requestFriendsList.push({name: otherData.name, url: otherData.url, isAccept: false})
         fs.writeFileSync(path.join(__dirname, './src/public/userFile/'+selfData.name+'/friendsList/requestFriendsList.json'), JSON.stringify(requestFriendsList))
-
+        // 同步读取并重新写入接受列表信息， 被请求者文件夹
         acceptListData=fs.readFileSync(path.join(__dirname, './src/public/userFile/'+otherData.name+'/friendsList/acceptFriendsList.json'))
         acceptFriendsList=JSON.parse(acceptListData.toString())
         acceptFriendsList.push({name: selfData.name, url: selfData.url, isAccept: false})
         fs.writeFileSync(path.join(__dirname, './src/public/userFile/'+otherData.name+'/friendsList/acceptFriendsList.json'),JSON.stringify(acceptFriendsList))
-
+       // 向发起者和被请求者广播请求事件，以用于更新请求列表
         let selfSocket = _.findWhere(io.sockets.sockets, { id: hashName[selfData.name] })   //利用socket.id寻找特定的socket对象
         let otherSocket=_.findWhere(io.sockets.sockets, { id: hashName[otherData.name] })
         selfSocket.emit('addFriendRequest')
@@ -187,16 +187,16 @@ io.on('connection',function(socket){   /*服务端socket只能在服务器启动
                     }
                 })
             }
-        })*/
+        })*/   // 同步方式
     })
 
-    socket.on('acceptFriendRequest', function(selfData, otherData){
-        let ableFriendsListData, ableFriendsList
+    socket.on('acceptFriendRequest', function(selfData, otherData){   // 监听接受好友请求， 包括请求者的信息，发起者的信息
+        let ableFriendsListData, ableFriendsList   // 同步读取并重新写入已添加好友列表， 接受者文件夹
         ableFriendsListData=fs.readFileSync(path.join(__dirname, './src/public/userFile/'+selfData.name+'/friendsList/ableFriendsList.json'))
         ableFriendsList=JSON.parse(ableFriendsListData.toString())
         ableFriendsList.push(otherData.name)
         fs.writeFileSync(path.join(__dirname, './src/public/userFile/'+selfData.name+'/friendsList/ableFriendsList.json'), JSON.stringify(ableFriendsList))
-
+        // 同步读取并重新写入接受好友列表， 接受者文件夹
         let acceptFriendsListData, acceptFriendsList, index
         acceptFriendsListData=fs.readFileSync(path.join(__dirname, './src/public/userFile/'+selfData.name+'/friendsList/acceptFriendsList.json'))
         acceptFriendsList=JSON.parse(acceptFriendsListData.toString())
@@ -205,12 +205,12 @@ io.on('connection',function(socket){   /*服务端socket只能在服务器启动
         })
         acceptFriendsList.splice(index, 1, {name: otherData.name, url: otherData.url, isAccept: true})
         fs.writeFileSync(path.join(__dirname, './src/public/userFile/'+selfData.name+'/friendsList/acceptFriendsList.json'), JSON.stringify(acceptFriendsList))
-
+        // 同步读取并重新写入已添加好友列表， 请求者文件夹
         ableFriendsListData=fs.readFileSync(path.join(__dirname, './src/public/userFile/'+otherData.name+'/friendsList/ableFriendsList.json'))
         ableFriendsList=JSON.parse(ableFriendsListData.toString())
         ableFriendsList.push(selfData.name)
         fs.writeFileSync(path.join(__dirname, './src/public/userFile/'+otherData.name+'/friendsList/ableFriendsList.json'), JSON.stringify(ableFriendsList))
-
+        // 同步读取并重新写入请求好友列表， 接受者文件夹
         let requestFriendsListData, requestFriendsList
         requestFriendsListData=fs.readFileSync(path.join(__dirname, './src/public/userFile/'+otherData.name+'/friendsList/requestFriendsList.json'))
         requestFriendsList=JSON.parse(requestFriendsListData.toString())
@@ -221,7 +221,7 @@ io.on('connection',function(socket){   /*服务端socket只能在服务器启动
         fs.writeFileSync(path.join(__dirname, './src/public/userFile/'+otherData.name+'/friendsList/requestFriendsList.json'), JSON.stringify(requestFriendsList))
         let selfSocket = _.findWhere(io.sockets.sockets, { id: hashName[selfData.name] })   //利用socket.id寻找特定的socket对象
         let otherSocket=_.findWhere(io.sockets.sockets, { id: hashName[otherData.name] })
-        selfSocket.emit('acceptFriendRequest', userList)
+        selfSocket.emit('acceptFriendRequest', userList)   // 向请求者和接受者广播接受事件，以更新请求列表
         if(otherSocket){
             otherSocket.emit('acceptFriendRequest', userList)
         }
@@ -243,7 +243,7 @@ io.on('connection',function(socket){   /*服务端socket只能在服务器启动
                     }
                 })
             }
-        })*/
+        })*/    // 异步方式
 
         /*fs.readFile(path.join(__dirname, './src/public/userFile/'+selfData.name+'/friendsList/acceptFriendsList.json'), function(err, data){
             if(err){

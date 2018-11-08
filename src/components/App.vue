@@ -224,7 +224,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              friendUrl: '',     //好友头像链接
              sendMessageFlag: false,    //好友信息弹出框发送信息标志位，用于向onlineUserList子组件传递发送信息标志以触发子组件内的getChatPage函数
              imageName: '',   //上传图片名字
-             searchContent: '',
+             searchContent: '',  // 搜索内容
              isDisplayUploadUserHeadPortrait: false,   // 用户设置框内选项切换显示标志
              isDisplayAccountSettings: true,     // 用户设置框内选项切换显示标志
              isDisplayClearLocalStorageCache: false,  // 用户设置框内清理缓存选项显示标志
@@ -242,8 +242,8 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              pictureMessageURL: '',   // 图片消息base64格式
              pictureWidth: '250px',   // 图片弹出框图片尺寸
              popPictureStyle: {left: 0,top: 0},  // 图片弹出框图片定位样式
-             requestFriendsList: [],
-             acceptFriendsList: []
+             requestFriendsList: [],   // 发起请求列表
+             acceptFriendsList: []    // 接受请求列表
          }
      },
      methods: {
@@ -430,7 +430,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              this.isDisplayAddFriend=false
              this.isDisplayAddHistoryInformation=true
          },
-         sendAddFriendRequest: function(){
+         sendAddFriendRequest: function(){   // 添加好友请求， 通过socket触发添加事件， 上传发起者信息与被请求者信息
              this.$store.state.socket.emit('addFriendRequest', {name: this.$store.state.name, url: this.$store.state.url}, {name: this.friendName, url: this.friendUrl})
              this.isDisplayPromptMessage=true
              if(this.timeOutReturnValue){
@@ -459,7 +459,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
                  }
              })*/
          },
-         acceptFriendRequest: function(item){
+         acceptFriendRequest: function(item){    // 接受好友请求事件，上传接受者信息与请求者信息
              this.$store.state.socket.emit('acceptFriendRequest', {name: this.$store.state.name, url: this.$store.state.url}, {name: item.name, url: item.url})
          },
          returnSearchContainer: function(){
@@ -635,7 +635,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              }
          })
 
-         this.$http.get('/getRequestFriendsList').then((data)=>{
+         this.$http.get('/getRequestFriendsList').then((data)=>{  // 获取请求好友列表
              if(data.body.err_code!==0){
                  alert(data.body.message)
              }
@@ -644,7 +644,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              }
          })
 
-         this.$http.get('/getAcceptFriendsList').then((data)=>{
+         this.$http.get('/getAcceptFriendsList').then((data)=>{  // 获取接受好友列表
              if(data.body.err_code!==0){
                  alert(data.body.message)
              }
@@ -653,7 +653,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              }
          })
 
-         this.$store.state.socket.on('addFriendRequest', ()=>{
+         this.$store.state.socket.on('addFriendRequest', ()=>{    // 监听添加好友事件
              this.$http.get('/getRequestFriendsList').then((data)=>{
                  if(data.body.err_code!==0){
                      alert(data.body.message)
@@ -673,7 +673,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              })
          })
 
-         this.$store.state.socket.on('acceptFriendRequest', (userList)=>{
+         this.$store.state.socket.on('acceptFriendRequest', (userList)=>{    // 监听接受好友事件
              this.$http.get('/getAbleFriendsList').then((data)=>{
                  if(data.body.err_code===500){
                      return alert('server error')
