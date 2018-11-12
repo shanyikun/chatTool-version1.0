@@ -187,7 +187,7 @@ io.on('connection',function(socket){   /*服务端socket只能在服务器启动
                     }
                 })
             }
-        })*/   // 同步方式
+        })*/   // 异步方式
     })
 
     socket.on('acceptFriendRequest', function(selfData, otherData){   // 监听接受好友请求， 包括请求者的信息，发起者的信息
