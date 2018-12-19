@@ -28,9 +28,11 @@
                      @click="biggerFriendHeadPortrait">
             </div>
             <div class="messageButtonContainer">
-                <div class="messageButton iconfont icon-xiaoxi" @click="sendMessage"></div>
+                <div class="messageButton iconfont icon-xiaoxi" title="发送消息" v-if="isFriend()" @click="sendMessage"></div>
+                <div class="messageButton iconfont icon-add-friends_icon" title="添加好友" v-else @click="sendAddFriendRequest"></div>
             </div>
-            <div class="promptMessage" v-if="isDisplayPromptMessage">此用户不在线！</div>
+            <div class="promptMessage" v-if="isFriend()&&isDisplayPromptMessage">此用户不在线！</div>  <!--同时满足是朋友和提示消息-->
+            <div class="promptMessage" v-else-if="(!isFriend())&&isDisplayPromptMessage">请求已发送！</div>  <!--同时满足不是朋友和提示消息-->
         </div>
 
         <div class="biggerFriendHeadPortraitPop" v-if="isDisplayFriendHeadPortrait"> <!--好友头像放大弹出框，绝对定位-->
@@ -526,6 +528,14 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              let pathArray=event.target.value.split('\\')   //获取路径
              this.imageName=pathArray[pathArray.length-1]   //获取图片名
          },
+         isFriend: function(){   // 判断弹出框中的用户信息是否是好友，主要用于群中的好友详情查看
+             if(this.$store.state.ableFriendsList.indexOf(this.friendName)!==-1){
+                 return true
+             }
+             else {
+                 return false
+             }
+         },
          sendMessage: function(){
              if(this.$store.state.onlineUserList.find((item)=>{
                  return item.name===this.friendName
@@ -717,6 +727,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
     @import '../public/stylesheets/uploadimage-icon-font/iconfont.css';  /*引入上传图片字体图标*/
     @import '../public/stylesheets/uploadbutton-icon-font/iconfont.css';  /*引入上传按钮字体图标*/
     @import '../public/stylesheets/return-icon-font/iconfont.css';   /*引入返回按钮字体图标*/
+    @import '../public/stylesheets/addfriend-icon-font/iconfont.css';  /*引入添加好友字体图标*/
 
     #page{                           /*页面*/
         display: flex;

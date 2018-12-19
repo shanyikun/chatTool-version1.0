@@ -61,7 +61,7 @@ io.on('connection',function(socket){   /*服务端socket只能在服务器启动
                         if(err){
                             console.log('mkdir error')
                         }
-                        else {  // 写入图片二进制数据并以图片名字命名此图片文件
+                        else {  // 写入视频二进制数据并以视频名字命名此视频文件
                             fs.writeFile(path.join(__dirname, './src/public/userFile/'+data.name+'/video/'+data.messageName), data.message, function(err){
                                 if(err){
                                     console.log('write error')
@@ -86,7 +86,7 @@ io.on('connection',function(socket){   /*服务端socket只能在服务器启动
                         }
                     })
                 }
-                else {  // 若已有video文件夹则直接写入图片二进制文件
+                else {  // 若已有video文件夹则直接写入视频二进制文件
                     fs.writeFile(path.join(__dirname, './src/public/userFile/'+data.name+'/video/'+data.messageName), data.message, function(err){
                         if(err){
                             console.log('write error')
