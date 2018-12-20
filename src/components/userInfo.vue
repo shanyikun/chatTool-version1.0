@@ -9,8 +9,10 @@
              @click="getOnlineUserList" @mouseover="over(0)" @mouseout="out(0)"></div>
         <div class="iconfont icon-tongxunlu" title="好友列表" :style="iconFontStyleList[1]"
              @click="getFriendsList" @mouseover="over(1)" @mouseout="out(1)"></div>
-        <div class="iconfont icon-shezhi" title="设置" :style="iconFontStyleList[2]"
-             @click="getSetPage" @mouseover="over(2)" @mouseout="out(2)"></div>
+        <div class="iconfont icon-qunzu" title="群组列表" :style="iconFontStyleList[2]"
+             @click="getGroupList" @mouseover="over(2)" @mouseout="out(2)"></div>
+        <div class="iconfont icon-shezhi" title="设置" :style="iconFontStyleList[3]"
+             @click="getSetPage" @mouseover="over(3)" @mouseout="out(3)"></div>
         <div class="logout-link">
             <a href="/logout">退出</a>
         </div>
@@ -31,7 +33,7 @@
         data: function(){
             return {
                 isDisplayUserPop: false,
-                iconFontStyleList: [{color: ''}, {color: '#09BB07'}, {color: ''}]
+                iconFontStyleList: [{color: ''}, {color: '#09BB07'}, {color: ''}, {color: ''}]
             }
         },
         computed: {
@@ -40,7 +42,7 @@
             }
         },
         watch: {
-            userInfoIconFontSwitchFlag: function(){   // 监听用户详情字体图标切换标志位， 使图标颜色跟随页面正确变化， 主要监听三处
+            userInfoIconFontSwitchFlag: function(){   // 监听用户详情字体图标切换标志位， 使图标颜色跟随页面正确变化， 主要监听三处,分别是好友详情页发送消息跳转、设置弹窗关闭、设置弹窗中发送消息跳转
                 if(this.$route.path==='/onlineUserList'||this.$route.path==='/chatPage'){
                     this.iconFontStyleList.forEach(function(item, index){
                         if(index===0){
@@ -51,9 +53,19 @@
                         }
                     })
                 }
-                else {
+                else if(this.$route.path==='/friendsList'||this.$route.path==='/friendInformation'){
                     this.iconFontStyleList.forEach(function(item, index){
                         if(index===1){
+                            item.color='#09BB07'
+                        }
+                        else {
+                            item.color='darkgray'
+                        }
+                    })
+                }
+                else if(this.$route.path==='/groupList'){
+                    this.iconFontStyleList.forEach(function(item, index){
+                        if(index===2){
                             item.color='#09BB07'
                         }
                         else {
@@ -86,10 +98,21 @@
                     }
                 })
             },
+            getGroupList: function(){
+                this.$router.push('/groupList')
+                this.iconFontStyleList.forEach(function(item, index){
+                    if(index===2){
+                        item.color='#09BB07'
+                    }
+                    else {
+                        item.color='darkgray'
+                    }
+                })
+            },
             getSetPage: function(){
                 this.$emit('user-setting-pop')
                 this.iconFontStyleList.forEach(function(item, index){
-                    if(index===2){
+                    if(index===3){
                         item.color='#09BB07'
                     }
                     else {
@@ -139,6 +162,7 @@
     @import '../public/stylesheets/userinfo-icon-font/iconfont.css';
     @import '../public/stylesheets/setting-icon-font/iconfont.css';
     @import '../public/stylesheets/message-icon-font/iconfont.css';
+    @import '../public/stylesheets/group-icon-font/iconfont.css';
 
     .userHeadPortraitContainer{
         margin-top: 30px;
