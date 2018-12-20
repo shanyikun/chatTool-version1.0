@@ -684,6 +684,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
          })
 
          this.$store.state.socket.on('acceptFriendRequest', (userList)=>{    // 监听接受好友事件
+             this.$store.state.addFriendSuccessFlag=!this.$store.state.addFriendSuccessFlag  // 取反添加好友成功标志位
              this.$http.get('/getAbleFriendsList').then((data)=>{
                  if(data.body.err_code===500){
                      return alert('server error')

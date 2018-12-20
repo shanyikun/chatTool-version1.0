@@ -44,7 +44,8 @@
                 searchInputStyle: {backgroundColor: '#DBD9D8'},*/           //钩子函数
                 searchFriendsList: [],   //搜索框搜索结果
                 isDisplayAllFriendsList: true,    //是否显示全部好友
-                isDisplaySearchFriendsList: false   //是否显示搜索好友列表
+                isDisplaySearchFriendsList: false,   //是否显示搜索好友列表
+                isAddFriendSuccess: false   // 添加好友是否成功，若成功则为true，否则为false，这里用于判断friendsList的改变是否是由于添加好友所致
             }
         },
         methods: {
@@ -93,13 +94,24 @@
         computed: {
             friendsList: function(){
                 return this.$store.state.friendsList
+            },
+            addFriendSuccessFlag: function(){
+                return this.$store.state.addFriendSuccessFlag
             }
         },
         watch: {
-            friendsList: function(){           //实际的friendsList是异步获取的，所以要监听改变
-               /* if(this.$route.path==='/'){ */   //清空$refs对象， 如果不是重启生命周期，只是改变列表数据的话，之前的ref并不会
-                    this.$refs={}              //被丢弃，而是仍在$refs对象中，同名的ref会被后者替代，但是顺序仍然是之前的
-                /*}  */                            //顺序，不存在的列表项所在ref对应一个空的对象，渲染所得的ref是一个空数组
+            friendsList: function(){
+                /*实际的friendsList是异步获取的，所以要监听改变,清空$refs对象， 如果不是重启生命周期，只是改变列表数据的话，
+                之前的ref并不会被丢弃，而是仍在$refs对象中，同名的ref会被后者替代，但是顺序仍然是之前的顺序，
+                不存在的列表项所在ref对应一个空的对象，渲染所得的ref是一个空数组*/
+               /* if(this.$route.path==='/'){ */
+                if(!this.isAddFriendSuccess){   // 判断是否是添加好友引起的改变，若不是，则执行，若是则不执行
+                    this.$refs={}
+                }
+                /*}  */
+            },
+            addFriendSuccessFlag: function(){
+                this.isAddFriendSuccess=true
             },
             searchInputValue: function(){   //监听搜索框输入
                 if(this.searchInputValue===''){   // 若为空，则显示全部好友列表，清空refs
@@ -127,27 +139,32 @@
             }
         },
         updated: function(){              //进入整个页面时用户列表第二次渲染完成时，或者搜索框工作时，点击列表项不会触发，设置第一个列表项颜色加深
-            var liListObject=this.$refs
-            if(Object.keys(liListObject).length!==0){   //确保列表不为空
-                liListObject[Object.keys(liListObject)[0]][0].style.backgroundColor='#C4C3C3'
-                this.flag=Object.keys(liListObject)[0]
-                if(this.searchInputValue!==''){     //使匹配的字体颜色改变
-                    let keysList=Object.keys(liListObject)
-                    keysList.forEach((item)=>{
-                        let nameElement=liListObject[item][0].getElementsByClassName('friendName')[0]
-                        let name=nameElement.innerHTML
-                        nameElement.innerHTML=name.replace(this.searchInputValue, `<span style="color: #19AD19">${this.searchInputValue}</span>`)
-                    })
-                }
+            if(!this.isAddFriendSuccess){  //判断是否是由于添加好友成功引起的
+                var liListObject=this.$refs
+                if(Object.keys(liListObject).length!==0){   //确保列表不为空
+                    liListObject[Object.keys(liListObject)[0]][0].style.backgroundColor='#C4C3C3'
+                    this.flag=Object.keys(liListObject)[0]
+                    if(this.searchInputValue!==''){     //使匹配的字体颜色改变
+                        let keysList=Object.keys(liListObject)
+                        keysList.forEach((item)=>{
+                            let nameElement=liListObject[item][0].getElementsByClassName('friendName')[0]
+                            let name=nameElement.innerHTML
+                            nameElement.innerHTML=name.replace(this.searchInputValue, `<span style="color: #19AD19">${this.searchInputValue}</span>`)
+                        })
+                    }
 
-                if(this.searchInputValue===''){  //更新好友列表第一个好友的信息， 以便于触发friendInformation页面的更新
-                    let obj={name: this.$store.state.friendsList[0].name, url: this.$store.state.friendsList[0].url}
-                    this.$store.state.firstOfSearchFriendsList=obj
+                    if(this.searchInputValue===''){  //更新好友列表第一个好友的信息， 以便于触发friendInformation页面的更新
+                        let obj={name: this.$store.state.friendsList[0].name, url: this.$store.state.friendsList[0].url}
+                        this.$store.state.firstOfSearchFriendsList=obj
+                    }
+                    else {
+                        let obj={name: this.searchFriendsList[0].name, url: this.searchFriendsList[0].url}
+                        this.$store.state.firstOfSearchFriendsList=obj
+                    }
                 }
-                else {
-                    let obj={name: this.searchFriendsList[0].name, url: this.searchFriendsList[0].url}
-                    this.$store.state.firstOfSearchFriendsList=obj
-                }
+            }
+            else {
+                this.isAddFriendSuccess=false  // 回到默认状态
             }
         }
     }

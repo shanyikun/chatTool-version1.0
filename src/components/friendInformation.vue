@@ -20,7 +20,8 @@ export default {
             friendName: '',
             friendUrl: '',
             isShow: false,    //提醒消息是否显示标识符
-            timeOutFlag: null   //定时器返回结果的引用
+            timeOutFlag: null,   //定时器返回结果的引用
+            isAddFriendSuccess: false  // 添加好友是否成功，若成功则为true，否则为false，这里用于判断friendsList的改变是否是由于添加好友所致
         }
     },
     methods: {
@@ -53,15 +54,23 @@ export default {
         },
         firstOfSearchFriendsList: function(){    // 好友列表第一个人的信息
             return this.$store.state.firstOfSearchFriendsList
+        },
+        addFriendSuccessFlag: function(){
+            return this.$store.state.addFriendSuccessFlag
         }
     },
     watch: {
         friendsList: function(){
-            if(this.$route.path==='/'){   //friendsList改变时时触发，且为整个页面进入时触发
-                this.friendName=this.$store.state.friendsList[0].name
-                this.friendUrl=this.$store.state.friendsList[0].url
-                this.$store.state.friendInformationName=this.$store.state.friendsList[0].name //存储好友信息
-                this.$store.state.friendInformationUrl=this.$store.state.friendsList[0].url
+            if(!this.isAddFriendSuccess){   // 判断是否是添加好友引起的改变，若不是，则执行，若是则不执行
+                if(this.$route.path==='/'){   //friendsList改变时时触发，且为整个页面进入时触发
+                    this.friendName=this.$store.state.friendsList[0].name
+                    this.friendUrl=this.$store.state.friendsList[0].url
+                    this.$store.state.friendInformationName=this.$store.state.friendsList[0].name //存储好友信息
+                    this.$store.state.friendInformationUrl=this.$store.state.friendsList[0].url
+                }
+            }
+            else {
+                this.isAddFriendSuccess=false  // 回到默认状态
             }
         },
         firstOfSearchFriendsList: function(){    // 监听好友列表第一个人的信息，若改变则更新
@@ -69,6 +78,9 @@ export default {
             this.friendUrl=this.$store.state.firstOfSearchFriendsList.url
             this.$store.state.friendInformationName=this.$store.state.firstOfSearchFriendsList.name
             this.$store.state.friendInformationUrl=this.$store.state.firstOfSearchFriendsList.url
+        },
+        addFriendSuccessFlag: function(){
+            this.isAddFriendSuccess=true
         }
     },
     created: function(){
@@ -78,13 +90,13 @@ export default {
             this.$store.state.friendInformationName=this.$route.query.name  //存储好友信息
             this.$store.state.friendInformationUrl=this.$route.query.url
         }
-        else if(this.$store.state.routePath[0]==='/onlineUserList'||this.$store.state.routePath[0]==='/chatPage'){    //若是经过点击好友列表图标切换，且由在线用户页面切换过来时默认显示第一个用户的数据
+        else if(['/friendsList', '/friendInformation', '/'].indexOf(this.$store.state.routePath[0])===-1){ //若是经过点击好友列表图标切换，且前页面是非用户列表或者用户详情页面时默认显示第一个用户的数据
             this.friendName=this.$store.state.friendsList[0].name
             this.friendUrl=this.$store.state.friendsList[0].url
             this.$store.state.friendInformationName=this.$store.state.friendsList[0].name  //存储好友信息
             this.$store.state.friendInformationUrl=this.$store.state.friendsList[0].url
         }
-        else {   //若是经过点击好友列表图标切换， 且由好友列表页面切换过来时
+        else {   //若是经过点击好友列表图标切换， 且前页面是用户列表或者用户详情页面则用户不变
             this.friendName=this.$store.state.friendInformationName
             this.friendUrl=this.$store.state.friendInformationUrl
         }

@@ -53,6 +53,7 @@ var store=new Vuex.Store({        //Vuex存储对象
         friendInformationUrl: '',   //全局存储当前好友列表详细信息
         firstOfSearchFriendsList:{},  //不刷新地址情况下搜索框所得好友列表中第一个人的信息
         userInfoIconFontSwitchFlag: true,  //  用户图标切换标志位
+        addFriendSuccessFlag: true,   // 添加好友成功标志位，一旦添加好友成功即取反
         emotionSrcList: [
             '/src/public/images/emotions/picture0.gif',
             '/src/public/images/emotions/picture1.gif',

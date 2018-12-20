@@ -215,9 +215,9 @@
                     this.$store.state.nowChatName=this.$route.query.name
                     return this.$route.query.name
                 }
-                else if(this.$store.state.routePath[0]==='/friendsList'||this.$store.state.routePath[0]==='/friendInformation'||this.$store.state.routePath[0]==='/'){
+                else if(['/chatPage', '/onlineUserList'].indexOf(this.$store.state.routePath[0])===-1){
                     this.$store.state.nowChatName='messages'
-                    return 'messages'    //经由在线用户列表图标切换过来， 前页面是用户列表或者是用户详情
+                    return 'messages'    //经由在线用户列表图标切换过来， 前页面是用户列表或者是用户详情等非chatPage或者onlineUserList页面
                 }
                 else {    //经由在线用户列表图标切换， 前页面是在线用户列表或者是chatPage，此时对话人信息不变
                     return this.$store.state.nowChatName
@@ -228,7 +228,7 @@
             if(this.$route.query.name){  //经由在线用户列表项切换过来，或者经由用户详情页面发送消息按钮切换过来
                 this.$store.state.messageList=JSON.parse(window.localStorage.getItem(this.$route.query.name))||[]
             }
-            else if(['/friendsList','/friendInformation','/'].indexOf(this.$store.state.routePath[0])!==-1){     //经由在线用户列表图标切换过来， 前页面是用户列表或者是用户详情
+            else if(['/chatPage', '/onlineUserList'].indexOf(this.$store.state.routePath[0])===-1){  //经由在线用户列表图标切换过来， 前页面是用户列表或者是用户详情等非chatPage或者onlineUserList页面
                 this.$store.state.messageList=JSON.parse(window.localStorage.getItem('messages'))||[]
             }
         },
