@@ -54,6 +54,7 @@ var store=new Vuex.Store({        //Vuex存储对象
         firstOfSearchFriendsList:{},  //不刷新地址情况下搜索框所得好友列表中第一个人的信息
         userInfoIconFontSwitchFlag: true,  //  用户图标切换标志位
         addFriendSuccessFlag: true,   // 添加好友成功标志位，一旦添加好友成功即取反
+        groupList: [],  // 群组列表
         emotionSrcList: [
             '/src/public/images/emotions/picture0.gif',
             '/src/public/images/emotions/picture1.gif',
@@ -151,6 +152,9 @@ var store=new Vuex.Store({        //Vuex存储对象
             })
             state.friendsList=ableFriendsList
         },
+        getGroupList: function(state, groupList){
+            state.groupList=groupList
+        },
         formatTimeStamp: function(state, timeStamp){     //把时间对象转换成时分秒格式，有的浏览器的toLocaleTimeString()就有此作用
             let hours=timeStamp.getHours().toString(),formatHours
             let minute=timeStamp.getMinutes().toString(),formatMinute
@@ -217,6 +221,9 @@ var vm=new Vue({
                 else {
                     this.$store.state.ableFriendsList=data.body.message
                 }
+                this.$http.get('/getGroupList').then((data)=>{  // 获取群组列表
+                    this.$store.commit('getGroupList', data.body.message)
+                })
                 this.$http.get('/getFriendsList').then((data)=>{  //回调函数中的this仍然是外部的this，无需使用箭头函数
                     this.$store.commit('getFriendsList', data.body.message)                 //若回调函数中还有函数，则内层函数需要使用箭头函数
                 }).then(()=>{

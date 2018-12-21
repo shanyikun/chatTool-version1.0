@@ -86,6 +86,18 @@ router.post('/register',function(request, response){
                                     fs.writeFileSync(path.join(__dirname, '../src/public/userFile/'+data.name+'/friendsList/ableFriendsList.json'),JSON.stringify([data.name]))
                                     fs.writeFileSync(path.join(__dirname, '../src/public/userFile/'+data.name+'/friendsList/acceptFriendsList.json'), JSON.stringify([]))
                                     fs.writeFileSync(path.join(__dirname, '../src/public/userFile/'+data.name+'/friendsList/requestFriendsList.json'), JSON.stringify([]))
+                                    let messagesGroupObject, name, url, members, numbers
+                                    name='messages'   // 群组名字
+                                    url='/src/public/images/messages.gif'
+                                    members='所有注册用户'   // 一般群中这是个数组，里面有每个成员的信息
+                                    numbers='n'     // 成员总数量
+                                    messagesGroupObject={
+                                        name: name,
+                                        url: url,
+                                        members: members,
+                                        numbers: numbers
+                                    }
+                                    fs.writeFileSync(path.join(__dirname, '../src/public/userFile/'+data.name+'/friendsList/groupList.json'), JSON.stringify([messagesGroupObject]))  // 群组列表,默认只有一个群
                                     request.session.user=data
                                     return response.json({
                                         err_code: 0,
@@ -185,6 +197,23 @@ router.get('/getAbleFriendsList', function(request, response){    // 获取已�
 router.get('/getUserInformation', function(request, response){   //通过$http.get在生命周期钩子中获取用户信息
     return response.json({
         message: request.session.user
+    })
+})
+
+router.get('/getGroupList', function(request, response){
+    fs.readFile(path.join(__dirname, '../src/public/userFile/'+request.session.user.name+'/friendsList/groupList.json'), function(err, data){
+        if(err){
+            return response.json({
+                err_code: 500,
+                message: 'read group List error'
+            })
+        }
+        else {
+            return response.json({
+                err_code: 0,
+                message: JSON.parse(data.toString())
+            })
+        }
     })
 })
 
