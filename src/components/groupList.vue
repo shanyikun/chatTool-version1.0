@@ -6,7 +6,7 @@
                        @focus="focusUpdateSearchInputBackgroundColor"
                        @blur="blurUpdateSearchInputBackgroundColor">
             </div>
-            <div class="iconfont icon-faqiqunliao"></div>
+            <div class="iconfont icon-faqiqunliao" @click="createGroup"></div>
         </div>
         <div class="group-list-container">
             <ul id="group-list" v-if="isDisplayAllGroupList">  <!--若搜索框无值则显示此框-->
@@ -45,6 +45,9 @@
         methods: {
             test: function(){
                 return new Date()
+            },
+            createGroup: function(){
+                this.$emit('create-group')
             },
             focusUpdateSearchInputBackgroundColor: function(){
 

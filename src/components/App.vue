@@ -8,7 +8,9 @@
                 </userinfo>   <!--用户详情页  不需要通过路由-->
             </div>
             <div id="userList">
-                <router-view name="userInfo" :sendmessageflag="sendMessageFlag" :friendname="friendName"></router-view>
+                <router-view name="userInfo" :sendmessageflag="sendMessageFlag" :friendname="friendName"
+                             @create-group="createGroup">
+                </router-view>    <!--监听子组件的创建群组事件，然后在此父组件中显示-->
             </div>
             <div id="messageContainer">
                 <router-view name="chatPage" :key="flag()"
@@ -202,6 +204,50 @@
             </div>
         </div>
 
+        <div class="createGroupPop" v-if="isDisplayCreateGroupPop">
+            <div @click="closeCreateGroupPop" class="closeButton iconfont icon-tubiaoguifan"></div>
+            <div class="chooseContainer">
+                <div class="friendsListContainer">
+                    <div class="searchContainer">
+                        <div class="iconfont icon-sousuo-copy">
+                            <input type="search" class="searchInput">
+                        </div>
+                    </div>
+                    <div class="friendsList">
+                        <ul class="friendsListUl">
+                            <li class="friendsListLi" v-for="friend in $store.state.friendsList">
+                                <label class="labelForCheckBox" :for="friend.name">
+                                    <img :src="friend.url" width="35px" height="35px">
+                                    <div class="friendName">{{friend.name}}</div>
+                                    <input type="checkbox" :value="friend" v-model="selectedFriends" :id="friend.name">
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="isChoosedFriendsContainer">
+                    <div class="promptMessage">
+                        <div>
+                            {{promptMessage}}
+                        </div>
+                    </div>
+                    <div class="isChoosedFriendsList">
+                        <ul class="isChoosedFriendsUl">
+                            <li class="isChoosedFriendsLi" v-for="friend in selectedFriends">
+                                <img :src="friend.url" width="35px" height="35px">
+                                <div class="friendName">{{friend.name}}</div>
+                                <div class="iconfont icon-clear-d7d8d9" @click="deleteChoosedFriend(friend)"></div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="confirmButtonContainer">  <!--绝对定位-->
+                        <button class="buttonConfirm" disabled @click="confirmCreateGroup" ref="confirmButton">确定</button>
+                        <button class="buttonCancel" @click="cancelCreateGroup">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </template>
 
@@ -221,6 +267,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              isDisplayPromptMessage: false,     //是否显示用户不在线提示消息
              isDisplayUserSettingPop: false,   // 是否显示用户设置弹窗
              isDisplayPictureMessagePop: false,  // 是否像是图片消息放大弹窗
+             isDisplayCreateGroupPop: false,  // 是否显示创建群组弹窗
              timeOutReturnValue: null,      //消息提示定时器返回值
              friendName: '',   //好友名
              friendUrl: '',     //好友头像链接
@@ -245,7 +292,9 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              pictureWidth: '250px',   // 图片弹出框图片尺寸
              popPictureStyle: {left: 0,top: 0},  // 图片弹出框图片定位样式
              requestFriendsList: [],   // 发起请求列表
-             acceptFriendsList: []    // 接受请求列表
+             acceptFriendsList: [],    // 接受请求列表
+             selectedFriends: [], // 创建群组时被选中的好友
+             promptMessage: '请勾选需要添加的联系人' // 选择联系人提醒
          }
      },
      methods: {
@@ -592,6 +641,66 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
                  mouseDownEvent.target.onmouseup=null
                  mouseUpEvent.preventDefault()   // 一定要阻止默认事件
              }
+         },
+         createGroup: function(){
+             this. isDisplayCreateGroupPop=true
+         },
+         closeCreateGroupPop: function(){
+             this.isDisplayCreateGroupPop=false
+             this.selectedFriends=[]   // 同时令选中的好友列表为空
+         },
+         deleteChoosedFriend: function(friend){
+             let index=this.selectedFriends.findIndex(function(item){
+                 return item.name===friend.name
+             })
+             this.selectedFriends.splice(index, 1)
+         },
+         cancelCreateGroup: function(){
+             this.closeCreateGroupPop()
+         },
+         confirmCreateGroup: function(){   // 确认创建群组
+             let isExist, name='', url, members=[], numbers, newNameArray=[]
+             this.selectedFriends.forEach(function(item, index){  // 群组名字是所有用户连接起来，后加上***group***群组标志
+                 name=name+item.name+'&&&'
+             })
+             name=name+'***group***'
+             members=this.selectedFriends
+             numbers=this.selectedFriends.length
+             url='/src/public/images/default.jpg'
+             newNameArray=name.split('&&&')
+
+             isExist=this.$store.state.groupList.some((item)=>{
+                 if(item.numbers===this.selectedFriends.length){
+                     let oldNameArray=item.name.split('&&&')
+                     return oldNameArray.every((name)=>{
+                         return newNameArray.indexOf(name)!==-1
+                     })
+                 }
+                 else {
+                     return false
+                 }
+             })
+
+             if(isExist){    // 判断群组是否存在，若存在则提示，不存在则向服务器发送createGroup事件
+                 alert('这个群组已经存在！')
+             }
+             else {
+                 let groupObject={name: name, url: url, members: members, numbers: numbers}
+                 this.$store.state.socket.emit('createGroup', groupObject)
+                 alert('创建群组成功！')
+             }
+         }
+     },
+     watch: {
+         selectedFriends: function(){  // 根据勾选的联系人变换提示信息
+             if(this.selectedFriends.length===0){
+                 this.promptMessage='请勾选需要添加的联系人'
+                 this.$refs.confirmButton.disabled=true
+             }
+             else {
+                 this.promptMessage=`已选择了${this.selectedFriends.length}个联系人`
+                 this.$refs.confirmButton.disabled=false
+             }
          }
      },
      filters: {
@@ -716,6 +825,14 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
                  })
              })
          })
+
+         this.$store.state.socket.on('createGroupSuccess', (userList)=>{  // 监听服务器广播的群组创建成功事件
+             this.$http.get('/getGroupList').then((data)=>{  // 获取群组列表
+                 this.$store.commit('getGroupList', data.body.message)
+             }).then(()=>{
+                     this.$store.commit('getOnlineUserList', userList)
+             })
+         })
      },
      beforeMount: function(){
      }
@@ -729,6 +846,8 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
     @import '../public/stylesheets/uploadbutton-icon-font/iconfont.css';  /*引入上传按钮字体图标*/
     @import '../public/stylesheets/return-icon-font/iconfont.css';   /*引入返回按钮字体图标*/
     @import '../public/stylesheets/addfriend-icon-font/iconfont.css';  /*引入添加好友字体图标*/
+    @import '../public/stylesheets/search-icon-font/iconfont.css';  /*引入搜索按钮字体图标*/
+    @import '../public/stylesheets/delete-icon-font/iconfont.css';  /*引入删除按钮字体图标*/
 
     #page{                           /*页面*/
         display: flex;
@@ -1142,6 +1261,140 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
     .userSettingPop .promptMessage{
         margin: 20px 30px 0 30px;
         color: red;
+    }
+    .createGroupPop{
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translateX(-50%) translateY(-50%);
+        width: 500px;
+        height: 400px;
+        background-color: white;
+        border-radius: 3px;
+        box-shadow: 0 0 3px gray;
+    }
+    .createGroupPop .closeButton{
+        padding: 4px;
+        position: absolute;
+        right: 0;
+        top: 0;
+        z-index: 1;
+    }
+    .createGroupPop .closeButton:hover{
+        background-color: red;
+        color: white;
+    }
+    .createGroupPop .chooseContainer{
+        display: flex;
+        height: 100%;
+    }
+    .createGroupPop .chooseContainer .friendsListContainer{
+        width: 50%;
+        border-right: solid 1px #EEE;
+    }
+    .createGroupPop .chooseContainer .friendsListContainer .searchContainer{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height:10%;
+    }
+    .createGroupPop .chooseContainer .friendsListContainer .searchContainer .icon-sousuo-copy{
+        background-color: #DBD9D8;
+        border-radius: 3px;
+        padding: 1px 0 1px 1px;
+    }
+    .createGroupPop .chooseContainer .friendsListContainer .searchContainer .searchInput{
+        background-color: #DBD9D8;
+        border-radius: 3px;
+        border: none;
+        outline: none;
+        height: 20px;
+        padding-left: 3px;
+    }
+    .createGroupPop .chooseContainer .friendsListContainer .friendsList{
+        height: 90%;
+        overflow: auto;
+    }
+    .createGroupPop .chooseContainer .friendsListContainer .friendsList .friendsListUl{
+        list-style-type: none;
+        padding-left: 0;
+        margin-top: 0;
+    }
+    .createGroupPop .chooseContainer .friendsListContainer .friendsList .friendsListUl li{
+        padding: 8px 20px;
+    }
+    .createGroupPop .chooseContainer .friendsListContainer .friendsList .friendsListUl li .labelForCheckBox{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .createGroupPop .chooseContainer .isChoosedFriendsContainer{
+        width: 50%;
+        padding: 0 0 0 20px;
+    }
+    .createGroupPop .chooseContainer .isChoosedFriendsContainer .promptMessage{
+        color: gray;
+        font-size: 12px;
+        height: 10%;
+        display: flex;
+        align-items: center;
+    }
+    .createGroupPop .chooseContainer .isChoosedFriendsContainer .isChoosedFriendsList{
+        height: 78%;
+        overflow: auto;
+    }
+    .createGroupPop .chooseContainer .isChoosedFriendsContainer .isChoosedFriendsList ul{
+        list-style-type: none;
+        padding-left: 0;
+        margin-top: 0;
+    }
+    .createGroupPop .chooseContainer .isChoosedFriendsContainer .isChoosedFriendsList ul li{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+    }
+    .createGroupPop .chooseContainer .isChoosedFriendsContainer .isChoosedFriendsList ul li .icon-clear-d7d8d9{
+        color: lightgray;
+        font-size: 26px;
+    }
+    .createGroupPop .chooseContainer .isChoosedFriendsContainer .isChoosedFriendsList ul li .icon-clear-d7d8d9:hover{
+        color: gray;
+        cursor: pointer;
+    }
+    .createGroupPop .chooseContainer .isChoosedFriendsContainer .confirmButtonContainer{
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+    }
+    .createGroupPop .chooseContainer .isChoosedFriendsContainer .confirmButtonContainer button{
+        height: 30px;
+        width: 80px;
+        border: none;
+        outline: none;
+    }
+    .createGroupPop .chooseContainer .isChoosedFriendsContainer .confirmButtonContainer .buttonConfirm{
+        background-color: #1AAD19;
+        color: white;
+    }
+    .createGroupPop .chooseContainer .isChoosedFriendsContainer .confirmButtonContainer .buttonConfirm:hover{
+        background-color: #148B14;
+        cursor: pointer;
+    }
+    .createGroupPop .chooseContainer .isChoosedFriendsContainer .confirmButtonContainer .buttonConfirm:disabled{
+        background-color: #8CD58C;
+    }
+    .createGroupPop .chooseContainer .isChoosedFriendsContainer .confirmButtonContainer .buttonConfirm:hover:disabled{
+        background-color:#8CD58C;
+        cursor: default;
+    }
+    .createGroupPop .chooseContainer .isChoosedFriendsContainer .confirmButtonContainer .buttonCancel{
+        background-color: white;
+        box-shadow: 0 0 1px gray;
+    }
+    .createGroupPop .chooseContainer .isChoosedFriendsContainer .confirmButtonContainer .buttonCancel:hover{
+        background-color: lightgray;
+        cursor: pointer;
     }
 </style>
 <!--

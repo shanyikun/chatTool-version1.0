@@ -104,42 +104,70 @@ var store=new Vuex.Store({        //Vuex存储对象
                 return item===state.name
             }),1)
             let ableOnlineUserList=[]
-            ableOnlineUserList=onlineUserList.filter(function(userName){
+            ableOnlineUserList=onlineUserList.filter(function(userName){  //过滤是其好友的在线用户
                 return state.friendsList.some(function(item){
                     return item.name===userName
                 })||userName==='messages'
             })
-            let withTimeStampOnlineUserList=ableOnlineUserList.map((item)=>{  //为每个在线用户添加时间戳
-                let url
-                if(item==='messages'){   //群聊不属于用户，所以单独加上群聊头像
-                     url='/src/public/images/messages.gif'
-                }
-                else {    //从friendsList中获取用户头像信息
-                     url=state.friendsList.find(function(friend){
-                        return friend.name===item
-                    }).url
-                }
-                let messageList=JSON.parse(window.localStorage.getItem(item))||[]
-                if(messageList.length!==0){ //如果有对话消息
-                    let lastMessageObject=messageList[messageList.length-1]
-                    let timeStamp=lastMessageObject.timeStamp, objectTimeStamp
-                    this.commit('formatLastMessage', lastMessageObject)   // 格式化最后一条消息，以用于添加到onlineUserList中
-                    if(timeStamp){  //如果消息中有时间戳
-                        objectTimeStamp=new Date(timeStamp)  //时间字符串转换成时间对象， 时间对象经JSON.stringify()转换后再经JSON.parse()解析得到的是字符串
-                        if(objectTimeStamp.toLocaleDateString()!==new Date().toLocaleDateString()){ //如果时间不是今天，则只显示日期
-                            return {name: item, timeStamp: objectTimeStamp.toLocaleDateString(), url: url, lastMessage: state.lastMessage}
+            let withGroupOnlineUserList=ableOnlineUserList.concat(state.groupList)
+            withGroupOnlineUserList.splice(ableOnlineUserList.length, 1)  // 去除群组列表中的第一个，也就是messages群组
+            let withTimeStampOnlineUserList=withGroupOnlineUserList.map((item)=>{  //为每个在线用户添加时间戳
+                if((typeof item)==='string'){  // 如果是在线用户，而非群组
+                    let url
+                    if(item==='messages'){   //群聊不属于用户，所以单独加上群聊头像
+                        url='/src/public/images/messages.gif'
+                    }
+                    else {    //从friendsList中获取用户头像信息
+                        url=state.friendsList.find(function(friend){
+                            return friend.name===item
+                        }).url
+                    }
+                    let messageList=JSON.parse(window.localStorage.getItem(item))||[]
+                    if(messageList.length!==0){ //如果有对话消息
+                        let lastMessageObject=messageList[messageList.length-1]
+                        let timeStamp=lastMessageObject.timeStamp, objectTimeStamp
+                        this.commit('formatLastMessage', lastMessageObject)   // 格式化最后一条消息，以用于添加到onlineUserList中
+                        if(timeStamp){  //如果消息中有时间戳
+                            objectTimeStamp=new Date(timeStamp)  //时间字符串转换成时间对象， 时间对象经JSON.stringify()转换后再经JSON.parse()解析得到的是字符串
+                            if(objectTimeStamp.toLocaleDateString()!==new Date().toLocaleDateString()){ //如果时间不是今天，则只显示日期
+                                return {name: item, timeStamp: objectTimeStamp.toLocaleDateString(), url: url, lastMessage: state.lastMessage}
+                            }
+                            else {     //如果时间是今天则只显示时间
+                                this.commit('formatTimeStamp', objectTimeStamp)
+                                return {name: item, timeStamp: state.timeStamp, url: url, lastMessage: state.lastMessage}
+                            }
                         }
-                        else {     //如果时间是今天则只显示时间
-                            this.commit('formatTimeStamp', objectTimeStamp)
-                            return {name: item, timeStamp: state.timeStamp, url: url, lastMessage: state.lastMessage}
+                        else {  //消息中没有时间戳
+                            return {name: item, timeStamp: '', url: url, lastMessage: state.lastMessage}
                         }
                     }
-                    else {  //消息中没有时间戳
-                        return {name: item, timeStamp: '', url: url, lastMessage: state.lastMessage}
+                    else {  //没有对话消息
+                        return {name: item, timeStamp: '', url: url, lastMessage: '[没有消息]'}
                     }
                 }
-                else {  //没有对话消息
-                    return {name: item, timeStamp: '', url: url, lastMessage: '[没有消息]'}
+                else {   // 如果是群组
+                    let messageList=JSON.parse(window.localStorage.getItem(item.name))||[]
+                    if(messageList.length!==0){
+                        let lastMessageObject=messageList[messageList.length-1]
+                        let timeStamp=lastMessageObject.timeStamp, objectTimeStamp
+                        this.commit('formatLastMessage', lastMessageObject)   // 格式化最后一条消息，以用于添加到onlineUserList中
+                        if(timeStamp){  //如果消息中有时间戳
+                            objectTimeStamp=new Date(timeStamp)  //时间字符串转换成时间对象， 时间对象经JSON.stringify()转换后再经JSON.parse()解析得到的是字符串
+                            if(objectTimeStamp.toLocaleDateString()!==new Date().toLocaleDateString()){ //如果时间不是今天，则只显示日期
+                                return {name: item.name, timeStamp: objectTimeStamp.toLocaleDateString(), url: item.url, lastMessage: state.lastMessage}
+                            }
+                            else {     //如果时间是今天则只显示时间
+                                this.commit('formatTimeStamp', objectTimeStamp)
+                                return {name: item.name, timeStamp: state.timeStamp, url: item.url, lastMessage: state.lastMessage}
+                            }
+                        }
+                        else {  //消息中没有时间戳
+                            return {name: item.name, timeStamp: '', url: item.url, lastMessage: state.lastMessage}
+                        }
+                    }
+                    else {
+                        return {name: item.name, timeStamp: '', url: item.url, lastMessage: '[没有消息]'}
+                    }
                 }
             })
 
@@ -221,16 +249,17 @@ var vm=new Vue({
                 else {
                     this.$store.state.ableFriendsList=data.body.message
                 }
-                this.$http.get('/getGroupList').then((data)=>{  // 获取群组列表
-                    this.$store.commit('getGroupList', data.body.message)
-                })
                 this.$http.get('/getFriendsList').then((data)=>{  //回调函数中的this仍然是外部的this，无需使用箭头函数
                     this.$store.commit('getFriendsList', data.body.message)                 //若回调函数中还有函数，则内层函数需要使用箭头函数
                 }).then(()=>{
-                    socket.on('login', (data)=>{    //先监听后广播   用箭头函数表示上层this  获取在线用户列表
-                        this.$store.commit('getOnlineUserList', data)
+                    this.$http.get('/getGroupList').then((data)=>{  // 获取群组列表
+                        this.$store.commit('getGroupList', data.body.message)
+                    }).then(()=>{
+                        socket.on('login', (data)=>{    //先监听后广播   用箭头函数表示上层this  获取在线用户列表
+                            this.$store.commit('getOnlineUserList', data)
+                        })
+                        socket.emit('login', this.$store.state.name)    //向服务器广播用户登陆事件，并传递用户名
                     })
-                    socket.emit('login', this.$store.state.name)    //向服务器广播用户登陆事件，并传递用户名
                 })
             })
          })
@@ -238,8 +267,8 @@ var vm=new Vue({
         socket.on('chat message', (data, to)=>{    //监听发送消息事件，监听客户端消息,必须在进入页面时监听，不能在聊天组件中监听
             var objectTimeStamp
             if(to==='messages'){                   //因为每次聊天组件重启生命周期就会重新监听，会导致多次监听
-                if(this.$route.query.name===undefined||this.$route.query.name==='messages'){  //判断监听所得消息是否在当前对话框
-                    var messages=JSON.parse(window.localStorage.getItem('messages'))||[]
+                if(this.$store.state.nowChatName==='messages'){  //判断监听所得消息是否在当前对话框
+                    let messages=JSON.parse(window.localStorage.getItem('messages'))||[]
                     messages.push(data)
                     try{   // 防止localStorage空间不足出现错误
                         window.localStorage.setItem('messages', JSON.stringify(messages))
@@ -260,7 +289,7 @@ var vm=new Vue({
                 }
                 else {
                     this.$store.state.badgeFlag='messages'+'#'+this.$store.state.badgeFlagNumber++  //更改消息提醒徽标标志
-                    var messages=JSON.parse(window.localStorage.getItem('messages'))||[]
+                    let messages=JSON.parse(window.localStorage.getItem('messages'))||[]
                     messages.push(data)
                     try{
                         window.localStorage.setItem('messages', JSON.stringify(messages))
@@ -280,9 +309,52 @@ var vm=new Vue({
                     })].lastMessage=this.$store.state.lastMessage
                 }
             }
+            else if(to.indexOf('***group***')!==-1){   // 如果是群组消息
+                if(this.$store.state.nowChatName===to){
+                    let groupMessage=JSON.parse(window.localStorage.getItem(to))||[]
+                    groupMessage.push(data)
+                    try{
+                        window.localStorage.setItem(to, JSON.stringify(groupMessage))
+                    }
+                    catch(e){
+                        window.alert('空间不足，请先清理缓存！')
+                    }
+                    this.$store.state.messageList=groupMessage
+                    objectTimeStamp=new Date(data.timeStamp)
+                    this.$store.commit('formatTimeStamp', objectTimeStamp)
+                    this.$store.commit('formatLastMessage', data)    // 格式化消息，用于更新在线用户列表中的lastMessage
+                    this.$store.state.onlineUserList[this.$store.state.onlineUserList.findIndex(function(item){
+                        return item.name===to
+                    })].timeStamp=this.$store.state.timeStamp
+                    this.$store.state.onlineUserList[this.$store.state.onlineUserList.findIndex(function(item){
+                        return item.name===to
+                    })].lastMessage=this.$store.state.lastMessage
+                }
+                else {
+                    this.$store.state.badgeFlag=to+'#'+this.$store.state.badgeFlagNumber++  //更改消息提醒徽标标志
+                    let groupMessage=JSON.parse(window.localStorage.getItem(to))||[]
+                    groupMessage.push(data)
+                    try{
+                        window.localStorage.setItem(to, JSON.stringify(groupMessage))
+                    }
+                    catch(e){
+                        window.alert('空间不足，请先清理缓存！')
+                    }
+                   /* this.$store.state.messageList=groupMessage*/
+                    objectTimeStamp=new Date(data.timeStamp)
+                    this.$store.commit('formatTimeStamp', objectTimeStamp)
+                    this.$store.commit('formatLastMessage', data)    // 格式化消息，用于更新在线用户列表中的lastMessage
+                    this.$store.state.onlineUserList[this.$store.state.onlineUserList.findIndex(function(item){
+                        return item.name===to
+                    })].timeStamp=this.$store.state.timeStamp
+                    this.$store.state.onlineUserList[this.$store.state.onlineUserList.findIndex(function(item){
+                        return item.name===to
+                    })].lastMessage=this.$store.state.lastMessage
+                }
+            }
             else if(to===this.$store.state.name){   //别人向自己发送
-                if(this.$route.query.name===data.name){
-                    var otherMessage=JSON.parse(window.localStorage.getItem(data.name))||[]
+                if(this.$store.state.nowChatName===data.name){
+                    let otherMessage=JSON.parse(window.localStorage.getItem(data.name))||[]
                     otherMessage.push(data)
                     try{
                         window.localStorage.setItem(data.name, JSON.stringify(otherMessage))
@@ -303,7 +375,7 @@ var vm=new Vue({
                 }
                 else {
                     this.$store.state.badgeFlag=data.name+'#'+this.$store.state.badgeFlagNumber++
-                    var otherMessage=JSON.parse(window.localStorage.getItem(data.name))||[]
+                    let otherMessage=JSON.parse(window.localStorage.getItem(data.name))||[]
                     otherMessage.push(data)
                     try{
                         window.localStorage.setItem(data.name, JSON.stringify(otherMessage))
@@ -324,7 +396,7 @@ var vm=new Vue({
                 }
             }
             else {
-                var selfMessage=JSON.parse(window.localStorage.getItem(to))||[]
+                let selfMessage=JSON.parse(window.localStorage.getItem(to))||[]
                 selfMessage.push(data)
                 try{
                     window.localStorage.setItem(to, JSON.stringify(selfMessage))

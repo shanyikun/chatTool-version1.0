@@ -71,7 +71,7 @@ io.on('connection',function(socket){   /*服务端socket只能在服务器启动
                                     if(data.to==='messages'){     //向所有客户端广播消息信息
                                         io.emit('chat message',{name: data.name, message: message, timeStamp: data.timeStamp, url: data.url, type: data.type}, 'messages')
                                     }
-                                    else {
+                                    else if(data.to.indexOf('***group***')===-1){
                                         var toName=data.to
                                         var fromName=data.name
                                         var toSocket = _.findWhere(io.sockets.sockets, { id: hashName[toName] })   //利用socket.id寻找特定的socket对象
@@ -80,6 +80,15 @@ io.on('connection',function(socket){   /*服务端socket只能在服务器启动
                                         var fromSocket=_.findWhere(io.sockets.sockets, { name: fromName })  */
                                         toSocket.emit('chat message', {name: data.name, message: message, timeStamp: data.timeStamp, url: data.url, type: data.type}, data.to)  //向特定的socket用户推送消息
                                         fromSocket.emit('chat message', {name: data.name, message: message, timeStamp: data.timeStamp, url: data.url, type: data.type}, data.to)
+                                    }
+                                    else {  // 如果是群组消息，则向每个在线的群组成员广播消息
+                                        let sendSocket
+                                        data.groupMembers.forEach((item, index)=>{
+                                            sendSocket= _.findWhere(io.sockets.sockets, { id: hashName[item.name] })
+                                            if(sendSocket){  // 判断是否在线
+                                                sendSocket.emit('chat message', {name: data.name, message: message, timeStamp: data.timeStamp, url: data.url, type: data.type}, data.to)
+                                            }
+                                        })
                                     }
                                 }
                             })
@@ -96,7 +105,7 @@ io.on('connection',function(socket){   /*服务端socket只能在服务器启动
                             if(data.to==='messages'){     //向所有客户端广播消息信息
                                 io.emit('chat message',{name: data.name, message: message, timeStamp: data.timeStamp, url: data.url, type: data.type}, 'messages')
                             }
-                            else {
+                            else if(data.to.indexOf('***group***')===-1) {
                                 var toName=data.to
                                 var fromName=data.name
                                 var toSocket = _.findWhere(io.sockets.sockets, { id: hashName[toName] })   //利用socket.id寻找特定的socket对象
@@ -105,6 +114,15 @@ io.on('connection',function(socket){   /*服务端socket只能在服务器启动
                                 var fromSocket=_.findWhere(io.sockets.sockets, { name: fromName })  */
                                 toSocket.emit('chat message', {name: data.name, message: message, timeStamp: data.timeStamp, url: data.url, type: data.type}, data.to)  //向特定的socket用户推送消息
                                 fromSocket.emit('chat message', {name: data.name, message: message, timeStamp: data.timeStamp, url: data.url, type: data.type}, data.to)
+                            }
+                            else{
+                                let sendSocket
+                                data.groupMembers.forEach((item)=>{
+                                    sendSocket= _.findWhere(io.sockets.sockets, { id: hashName[item.name] })
+                                    if(sendSocket){
+                                        sendSocket.emit('chat message', {name: data.name, message: message, timeStamp: data.timeStamp, url: data.url, type: data.type}, data.to)
+                                    }
+                                })
                             }
                         }
                     })
@@ -115,7 +133,7 @@ io.on('connection',function(socket){   /*服务端socket只能在服务器启动
             if(data.to==='messages'){     //向所有客户端广播消息信息
                 io.emit('chat message',{name: data.name, message: data.message, timeStamp: data.timeStamp, url: data.url, type: data.type}, 'messages')
             }
-            else {
+            else if(data.to.indexOf('***group***')===-1){
                 var toName=data.to
                 var fromName=data.name
                 var toSocket = _.findWhere(io.sockets.sockets, { id: hashName[toName] })   //利用socket.id寻找特定的socket对象
@@ -124,6 +142,15 @@ io.on('connection',function(socket){   /*服务端socket只能在服务器启动
                 var fromSocket=_.findWhere(io.sockets.sockets, { name: fromName })  */
                 toSocket.emit('chat message', {name: data.name, message: data.message, timeStamp: data.timeStamp, url: data.url, type: data.type}, data.to)  //向特定的socket用户推送消息
                 fromSocket.emit('chat message', {name: data.name, message: data.message, timeStamp: data.timeStamp, url: data.url, type: data.type}, data.to)
+            }
+            else {
+                let sendSocket
+                data.groupMembers.forEach((item)=>{
+                    sendSocket= _.findWhere(io.sockets.sockets, { id: hashName[item.name] })
+                    if(sendSocket){
+                        sendSocket.emit('chat message', {name: data.name, message: data.message, timeStamp: data.timeStamp, url: data.url, type: data.type}, data.to)
+                    }
+                })
             }
         }
     })
@@ -312,6 +339,20 @@ io.on('connection',function(socket){   /*服务端socket只能在服务器启动
                 })
             }
         })*/
+    })
+
+    socket.on('createGroup', function(groupObject){   // 监听创建群组事件
+        groupObject.members.forEach(function(item, index){   // 遍历群组中的每一个成员，并在其相应群组列表文件中增加群组信息
+            let groupListData, groupList, socket
+            groupListData=fs.readFileSync(path.join(__dirname, './src/public/userFile/'+item.name+'/friendsList/groupList.json'))
+            groupList=JSON.parse(groupListData.toString())
+            groupList.push(groupObject)
+            fs.writeFileSync(path.join(__dirname, './src/public/userFile/'+item.name+'/friendsList/groupList.json'), JSON.stringify(groupList))
+            socket=_.findWhere(io.sockets.sockets, { id: hashName[item.name] })
+            if(socket){    // 向每个在线的群组用户广播创建群组成功事件
+                socket.emit('createGroupSuccess', userList)
+            }
+        })
     })
 })
 

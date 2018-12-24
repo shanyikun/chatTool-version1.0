@@ -85,23 +85,28 @@
         },
         filters: {
             formatName: function(name){   // 格式化名字
-                let byteLength=0, formatName=''
-                let nameLength=name.length
-                for(let i=0; i<nameLength; i++){
-                    if(name.charCodeAt(i)>=0x4E00&&name.charCodeAt(i)<=0x9FFF){
-                        byteLength+=2       // 若是汉字，则长度加2，因为一个汉字为2byte且占据宽度为两倍的英文字母
-                        formatName+=name[i]
-                    }
-                    else {
-                        byteLength++
-                        formatName+=name[i]
-                    }
+                if(name.indexOf('***group***')!==-1){
+                    return '群组聊天'
+                }
+                else {
+                    let byteLength=0, formatName=''
+                    let nameLength=name.length
+                    for(let i=0; i<nameLength; i++){
+                        if(name.charCodeAt(i)>=0x4E00&&name.charCodeAt(i)<=0x9FFF){
+                            byteLength+=2       // 若是汉字，则长度加2，因为一个汉字为2byte且占据宽度为两倍的英文字母
+                            formatName+=name[i]
+                        }
+                        else {
+                            byteLength++
+                            formatName+=name[i]
+                        }
 
-                    if(byteLength>=8&&i<nameLength-1){
-                        return formatName+'...'
-                    }
-                    else if(i===nameLength-1){
-                        return formatName
+                        if(byteLength>=8&&i<nameLength-1){
+                            return formatName+'...'
+                        }
+                        else if(i===nameLength-1){
+                            return formatName
+                        }
                     }
                 }
             }

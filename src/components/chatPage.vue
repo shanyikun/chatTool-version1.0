@@ -26,7 +26,7 @@
                         <img class="img" v-if="message.url" :src="message.url" width="35px" height="35px"
                              @click="getFriendInformation(message)">
                         <div class="nameAndMsgContainer">
-                            <p class="username" v-if="currentInterlocutor==='messages'">{{message.name}}</p>
+                            <p class="username" v-if="(currentInterlocutor==='messages')||(currentInterlocutor!==$store.state.nowChatName)">{{message.name}}</p>  <!--判断是群消息还是个人消息，若是群消息则显示名字，否则不显示名字-->
                             <p class="msg" v-if="message.type==='image'">
                                 <img :src="message.message" width="60px" class="messagePicture" @click="enlargePictureMessage(message.message)">
                             </p> <!--判断消息是否是图片-->
@@ -96,31 +96,49 @@
                 var name=this.$store.state.name
                 var url=this.$store.state.url
                 var to
-
-                if(this.$route.query.name===undefined){
-                    to='messages'
+                to=this.$store.state.nowChatName
+                if(to.indexOf('***group***')===-1){   // 如果不是群组
+                    if(this.message!==''){  //向服务器发送消息广播
+                        let timeStamp=new Date()
+                        let sendObject={name: name, to: to, message: this.message, timeStamp: timeStamp, url: url, type: 'plainText'}
+                        this.$store.state.socket.emit('chat message', sendObject)
+                    }
+                    else if(this.sendImageDataURL!==''){
+                        let timeStamp=new Date()
+                        let sendObject={name: name, to: to, message: this.sendImageDataURL, timeStamp: timeStamp, url: url, type: 'image'}
+                        this.$store.state.socket.emit('chat message', sendObject)
+                    }
+                    else if(this.sendVideoBinaryData!==''){
+                        let timeStamp=new Date()
+                        let sendObject={name: name, to: to, message: this.sendVideoBinaryData, messageName: this.sendVideoBinaryDataName,timeStamp: timeStamp, url: url, type: 'video'}
+                        this.$store.state.socket.emit('chat message', sendObject)
+                    }
+                    else {
+                        alert('输入内容不能为空！')
+                    }
                 }
-                else {
-                    to=this.$route.query.name
-                }
-
-                if(this.message!==''){  //向服务器发送消息广播
-                    let timeStamp=new Date()
-                    let sendObject={name: name, to: to, message: this.message, timeStamp: timeStamp, url: url, type: 'plainText'}
-                    this.$store.state.socket.emit('chat message', sendObject)
-                }
-                else if(this.sendImageDataURL!==''){
-                    let timeStamp=new Date()
-                    let sendObject={name: name, to: to, message: this.sendImageDataURL, timeStamp: timeStamp, url: url, type: 'image'}
-                    this.$store.state.socket.emit('chat message', sendObject)
-                }
-                else if(this.sendVideoBinaryData!==''){
-                    let timeStamp=new Date()
-                    let sendObject={name: name, to: to, message: this.sendVideoBinaryData, messageName: this.sendVideoBinaryDataName,timeStamp: timeStamp, url: url, type: 'video'}
-                    this.$store.state.socket.emit('chat message', sendObject)
-                }
-                else {
-                    alert('输入内容不能为空！')
+                else {  // 如果是群组，则为这条消息添加上群组成员信息，以便于服务器向群组成员广播消息事件
+                    let groupMembers=this.$store.state.groupList.find((item, index)=>{
+                        return item.name===to
+                    }).members
+                    if(this.message!==''){  //向服务器发送消息广播
+                        let timeStamp=new Date()
+                        let sendObject={name: name, to: to, message: this.message, timeStamp: timeStamp, url: url, type: 'plainText', groupMembers: groupMembers}
+                        this.$store.state.socket.emit('chat message', sendObject)
+                    }
+                    else if(this.sendImageDataURL!==''){
+                        let timeStamp=new Date()
+                        let sendObject={name: name, to: to, message: this.sendImageDataURL, timeStamp: timeStamp, url: url, type: 'image', groupMembers: groupMembers}
+                        this.$store.state.socket.emit('chat message', sendObject)
+                    }
+                    else if(this.sendVideoBinaryData!==''){
+                        let timeStamp=new Date()
+                        let sendObject={name: name, to: to, message: this.sendVideoBinaryData, messageName: this.sendVideoBinaryDataName,timeStamp: timeStamp, url: url, type: 'video', groupMembers: groupMembers}
+                        this.$store.state.socket.emit('chat message', sendObject)
+                    }
+                    else {
+                        alert('输入内容不能为空！')
+                    }
                 }
                 this.message=''   //清空消息框
                 this.sendImageDataURL=''  //清空消息框
@@ -212,15 +230,26 @@
             },
             currentInterlocutor: function(){
                 if(this.$route.query.name){    //经由在线用户列表项切换过来，或者经由用户详情页面发送消息按钮切换过来
-                    this.$store.state.nowChatName=this.$route.query.name
-                    return this.$route.query.name
+                    if(this.$route.query.name.indexOf('***group***')===-1){
+                        this.$store.state.nowChatName=this.$route.query.name
+                        return this.$route.query.name
+                    }
+                    else {
+                        this.$store.state.nowChatName=this.$route.query.name
+                        return '群组聊天'
+                    }
                 }
                 else if(['/chatPage', '/onlineUserList'].indexOf(this.$store.state.routePath[0])===-1){
                     this.$store.state.nowChatName='messages'
                     return 'messages'    //经由在线用户列表图标切换过来， 前页面是用户列表或者是用户详情等非chatPage或者onlineUserList页面
                 }
                 else {    //经由在线用户列表图标切换， 前页面是在线用户列表或者是chatPage，此时对话人信息不变
-                    return this.$store.state.nowChatName
+                    if(this.$store.state.nowChatName.indexOf('***group***')===-1){
+                        return this.$store.state.nowChatName
+                    }
+                    else {
+                        return '群组聊天'
+                    }
                 }
             }
         },
