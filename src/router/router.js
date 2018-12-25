@@ -14,7 +14,8 @@ var router=new VueRouter({
         { path: '/onlineUserList', components: {userInfo: onlineUserList, chatPage: chatPage}},
         { path: '/chatPage', components: {chatPage: chatPage, userInfo: onlineUserList}},
         { path: '/friendInformation', components: {chatPage: friendInformation, userInfo: friendsList}},
-        { path: '/groupList', components: {userInfo: groupList, chatPage: groupInformation}}
+        { path: '/groupList', components: {userInfo: groupList, chatPage: groupInformation}},
+        { path: '/groupInformation', components: {userInfo: groupList, chatPage: groupInformation}}
         ],
     linkActiveClass: 'mui-active'
 })

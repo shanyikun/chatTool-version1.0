@@ -62,7 +62,7 @@
 
             },
             getFriendInformation: function(group){
-
+                this.$router.push({path: '/groupInformation', query: {name: group.name}})
             },
             searchFriend: function(searchInputValue){
 
@@ -78,13 +78,14 @@
     #groupListContainer{
         display: flex;
         flex-direction: column;
+        height: 100%;
     }
     .list-title{
         display: flex;
         justify-content: space-around;
         align-items: center;
         background-color: #EEEAE8;
-        height: 40px;
+        height: 8%;
         font-family: 等线;
     }
     .list-title .searchInput{
@@ -115,6 +116,7 @@
     }
     .group-list-container{
         padding: 0px;
+        height: 92%;
     }
     #group-list{
         list-style-type: none;

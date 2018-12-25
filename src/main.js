@@ -51,10 +51,13 @@ var store=new Vuex.Store({        //Vuex存储对象
         nowChatName: '',  //全局存储当前对话人信息，防止chagPage页面刷新时丢失对话人信息，用于对话页面切换时记录对话信息
         friendInformationName: '',  //全局存储当前好友列表详细信息， 防止friendInformation页面刷新时丢失信息，用于好友列表切换时记录好友信息
         friendInformationUrl: '',   //全局存储当前好友列表详细信息
+        groupInformationName: '',   //全局存储当前群组名字
         firstOfSearchFriendsList:{},  //不刷新地址情况下搜索框所得好友列表中第一个人的信息
         userInfoIconFontSwitchFlag: true,  //  用户图标切换标志位
         addFriendSuccessFlag: true,   // 添加好友成功标志位，一旦添加好友成功即取反
-        groupList: [],  // 群组列表
+        groupList: [{name: 'ss&&&ee&&&rr&&&***group***', url: '/src/public/images/default.jpg', members: [{name: 'ss', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'ss', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'ss', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'ss', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'ss', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'ss', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'ss', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'ss', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'ss', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'ss', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'rr', url: '/src/public/images/default.jpg'}], numbers: 3},
+                    {name: 'ss&&&ee&&&rr&&&***group***', url: '/src/public/images/default.jpg', members: [{name: 'ss', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'rr', url: '/src/public/images/default.jpg'}], numbers: 3}
+            ],  // 群组列表
         emotionSrcList: [
             '/src/public/images/emotions/picture0.gif',
             '/src/public/images/emotions/picture1.gif',
