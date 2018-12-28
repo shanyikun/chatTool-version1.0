@@ -9,12 +9,12 @@
             <div class="groupMembersContainer">
                 <div class="memberInformation" v-for="member in groupMembers">
                     <img class="memberUrl" :src="member.url" width="50px" height="50px">
-                    <div class="memberName">{{member.name}}</div>
+                    <div class="memberName" :title="member.name">{{member.name | formatName}}</div>
                 </div>
             </div>
         </div>
         <div class="sendButtonContainer">
-            <button class="sendButton">发送消息</button>
+            <button class="sendButton" @click="sendMessage">发送消息</button>
         </div>
     </div>
 </template>
@@ -27,7 +27,10 @@
             }
         },
         methods :{
-
+            sendMessage: function(){
+                this.$router.push({path: '/onlineUserList', query: {name: this.$store.state.groupInformationName}})
+                this.$store.state.userInfoIconFontSwitchFlag=!this.$store.state.userInfoIconFontSwitchFlag
+            }
         },
         computed: {
             groupName: function(){
@@ -41,7 +44,7 @@
                             return item.name===this.$route.query.name
                         })
                         this.$store.state.groupInformationName=this.$route.query.name
-                        return `群组(${groupObject.numbers})`
+                        return `${groupObject.nickname}(${groupObject.numbers})`
                     }
                 }
                 else if(['/groupList', '/groupInformation'].indexOf(this.$store.state.routePath[0])===-1){   // 经过字体图标从非groupList、groupInformation页面切换过来，显示第一个群组的信息
@@ -57,15 +60,13 @@
                         let groupObject=this.$store.state.groupList.find((item)=>{
                             return item.name===this.$store.state.groupInformationName
                         })
-                        return `群组(${groupObject.numbers})`
+                        return `${groupObject.nickname}(${groupObject.numbers})`
                     }
                 }
             },
             groupMembers: function(){
                 if(this.$store.state.groupInformationName==='messages'){
-                    this.$http.get('/getFriendsList').then((data)=>{
-                        this.temporaryGroupMembers=data.body.message
-                    })
+                    this.temporaryGroupMembers=this.$store.state.allUserList
                 }
                 else {
                     this.temporaryGroupMembers=this.$store.state.groupList.find((item)=>{
@@ -73,6 +74,29 @@
                     }).members
                 }
                 return this.temporaryGroupMembers
+            }
+        },
+        filters: {
+            formatName: function(name){
+                let byteLength=0, formatName=''
+                let nameLength=name.length
+                for(let i=0; i<nameLength; i++){
+                    if(name.charCodeAt(i)>=0x4E00&&name.charCodeAt(i)<=0x9FFF){
+                        byteLength+=2       // 若是汉字，则长度加2，因为一个汉字为2byte且占据宽度为两倍的英文字母
+                        formatName+=name[i]
+                    }
+                    else {
+                        byteLength++
+                        formatName+=name[i]
+                    }
+
+                    if(byteLength>=8&&i<nameLength-1){
+                        return formatName+'...'
+                    }
+                    else if(i===nameLength-1){
+                        return formatName
+                    }
+                }
             }
         }
     }
@@ -99,7 +123,7 @@
         display: flex;
         flex-wrap: wrap;
         justify-content:space-between;
-        padding: 10px 40px 30px 40px;
+        padding: 10px 35px 30px 35px;
     }
     .memberInformation{
         display: flex;
@@ -107,6 +131,7 @@
         align-items: center;
         margin-bottom: 10px;
         padding: 10px;
+        width: 15%;
     }
 
     .memberInformation:hover{
@@ -117,6 +142,8 @@
         border-radius: 3px;
     }
     .memberName{
+        margin-top: 8px;
+        font-size: 12px;
         color: gray;
     }
     .sendButtonContainer{

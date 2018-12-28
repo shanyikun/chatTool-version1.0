@@ -26,6 +26,7 @@ var store=new Vuex.Store({        //Vuex存储对象
         name: 'shan',    //用户名
         email: '33',   //邮箱
         url: '/src/public/images/shanyikun.jpg',
+        allUserList: [], //全部用户的列表，包括不是好友的用户
         friendsList: [
             {name:'syk',url:'/src/public/images/syk.jpg'},
             {name:'shan', url: '/src/public/images/shan.jpg'},
@@ -55,8 +56,8 @@ var store=new Vuex.Store({        //Vuex存储对象
         firstOfSearchFriendsList:{},  //不刷新地址情况下搜索框所得好友列表中第一个人的信息
         userInfoIconFontSwitchFlag: true,  //  用户图标切换标志位
         addFriendSuccessFlag: true,   // 添加好友成功标志位，一旦添加好友成功即取反
-        groupList: [{name: 'ss&&&ee&&&rr&&&***group***', url: '/src/public/images/default.jpg', members: [{name: 'ss', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'ss', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'ss', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'ss', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'ss', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'ss', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'ss', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'ss', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'ss', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'ss', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'rr', url: '/src/public/images/default.jpg'}], numbers: 3},
-                    {name: 'ss&&&ee&&&rr&&&***group***', url: '/src/public/images/default.jpg', members: [{name: 'ss', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'rr', url: '/src/public/images/default.jpg'}], numbers: 3}
+        groupList: [{name: 'ss&&&ee&&&rr&&&***group***', nickname: '三人行lalalalallalalalalddd',url: '/src/public/images/default.jpg', members: [{name: '你是哪个傻逼啊', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'ss', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'ss', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'ss', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'ss', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'ss', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'ss', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'ss', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'ss', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'ss', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'rr', url: '/src/public/images/default.jpg'}], numbers: 3},
+                    {name: 'sss&&&ee&&&rr&&&***group***', nickname: '四人行', url: '/src/public/images/default.jpg', members: [{name: 'ss', url: '/src/public/images/default.jpg'},{name: 'ee', url: '/src/public/images/default.jpg'},{name: 'rr', url: '/src/public/images/default.jpg'}], numbers: 3}
             ],  // 群组列表
         emotionSrcList: [
             '/src/public/images/emotions/picture0.gif',
@@ -148,7 +149,7 @@ var store=new Vuex.Store({        //Vuex存储对象
                         return {name: item, timeStamp: '', url: url, lastMessage: '[没有消息]'}
                     }
                 }
-                else {   // 如果是群组
+                else {   // 如果是群组,加上昵称这一属性
                     let messageList=JSON.parse(window.localStorage.getItem(item.name))||[]
                     if(messageList.length!==0){
                         let lastMessageObject=messageList[messageList.length-1]
@@ -157,19 +158,19 @@ var store=new Vuex.Store({        //Vuex存储对象
                         if(timeStamp){  //如果消息中有时间戳
                             objectTimeStamp=new Date(timeStamp)  //时间字符串转换成时间对象， 时间对象经JSON.stringify()转换后再经JSON.parse()解析得到的是字符串
                             if(objectTimeStamp.toLocaleDateString()!==new Date().toLocaleDateString()){ //如果时间不是今天，则只显示日期
-                                return {name: item.name, timeStamp: objectTimeStamp.toLocaleDateString(), url: item.url, lastMessage: state.lastMessage}
+                                return {name: item.name, timeStamp: objectTimeStamp.toLocaleDateString(), url: item.url, lastMessage: state.lastMessage, nickname: item.nickname}
                             }
                             else {     //如果时间是今天则只显示时间
                                 this.commit('formatTimeStamp', objectTimeStamp)
-                                return {name: item.name, timeStamp: state.timeStamp, url: item.url, lastMessage: state.lastMessage}
+                                return {name: item.name, timeStamp: state.timeStamp, url: item.url, lastMessage: state.lastMessage, nickname: item.nickname}
                             }
                         }
                         else {  //消息中没有时间戳
-                            return {name: item.name, timeStamp: '', url: item.url, lastMessage: state.lastMessage}
+                            return {name: item.name, timeStamp: '', url: item.url, lastMessage: state.lastMessage, nickname: item.nickname}
                         }
                     }
                     else {
-                        return {name: item.name, timeStamp: '', url: item.url, lastMessage: '[没有消息]'}
+                        return {name: item.name, timeStamp: '', url: item.url, lastMessage: '[没有消息]', nickname: item.nickname}
                     }
                 }
             })

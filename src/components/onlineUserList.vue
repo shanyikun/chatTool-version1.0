@@ -13,7 +13,7 @@
                     <img :src="item.url" width="35px" height="35px">
                     <div class="nameAndTimeAndLastMessageContainer">
                         <div class="nameAndTimeContainer">
-                            <div class="userName" :title="item.name">{{item.name | formatName}}</div>
+                            <div class="userName" :title="item.name">{{item.name | formatName(item.nickname)}}</div>
                             <div class="timeStamp">{{item.timeStamp}}</div>
                         </div>
                         <div class="lastMessageContainer">
@@ -84,29 +84,31 @@
             }
         },
         filters: {
-            formatName: function(name){   // 格式化名字
-                if(name.indexOf('***group***')!==-1){
-                    return '群组聊天'
+            formatName: function(name, nickname){   // 格式化名字
+                let temporaryName
+                if(name.indexOf('***group***')!==-1){  // 群组有昵称，用户暂时没有设定
+                    temporaryName=nickname
                 }
                 else {
-                    let byteLength=0, formatName=''
-                    let nameLength=name.length
-                    for(let i=0; i<nameLength; i++){
-                        if(name.charCodeAt(i)>=0x4E00&&name.charCodeAt(i)<=0x9FFF){
-                            byteLength+=2       // 若是汉字，则长度加2，因为一个汉字为2byte且占据宽度为两倍的英文字母
-                            formatName+=name[i]
-                        }
-                        else {
-                            byteLength++
-                            formatName+=name[i]
-                        }
+                    temporaryName=name
+                }
+                let byteLength=0, formatName=''
+                let nameLength=temporaryName.length
+                for(let i=0; i<nameLength; i++){
+                    if(temporaryName.charCodeAt(i)>=0x4E00&&temporaryName.charCodeAt(i)<=0x9FFF){
+                        byteLength+=2       // 若是汉字，则长度加2，因为一个汉字为2byte且占据宽度为两倍的英文字母
+                        formatName+=temporaryName[i]
+                    }
+                    else {
+                        byteLength++
+                        formatName+=temporaryName[i]
+                    }
 
-                        if(byteLength>=8&&i<nameLength-1){
-                            return formatName+'...'
-                        }
-                        else if(i===nameLength-1){
-                            return formatName
-                        }
+                    if(byteLength>=8&&i<nameLength-1){
+                        return formatName+'...'
+                    }
+                    else if(i===nameLength-1){
+                        return formatName
                     }
                 }
             }

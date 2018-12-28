@@ -63,7 +63,7 @@
                         }
                     })
                 }
-                else if(this.$route.path==='/groupList'){
+                else if(this.$route.path==='/groupList'||this.$route.path==='/groupInformation'){
                     this.iconFontStyleList.forEach(function(item, index){
                         if(index===2){
                             item.color='#09BB07'

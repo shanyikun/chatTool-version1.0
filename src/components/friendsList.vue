@@ -17,7 +17,7 @@
                     @mouseout="out(friend)"
                     @click="getFriendInformation(friend)">    <!--用返回当前时间作为key值确保唯一性，避免复用-->
                     <img :src="friend.url" width="35px" height="35px">
-                    <p class="friendName">{{friend.name}}</p>
+                    <p class="friendName">{{friend.name | formatName}}</p>
                 </li>
 
             </ul>
@@ -27,7 +27,7 @@
                     @mouseout="out(friend)"
                     @click="getFriendInformation(friend)">
                     <img :src="friend.url" width="35px" height="35px">
-                    <p class="friendName">{{friend.name}}</p>
+                    <p class="friendName">{{friend.name | formatName}}</p>
                 </li>
             </ul>
         </div>
@@ -124,6 +124,29 @@
                     this.searchFriendsList=this.$store.state.friendsList.filter((item)=>{
                         return item.name.indexOf(this.searchInputValue)!==-1
                     })
+                }
+            }
+        },
+        filters: {
+            formatName: function(name){
+                let byteLength=0, formatName=''
+                let nameLength=name.length
+                for(let i=0; i<nameLength; i++){
+                    if(name.charCodeAt(i)>=0x4E00&&name.charCodeAt(i)<=0x9FFF){
+                        byteLength+=2       // 若是汉字，则长度加2，因为一个汉字为2byte且占据宽度为两倍的英文字母
+                        formatName+=name[i]
+                    }
+                    else {
+                        byteLength++
+                        formatName+=name[i]
+                    }
+
+                    if(byteLength>=12&&i<nameLength-1){
+                        return formatName+'...'
+                    }
+                    else if(i===nameLength-1){
+                        return formatName
+                    }
                 }
             }
         },

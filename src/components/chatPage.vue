@@ -236,7 +236,10 @@
                     }
                     else {
                         this.$store.state.nowChatName=this.$route.query.name
-                        return '群组聊天'
+                        let groupObject=this.$store.state.groupList.find((item)=>{
+                            return item.name===this.$route.query.name
+                        })
+                        return groupObject.nickname
                     }
                 }
                 else if(['/chatPage', '/onlineUserList'].indexOf(this.$store.state.routePath[0])===-1){
@@ -248,7 +251,10 @@
                         return this.$store.state.nowChatName
                     }
                     else {
-                        return '群组聊天'
+                        let groupObject=this.$store.state.groupList.find((item)=>{
+                            return item.name===this.$store.state.nowChatName
+                        })
+                        return groupObject.nickname
                     }
                 }
             }

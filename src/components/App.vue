@@ -204,21 +204,34 @@
             </div>
         </div>
 
-        <div class="createGroupPop" v-if="isDisplayCreateGroupPop">
+        <div class="createGroupPop" v-if="isDisplayCreateGroupPop">   <!--创建群组弹出框-->
             <div @click="closeCreateGroupPop" class="closeButton iconfont icon-tubiaoguifan"></div>
             <div class="chooseContainer">
                 <div class="friendsListContainer">
                     <div class="searchContainer">
-                        <div class="iconfont icon-sousuo-copy">
-                            <input type="search" class="searchInput">
+                        <div class="iconfont icon-sousuo-copy" :style="searchIconStyle">
+                            <input type="search" class="searchInput" :style="searchInputStyle" v-model="searchInputValue"
+                                   @focus="focusUpdateBackgroundColor"
+                                   @blur="blurUpdateBackgroundColor">
                         </div>
                     </div>
                     <div class="friendsList">
-                        <ul class="friendsListUl">
-                            <li class="friendsListLi" v-for="friend in $store.state.friendsList">
+                        <ul class="friendsListUl" v-if="isDisplayAllFriendsList">  <!--判断搜索框是否工作-->
+                            <li class="friendsListLi" v-for="friend in $store.state.friendsList" :style="friendStyleObject[friend.name]"
+                                @click="changeBackgroundColor(friend)">
                                 <label class="labelForCheckBox" :for="friend.name">
                                     <img :src="friend.url" width="35px" height="35px">
                                     <div class="friendName">{{friend.name}}</div>
+                                    <input type="checkbox" :value="friend" v-model="selectedFriends" :id="friend.name">
+                                </label>
+                            </li>
+                        </ul>
+                        <ul class="friendsListUl" v-else>   <!--搜索框工作-->
+                            <li class="friendsListLi" v-for="friend in searchFriendsList" :style="friendStyleObject[friend.name]"
+                                @click="changeBackgroundColor(friend)">
+                                <label class="labelForCheckBox" :for="friend.name">
+                                    <img :src="friend.url" width="35px" height="35px">
+                                    <div class="friendName" v-html="computedFriendName(friend.name)"></div>
                                     <input type="checkbox" :value="friend" v-model="selectedFriends" :id="friend.name">
                                 </label>
                             </li>
@@ -293,8 +306,15 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              popPictureStyle: {left: 0,top: 0},  // 图片弹出框图片定位样式
              requestFriendsList: [],   // 发起请求列表
              acceptFriendsList: [],    // 接受请求列表
-             selectedFriends: [], // 创建群组时被选中的好友
-             promptMessage: '请勾选需要添加的联系人' // 选择联系人提醒
+             selectedFriends: [], // 创建群组时被选中的好友，关闭群组弹框后要清空
+             promptMessage: '请勾选需要添加的联系人', // 选择联系人提醒
+             selectedFriendFlag: '',  // 被选中好友的标志，是其名字，用来记录被选中的状态以用于改变背景色，关闭群组弹框后要清空
+             friendStyleObject: {}, // 创建群组时好友列表样式对象，主要是用来选中后改变背景色的
+             isDisplayAllFriendsList: true,   // 用来判断是否显示所有好友，主要是考虑到搜索框的作用
+             searchFriendsList: [],   // 搜索得到的好友列表
+             searchInputValue: '',  // 搜索输入字符串
+             searchIconStyle: {},  // 搜索图标样式，主要是获得焦点和离开焦点后背景色的变化
+             searchInputStyle: {}  // 搜索框样式，主要是获得焦点和离开焦点后背景色的变化
          }
      },
      methods: {
@@ -648,12 +668,38 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
          closeCreateGroupPop: function(){
              this.isDisplayCreateGroupPop=false
              this.selectedFriends=[]   // 同时令选中的好友列表为空
+             this.selectedFriendFlag='' // 清空选中好友标志位
+             this.friendStyleObject={}   // 清空好友样式
          },
          deleteChoosedFriend: function(friend){
              let index=this.selectedFriends.findIndex(function(item){
                  return item.name===friend.name
              })
              this.selectedFriends.splice(index, 1)
+         },
+         changeBackgroundColor: function(friend){  // 设置选中的背景色
+             if(this.selectedFriendFlag){
+                 this.$set(this.friendStyleObject, this.selectedFriendFlag, {})
+                 this.$set(this.friendStyleObject, friend.name, {backgroundColor: '#C4C3C3'})
+                 this.selectedFriendFlag=friend.name
+             }
+             else {
+                 this.$set(this.friendStyleObject, friend.name, {backgroundColor: '#C4C3C3'})
+                 this.selectedFriendFlag=friend.name
+             }
+         },
+         focusUpdateBackgroundColor: function(){  // 创建群组搜索框获得焦点背景色变化
+             this.searchIconStyle={backgroundColor: '#ECECEC', border: 'solid 1px gray'}
+             this.$set(this.searchInputStyle, 'backgroundColor', '#ECECEC')
+         },
+         blurUpdateBackgroundColor: function(){  // 创建群组搜索框失去焦点背景色变化
+             if(this.searchInputValue===''){
+                 this.searchIconStyle={}
+                 this.searchInputStyle={}
+             }
+         },
+         computedFriendName: function(name){   // 返回搜索框工作时搜索到的好友名字，主要改变对应字的颜色
+             return name.replace(this.searchInputValue, `<span style="color: #19AD19">${this.searchInputValue}</span>`)
          },
          cancelCreateGroup: function(){
              this.closeCreateGroupPop()
@@ -685,9 +731,15 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
                  alert('这个群组已经存在！')
              }
              else {
-                 let groupObject={name: name, url: url, members: members, numbers: numbers}
-                 this.$store.state.socket.emit('createGroup', groupObject)
-                 alert('创建群组成功！')
+                 let nickname=window.prompt('请输入群组的名字：')
+                 if(nickname){
+                     let groupObject={name: name, url: url, members: members, numbers: numbers, nickname: nickname}
+                     this.$store.state.socket.emit('createGroup', groupObject)
+                     alert('创建群组成功！')
+                 }
+                 else {
+                     alert('请重新创建，并写入群组名字！')
+                 }
              }
          }
      },
@@ -700,6 +752,17 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              else {
                  this.promptMessage=`已选择了${this.selectedFriends.length}个联系人`
                  this.$refs.confirmButton.disabled=false
+             }
+         },
+         searchInputValue: function(){    // 监听创建群组时搜索框中值的变化
+             if(this.searchInputValue!==0){
+                 this.searchFriendsList=this.$store.state.friendsList.filter((item)=>{
+                     return item.name.indexOf(this.searchInputValue)!==-1
+                 })
+                 this.isDisplayAllFriendsList=false
+             }
+             else {
+                 this.isDisplayAllFriendsList=true
              }
          }
      },
@@ -832,6 +895,10 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              }).then(()=>{
                      this.$store.commit('getOnlineUserList', userList)
              })
+         })
+
+         this.$http.get('/getFriendsList').then((data)=>{  // 获取所有用户的信息，包括非好友用户，用以在大群中显示所有用户信息
+             this.$store.state.allUserList=data.body.message
          })
      },
      beforeMount: function(){
@@ -1323,6 +1390,9 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
     .createGroupPop .chooseContainer .friendsListContainer .friendsList .friendsListUl li{
         padding: 8px 20px;
     }
+    .createGroupPop .chooseContainer .friendsListContainer .friendsList .friendsListUl li:hover{
+        background-color: #DCDDDE;
+    }
     .createGroupPop .chooseContainer .friendsListContainer .friendsList .friendsListUl li .labelForCheckBox{
         display: flex;
         justify-content: space-between;
@@ -1433,3 +1503,5 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
    的，除非设定高度。 若flex-direction: column,则与上述情况相反，此时纵向可伸缩，横向不可伸缩， 详细例子见chagPage.vue中的文
    本框(<textarea></textarea>>)的详细布局
 -->
+
+<!--关于过滤器，过滤器函数中的this是没有意义的，过滤器函数中只能使用全局变量或者是传递的参数，组件内部数据在过滤器函数中无法获取-->
