@@ -1,5 +1,5 @@
 <template>
-    <div class="groupInformationContainer">
+    <div class="groupInformationContainer" ref="groupInformationContainer">
         <div class="groupNameContainer">
             <div class="groupName">
                 {{groupName}}
@@ -7,14 +7,31 @@
         </div>
         <div class="clapContainer">  <!--这里加一层主要是为了使下面的flex容器不设置高度，防止flex内容每次都充满-->
             <div class="groupMembersContainer">
-                <div class="memberInformation" v-for="member in groupMembers">
+                <div class="memberInformation" v-for="member in groupMembers" @click="getMemberInformation(member)">
                     <img class="memberUrl" :src="member.url" width="50px" height="50px">
                     <div class="memberName" :title="member.name">{{member.name | formatName}}</div>
                 </div>
             </div>
         </div>
-        <div class="sendButtonContainer">
+        <div class="sendButtonContainer">   <!--发送消息按钮，绝对定位-->
             <button class="sendButton" @click="sendMessage">发送消息</button>
+        </div>
+
+        <div class="memberInformationPop" :style="styleObject" v-if="isDisplayMemberInfoPop"
+             @click.self="closeMemberInformationPop">   <!--用户详细信息弹窗，绝对定位,相对于groupInformationContainer-->
+            <div class="popMemberInformation" @click.self="closeMemberInformationPop">
+                <div class="popMemberName">{{memberName}}</div>
+                <img class="popMemberUrl" :src="memberUrl" width="45px" height="45px">
+            </div>
+            <div class="popButtonContainer" @click.self="closeMemberInformationPop">
+                <div class="iconfont icon-xiaoxi" v-if="isFriend" @click="sendMessageToMember(memberName)"></div>
+                <div class="iconfont icon-woziji" v-else-if="$store.state.name===memberName"></div>
+                <div class="iconfont icon-add-friends_icon" v-else @click="addFriend"></div>
+            </div>
+            <div class="popPromptMessage" @click.self="closeMemberInformationPop">
+                <div v-if="isFriend&&isDisplayPromptMessage">此用户不在线！</div>
+                <div v-if="!isFriend&&isDisplayPromptMessage">添加好友请求已发送！</div>
+            </div>
         </div>
     </div>
 </template>
@@ -23,13 +40,66 @@
     export default {
         data: function(){
             return {
-                temporaryGroupMembers: []
+                temporaryGroupMembers: [],
+                memberName: '',
+                memberUrl: '',
+                isFriend: true,
+                isDisplayPromptMessage: false,
+                isDisplayMemberInfoPop: false,
+                styleObject: {},
+                timeoutReturnValue: null
             }
         },
         methods :{
             sendMessage: function(){
                 this.$router.push({path: '/onlineUserList', query: {name: this.$store.state.groupInformationName}})
                 this.$store.state.userInfoIconFontSwitchFlag=!this.$store.state.userInfoIconFontSwitchFlag
+            },
+            getMemberInformation: function(member){   // 获取成员详细信息弹出框
+                let containerPosition=this.$refs.groupInformationContainer.getBoundingClientRect()
+                let left=event.clientX-containerPosition.left
+                let top=event.clientY-containerPosition.top
+                this.memberName=member.name
+                this.memberUrl=member.url
+                this.$set(this.styleObject, 'left', left+'px')
+                this.$set(this.styleObject, 'top', top+'px')
+                this.isFriend=this.$store.state.friendsList.some((item)=>{  // 判断是否是好友
+                    return item.name===member.name
+                })
+                this.isDisplayMemberInfoPop=true
+            },
+            closeMemberInformationPop: function(){
+                if(this.isDisplayMemberInfoPop){
+                    this.isDisplayMemberInfoPop=false
+                }
+            },
+            sendMessageToMember: function(memberName){   // 向成员发送信息
+                let isOnline=this.$store.state.onlineUserList.some((item)=>{
+                    return item.name===memberName
+                })
+                if(isOnline){
+                    this.$router.push({path: '/onlineUserList', query: { name: memberName}})
+                    this.$store.state.userInfoIconFontSwitchFlag=!this.$store.state.userInfoIconFontSwitchFlag
+                }
+                else {
+                    this.isDisplayPromptMessage=true
+                    if(this.timeoutReturnValue){
+                        clearTimeout(this.timeoutReturnValue)
+                    }
+                    this.timeoutReturnValue=setTimeout(()=>{
+                        this.isDisplayPromptMessage=false
+                    }, 2000)
+                }
+            },
+            addFriend: function(){   // 加成员为好友
+                this.$store.state.socket.emit('addFriendRequest', {name: this.$store.state.name, url: this.$store.state.url}, {name: this.memberName, url: this.memberUrl})
+                this.isDisplayPromptMessage=true
+                if(this.timeoutReturnValue){
+                    clearTimeout(this.timeoutReturnValue)
+                }
+                this.timeoutReturnValue=setTimeout(()=>{
+                    this.isDisplayPromptMessage=false
+                }, 2000)
             }
         },
         computed: {
@@ -64,7 +134,7 @@
                     }
                 }
             },
-            groupMembers: function(){
+            groupMembers: function(){   // 计算属性获取群成员信息
                 if(this.$store.state.groupInformationName==='messages'){
                     this.temporaryGroupMembers=this.$store.state.allUserList
                 }
@@ -103,6 +173,10 @@
 </script>
 
 <style scoped>
+    @import '../public/stylesheets/message-icon-font/iconfont.css';   /*引入消息按钮字体图标*/
+    @import '../public/stylesheets/addfriend-icon-font/iconfont.css';  /*引入添加好友字体图标*/
+    @import '../public/stylesheets/self-icon-font/iconfont.css';    /*引入自己字体图标*/
+
     .groupInformationContainer{
         height: 100%;
         position: relative;
@@ -163,5 +237,47 @@
     .sendButton:hover{
         background-color: #148B14;
         cursor: pointer;
+    }
+    .memberInformationPop{
+        position: absolute;
+        width: 200px;
+        height: 150px;
+        background-color: white;
+        box-shadow: 0 0 3px gray;
+        border-radius: 3px;
+        padding: 20px;
+    }
+    .memberInformationPop .popMemberInformation{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid lightgray;
+    }
+    .memberInformationPop .popButtonContainer{
+        display: flex;
+        justify-content: flex-end;
+    }
+    .memberInformationPop .popButtonContainer .icon-add-friends_icon{
+        color: gray;
+        font-size: 20px;
+    }
+    .memberInformationPop .popButtonContainer .icon-woziji{
+        color: gray;
+        font-size: 20px;
+    }
+    .memberInformationPop .popButtonContainer .icon-xiaoxi{
+        font-size: 24px;
+        color: gray;
+    }
+    .memberInformationPop .popButtonContainer .iconfont:hover{
+        cursor: pointer;
+        color: black;
+    }
+    .memberInformationPop .popPromptMessage{
+        display: flex;
+        justify-content: flex-end;
+        color: red;
     }
 </style>

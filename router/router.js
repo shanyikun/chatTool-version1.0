@@ -83,7 +83,7 @@ router.post('/register',function(request, response){
                                     })
                                 }
                                 else {   // 同步创建所需的文件
-                                    fs.writeFileSync(path.join(__dirname, '../src/public/userFile/'+data.name+'/friendsList/ableFriendsList.json'),JSON.stringify([data.name]))
+                                    fs.writeFileSync(path.join(__dirname, '../src/public/userFile/'+data.name+'/friendsList/ableFriendsList.json'),JSON.stringify([]))
                                     fs.writeFileSync(path.join(__dirname, '../src/public/userFile/'+data.name+'/friendsList/acceptFriendsList.json'), JSON.stringify([]))
                                     fs.writeFileSync(path.join(__dirname, '../src/public/userFile/'+data.name+'/friendsList/requestFriendsList.json'), JSON.stringify([]))
                                     let messagesGroupObject, name, url, members, numbers

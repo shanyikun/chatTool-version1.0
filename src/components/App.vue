@@ -709,14 +709,15 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              this.selectedFriends.forEach(function(item, index){  // 群组名字是所有用户连接起来，后加上***group***群组标志
                  name=name+item.name+'&&&'
              })
-             name=name+'***group***'
+             name=name+this.$store.state.name+'&&&'+'***group***'    // 同时加上自己的名字
              members=this.selectedFriends
-             numbers=this.selectedFriends.length
+             members.push({name: this.$store.state.name, url: this.$store.state.url})   // 加上自己的信息
+             numbers=members.length
              url='/src/public/images/default.jpg'
              newNameArray=name.split('&&&')
 
              isExist=this.$store.state.groupList.some((item)=>{
-                 if(item.numbers===this.selectedFriends.length){
+                 if(item.numbers===members.length){
                      let oldNameArray=item.name.split('&&&')
                      return oldNameArray.every((name)=>{
                          return newNameArray.indexOf(name)!==-1
