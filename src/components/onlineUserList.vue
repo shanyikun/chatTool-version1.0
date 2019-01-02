@@ -170,7 +170,7 @@
         display: flex;
         flex-direction: column;
         padding-left: 8px;
-        width: 100%;
+        width: 77%;
         justify-content: space-between;
     }
     .nameAndTimeContainer{

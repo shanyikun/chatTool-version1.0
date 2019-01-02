@@ -3,16 +3,16 @@
   <component name="ChangeListManager">
     <list default="true" id="6137af1a-ef71-4ebd-82d1-ee49df8814ff" name="默认" comment="增加群组按钮">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/router/router.js" beforeDir="false" afterPath="$PROJECT_DIR$/router/router.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/App.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/chatPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/chatPage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/friendsList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/friendsList.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/groupInformation.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/groupInformation.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/groupList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/groupList.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/onlineUserList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/onlineUserList.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/userInfo.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/userInfo.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/public/userFile/shan/friendsList/groupList.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/public/userFile/shan/friendsList/groupList.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/public/userFile/shanyikun/friendsList/ableFriendsList.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/public/userFile/shanyikun/friendsList/ableFriendsList.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/public/userFile/shanyikun/friendsList/acceptFriendsList.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/public/userFile/shanyikun/friendsList/acceptFriendsList.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/public/userFile/shanyikun/friendsList/groupList.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/public/userFile/shanyikun/friendsList/groupList.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/public/userFile/syk/friendsList/acceptFriendsList.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/public/userFile/syk/friendsList/acceptFriendsList.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/public/userFile/syk/friendsList/groupList.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/public/userFile/syk/friendsList/groupList.json" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -30,8 +30,8 @@
       <file leaf-file-name="main.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4446">
-              <caret line="177" column="60" selection-start-line="177" selection-start-column="60" selection-end-line="177" selection-end-column="60" />
+            <state>
+              <caret line="186" column="15" selection-start-line="186" selection-start-column="15" selection-end-line="186" selection-end-column="15" />
               <folding>
                 <element signature="e#0#21#0" expanded="true" />
               </folding>
@@ -39,47 +39,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="userInfo.vue" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/components/userInfo.vue">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1144">
-              <caret line="44" column="31" selection-start-line="44" selection-start-column="31" selection-end-line="44" selection-end-column="31" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="App.vue" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/components/App.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6110">
-              <caret line="235" column="20" selection-start-line="235" selection-start-column="20" selection-end-line="235" selection-end-column="20" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="groupInformation.vue" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/components/groupInformation.vue">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="156">
-              <caret line="74" column="17" lean-forward="true" selection-start-line="74" selection-start-column="17" selection-end-line="74" selection-end-column="17" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="friendInformation.vue" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/components/friendInformation.vue">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1378">
-              <caret line="53" column="10" selection-start-line="53" selection-start-column="10" selection-end-line="53" selection-end-column="10" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="groupList.vue" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/components/groupList.vue">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="203">
-              <caret line="60" column="17" lean-forward="true" selection-start-line="60" selection-start-column="17" selection-end-line="60" selection-end-column="17" />
+            <state relative-caret-position="78">
+              <caret line="711" column="81" lean-forward="true" selection-start-line="711" selection-start-column="81" selection-end-line="711" selection-end-column="81" />
               <folding>
                 <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
               </folding>
@@ -87,11 +51,32 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="onlineUserList.vue" pinned="false" current-in-tab="false">
+      <file leaf-file-name="groupInformation.vue" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/components/groupInformation.vue">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="754">
+              <caret line="29" column="18" selection-start-line="29" selection-start-column="18" selection-end-line="29" selection-end-column="18" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="groupList.vue" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/components/groupList.vue">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="26">
+              <caret line="24" column="13" lean-forward="true" selection-start-line="24" selection-start-column="13" selection-end-line="24" selection-end-column="13" />
+              <folding>
+                <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="onlineUserList.vue" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/components/onlineUserList.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2236">
-              <caret line="86" column="46" selection-start-line="86" selection-start-column="46" selection-end-line="86" selection-end-column="46" />
+            <state relative-caret-position="156">
+              <caret line="12" column="68" lean-forward="true" selection-start-line="12" selection-start-column="68" selection-end-line="12" selection-end-column="68" />
             </state>
           </provider>
         </entry>
@@ -99,8 +84,8 @@
       <file leaf-file-name="chatPage.vue" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/components/chatPage.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6214">
-              <caret line="239" column="69" selection-start-line="239" selection-start-column="69" selection-end-line="239" selection-end-column="69" />
+            <state relative-caret-position="156">
+              <caret line="260" column="10" lean-forward="true" selection-start-line="260" selection-start-column="10" selection-end-line="260" selection-end-column="10" />
             </state>
           </provider>
         </entry>
@@ -109,7 +94,10 @@
         <entry file="file://$PROJECT_DIR$/src/components/friendsList.vue">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="182">
-              <caret line="87" column="70" selection-start-line="87" selection-start-column="70" selection-end-line="87" selection-end-column="70" />
+              <caret line="19" column="74" lean-forward="true" selection-start-line="19" selection-start-column="74" selection-end-line="19" selection-end-column="74" />
+              <folding>
+                <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -117,14 +105,8 @@
       <file leaf-file-name="app.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-78">
-              <caret line="16" column="27" lean-forward="true" selection-start-line="16" selection-start-column="27" selection-end-line="16" selection-end-column="27" />
-              <folding>
-                <element signature="e#15331#16085#0" />
-                <element signature="e#16106#17073#0" />
-                <element signature="e#17082#17837#0" />
-                <element signature="e#17847#19268#0" />
-              </folding>
+            <state relative-caret-position="52">
+              <caret line="345" column="40" selection-start-line="345" selection-start-column="40" selection-end-line="345" selection-end-column="40" />
             </state>
           </provider>
         </entry>
@@ -145,6 +127,8 @@
       <find>userInfoIconFontSwitchFlag</find>
       <find>###group###</find>
       <find>friendInformationName</find>
+      <find>sendMessage</find>
+      <find>addFriend</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -153,7 +137,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/public/stylesheets/userinfo-icon-font/iconfont.css" />
         <option value="$PROJECT_DIR$/src/public/stylesheets/friends-icon-font/iconfont.css" />
         <option value="$PROJECT_DIR$/src/views/index.html" />
         <option value="$PROJECT_DIR$/test.js" />
@@ -183,27 +166,28 @@
         <option value="$PROJECT_DIR$/src/public/userFile/tian/friendsList/requestFriendsList.json" />
         <option value="$PROJECT_DIR$/src/public/userFile/tian/friendsList/accetpFriendsList.json" />
         <option value="$PROJECT_DIR$/src/components/friendInformation.vue" />
-        <option value="$PROJECT_DIR$/router/router.js" />
-        <option value="$PROJECT_DIR$/src/public/userFile/shan/friendsList/ableFriendsList.json" />
         <option value="$PROJECT_DIR$/src/public/userFile/shan/friendsList/acceptFriendsList.json" />
-        <option value="$PROJECT_DIR$/src/public/userFile/shanyikun/friendsList/ableFriendsList.json" />
         <option value="$PROJECT_DIR$/src/public/userFile/shanyikun/friendsList/acceptFriendsList.json" />
         <option value="$PROJECT_DIR$/src/public/userFile/shanyikun/friendsList/requestFriendsList.json" />
-        <option value="$PROJECT_DIR$/src/public/userFile/syk/friendsList/ableFriendsList.json" />
         <option value="$PROJECT_DIR$/src/public/userFile/syk/friendsList/acceptFriendsList.json" />
-        <option value="$PROJECT_DIR$/app.js" />
         <option value="$PROJECT_DIR$/src/router/router.js" />
-        <option value="$PROJECT_DIR$/src/public/userFile/shan/friendsList/groupList.json" />
-        <option value="$PROJECT_DIR$/src/public/userFile/shanyikun/friendsList/groupList.json" />
-        <option value="$PROJECT_DIR$/src/public/userFile/syk/friendsList/groupList.json" />
         <option value="$PROJECT_DIR$/src/components/friendsList.vue" />
         <option value="$PROJECT_DIR$/src/components/chatPage.vue" />
         <option value="$PROJECT_DIR$/src/components/userInfo.vue" />
-        <option value="$PROJECT_DIR$/src/components/groupInformation.vue" />
         <option value="$PROJECT_DIR$/src/main.js" />
-        <option value="$PROJECT_DIR$/src/components/onlineUserList.vue" />
-        <option value="$PROJECT_DIR$/src/components/App.vue" />
         <option value="$PROJECT_DIR$/src/components/groupList.vue" />
+        <option value="$PROJECT_DIR$/src/public/userFile/shan/friendsList/ableFriendsList.json" />
+        <option value="$PROJECT_DIR$/src/public/userFile/shanyikun/friendsList/ableFriendsList.json" />
+        <option value="$PROJECT_DIR$/src/public/userFile/syk/friendsList/ableFriendsList.json" />
+        <option value="$PROJECT_DIR$/src/components/groupInformation.vue" />
+        <option value="$PROJECT_DIR$/router/router.js" />
+        <option value="$PROJECT_DIR$/src/components/App.vue" />
+        <option value="$PROJECT_DIR$/app.js" />
+        <option value="$PROJECT_DIR$/src/public/userFile/tian/friendsList/groupList.json" />
+        <option value="$PROJECT_DIR$/src/public/userFile/syk/friendsList/groupList.json" />
+        <option value="$PROJECT_DIR$/src/public/userFile/shanyikun/friendsList/groupList.json" />
+        <option value="$PROJECT_DIR$/src/public/userFile/shan/friendsList/groupList.json" />
+        <option value="$PROJECT_DIR$/src/components/onlineUserList.vue" />
       </list>
     </option>
   </component>
@@ -285,7 +269,7 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="public" type="462c0819:PsiDirectoryNode" />
               <item name="images" type="462c0819:PsiDirectoryNode" />
-              <item name="favicon" type="462c0819:PsiDirectoryNode" />
+              <item name="groups" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="A-vue-node-webpack-socket.io" type="b2602c69:ProjectViewProjectNode" />
@@ -307,7 +291,7 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="public" type="462c0819:PsiDirectoryNode" />
               <item name="userFile" type="462c0819:PsiDirectoryNode" />
-              <item name="shanyikun" type="462c0819:PsiDirectoryNode" />
+              <item name="shan" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="A-vue-node-webpack-socket.io" type="b2602c69:ProjectViewProjectNode" />
@@ -315,7 +299,7 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="public" type="462c0819:PsiDirectoryNode" />
               <item name="userFile" type="462c0819:PsiDirectoryNode" />
-              <item name="shanyikun" type="462c0819:PsiDirectoryNode" />
+              <item name="shan" type="462c0819:PsiDirectoryNode" />
               <item name="friendsList" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -348,17 +332,17 @@
     <property name="settings.editor.selected.configurable" value="settings.github" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="E:\A-project\A-vue-node-webpack-socket.io\src\public\javascripts" />
-      <recent name="E:\A-project\A-vue-node-webpack-socket.io\src\views" />
-      <recent name="E:\A-vue-node-webpack-socket.io\src\views" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\A-project\A-vue-node-webpack-socket.io\src\public\stylesheets\self-icon-font" />
       <recent name="E:\A-project\A-vue-node-webpack-socket.io\src\public\stylesheets\delete-icon-font" />
       <recent name="E:\A-project\A-vue-node-webpack-socket.io\src\public\stylesheets\creategroup2-icon-font" />
       <recent name="E:\A-project\A-vue-node-webpack-socket.io\src\public\stylesheets\creategroup-icon-font" />
       <recent name="E:\A-project\A-vue-node-webpack-socket.io\src\public\stylesheets\group2-icon-font" />
-      <recent name="E:\A-project\A-vue-node-webpack-socket.io\src\public\stylesheets\grop-icon-font" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\A-project\A-vue-node-webpack-socket.io\src\public\javascripts" />
+      <recent name="E:\A-project\A-vue-node-webpack-socket.io\src\views" />
+      <recent name="E:\A-vue-node-webpack-socket.io\src\views" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -485,7 +469,13 @@
       <workItem from="1545790442944" duration="22743000" />
       <workItem from="1545828901303" duration="6730000" />
       <workItem from="1545877797657" duration="23241000" />
-      <workItem from="1545965089846" duration="1643000" />
+      <workItem from="1545965089846" duration="1015000" />
+      <workItem from="1545984653687" duration="8102000" />
+      <workItem from="1545997173849" duration="1877000" />
+      <workItem from="1546050719171" duration="10741000" />
+      <workItem from="1546073573028" duration="5893000" />
+      <workItem from="1546140293283" duration="2643000" />
+      <workItem from="1546426342186" duration="8923000" />
     </task>
     <task id="LOCAL-00001" summary="test">
       <created>1539586385167</created>
@@ -599,11 +589,18 @@
       <option name="project" value="LOCAL" />
       <updated>1545737537477</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="群组详情页面完善">
+      <created>1546061104255</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1546061104255</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="981105000" />
+    <option name="totallyTimeSpent" value="1022504000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -615,7 +612,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="784" extended-state="6" />
+    <frame x="-8" y="-8" width="1382" height="784" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.495283" visible="true" weight="0.24386618" />
@@ -625,7 +622,7 @@
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.5048327" side_tool="true" weight="0.3280507" />
       <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49888477" weight="0.3280507" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.3296355" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4959108" weight="0.3534073" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4959108" weight="0.35816166" />
       <window_info id="Structure" order="1" sideWeight="0.504717" side_tool="true" weight="0.23197027" />
       <window_info active="true" anchor="bottom" id="Terminal" order="7" sideWeight="0.4951673" visible="true" weight="0.3280507" />
       <window_info id="Favorites" order="2" side_tool="true" />
@@ -708,7 +705,8 @@
     <MESSAGE value="增加群组按钮" />
     <MESSAGE value="完成建立群组功能" />
     <MESSAGE value="增加群组详细信息页面" />
-    <option name="LAST_COMMIT_MESSAGE" value="增加群组详细信息页面" />
+    <MESSAGE value="群组详情页面完善" />
+    <option name="LAST_COMMIT_MESSAGE" value="群组详情页面完善" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -716,45 +714,7 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/public/userFile/shanyikun/video/0c661c98-7db7-4358-8f22-208ad63cc537_6 - 副本.jpg" />
-    <entry file="file://$PROJECT_DIR$/src/public/userFile/shanyikun/video/2e1206ac96b4c45984bc5094fdb0153b.mp4">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="52">
-          <caret line="2" column="83" selection-start-line="2" selection-start-column="83" selection-end-line="2" selection-end-column="83" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/views/register.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="702">
-          <caret line="27" column="43" selection-start-line="27" selection-start-column="43" selection-end-line="27" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/public/userFile/77/friendsList/ableFriendsList.json" />
-    <entry file="file://$PROJECT_DIR$/src/public/stylesheets/return-icon-font/iconfont.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-156" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/database/user-db.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="312">
-          <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/public/userFile/tian/friendsList/acceptFriendsList.json" />
-    <entry file="file://$PROJECT_DIR$/src/public/userFile/tian/friendsList/requestFriendsList.json" />
-    <entry file="file://$PROJECT_DIR$/src/public/userFile/sb/friendsList/acceptFriendsList.json" />
     <entry file="file://$PROJECT_DIR$/src/public/userFile/sb/friendsList/requestFriendsList.json" />
-    <entry file="file://$PROJECT_DIR$/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1534">
-          <caret line="59" column="39" selection-start-line="59" selection-start-column="39" selection-end-line="59" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/views/chat.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="192">
@@ -766,18 +726,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="390">
           <caret line="21" selection-start-line="21" selection-end-line="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/public/stylesheets/message-icon-font/iconfont.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-156" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/public/stylesheets/addfriend-icon-font/iconfont.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="9" column="11" selection-start-line="9" selection-start-column="11" selection-end-line="9" selection-end-column="11" />
         </state>
       </provider>
     </entry>
@@ -831,13 +779,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/public/userFile/shan/friendsList/ableFriendsList.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="7" selection-start-column="7" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/public/userFile/shan/friendsList/acceptFriendsList.json">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -852,13 +793,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/public/userFile/shanyikun/friendsList/ableFriendsList.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="12" selection-start-column="12" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/public/userFile/shanyikun/friendsList/acceptFriendsList.json">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -870,13 +804,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <caret column="1" selection-start-column="1" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/public/userFile/syk/friendsList/ableFriendsList.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="6" selection-start-column="6" selection-end-column="6" />
         </state>
       </provider>
     </entry>
@@ -898,30 +825,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="312">
           <caret line="19" column="33" selection-start-line="19" selection-start-column="33" selection-end-line="19" selection-end-column="33" />
-          <folding>
-            <element signature="e#0#34#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/router/router.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4472">
-          <caret line="172" column="28" selection-start-line="172" selection-start-column="28" selection-end-line="172" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/public/userFile/shan/friendsList/groupList.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="653" selection-start-column="653" selection-end-column="653" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/public/userFile/syk/friendsList/groupList.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="162" selection-start-column="162" selection-end-column="162" />
         </state>
       </provider>
     </entry>
@@ -932,13 +835,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/public/userFile/shanyikun/friendsList/groupList.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="178" selection-start-column="178" selection-end-column="178" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/components/friendInformation.vue">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1378">
@@ -946,71 +842,174 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/onlineUserList.vue">
+    <entry file="file://$PROJECT_DIR$/src/public/stylesheets/message-icon-font/iconfont.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2236">
-          <caret line="86" column="46" selection-start-line="86" selection-start-column="46" selection-end-line="86" selection-end-column="46" />
+        <state relative-caret-position="312">
+          <caret line="18" lean-forward="true" selection-start-line="18" selection-end-line="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/public/stylesheets/addfriend-icon-font/iconfont.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="260">
+          <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/public/userFile/shan/friendsList/ableFriendsList.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="1" selection-start-column="1" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/public/userFile/shanyikun/friendsList/ableFriendsList.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="14" lean-forward="true" selection-start-column="14" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/public/userFile/syk/friendsList/ableFriendsList.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="14" selection-start-column="14" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://E:/A前端资料/webFont/新建文件夹/font_991352_9fkjv6q8byt/iconfont.css" />
+    <entry file="file://$PROJECT_DIR$/src/public/stylesheets/self-icon-font/iconfont.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="15" column="1" selection-start-line="15" selection-start-column="1" selection-end-line="15" selection-end-column="1" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4446">
-          <caret line="177" column="60" selection-start-line="177" selection-start-column="60" selection-end-line="177" selection-end-column="60" />
+        <state>
+          <caret line="186" column="15" selection-start-line="186" selection-start-column="15" selection-end-line="186" selection-end-column="15" />
           <folding>
             <element signature="e#0#21#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/chatPage.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6214">
-          <caret line="239" column="69" selection-start-line="239" selection-start-column="69" selection-end-line="239" selection-end-column="69" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/App.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6110">
-          <caret line="235" column="20" selection-start-line="235" selection-start-column="20" selection-end-line="235" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/components/groupInformation.vue">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="156">
-          <caret line="74" column="17" lean-forward="true" selection-start-line="74" selection-start-column="17" selection-end-line="74" selection-end-column="17" />
+        <state relative-caret-position="754">
+          <caret line="29" column="18" selection-start-line="29" selection-start-column="18" selection-end-line="29" selection-end-column="18" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app.js">
+    <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-78">
-          <caret line="16" column="27" lean-forward="true" selection-start-line="16" selection-start-column="27" selection-end-line="16" selection-end-column="27" />
-          <folding>
-            <element signature="e#15331#16085#0" />
-            <element signature="e#16106#17073#0" />
-            <element signature="e#17082#17837#0" />
-            <element signature="e#17847#19268#0" />
-          </folding>
+        <state relative-caret-position="1125">
+          <caret line="60" column="39" selection-start-line="60" selection-start-column="39" selection-end-line="60" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/router/router.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="260">
+          <caret line="100" column="37" lean-forward="true" selection-start-line="100" selection-start-column="37" selection-end-line="100" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/public/images/groups/small#1.jpg">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/public/images/groups/small#2.jpg">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/public/images/groups/small#3.jpg">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/public/images/groups/result#2.jpg">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/public/images/groups/result#1.jpg">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/components/chatPage.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="156">
+          <caret line="260" column="10" lean-forward="true" selection-start-line="260" selection-start-column="10" selection-end-line="260" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/public/userFile/tian/friendsList/groupList.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="116" selection-start-column="116" selection-end-column="116" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/public/userFile/syk/friendsList/groupList.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="116" selection-start-column="116" selection-end-column="116" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/public/userFile/shanyikun/friendsList/groupList.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="116" selection-start-column="116" selection-end-column="116" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/public/userFile/shan/friendsList/groupList.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="116" selection-start-column="116" selection-end-column="116" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/components/friendsList.vue">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="182">
-          <caret line="87" column="70" selection-start-line="87" selection-start-column="70" selection-end-line="87" selection-end-column="70" />
+          <caret line="19" column="74" lean-forward="true" selection-start-line="19" selection-start-column="74" selection-end-line="19" selection-end-column="74" />
+          <folding>
+            <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/public/images/groups/syk&amp;&amp;&amp;shan&amp;&amp;&amp;shanyikun&amp;&amp;&amp;.jpg">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/components/App.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="78">
+          <caret line="711" column="81" lean-forward="true" selection-start-line="711" selection-start-column="81" selection-end-line="711" selection-end-column="81" />
+          <folding>
+            <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="52">
+          <caret line="345" column="40" selection-start-line="345" selection-start-column="40" selection-end-line="345" selection-end-column="40" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/components/groupList.vue">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="203">
-          <caret line="60" column="17" lean-forward="true" selection-start-line="60" selection-start-column="17" selection-end-line="60" selection-end-column="17" />
+        <state relative-caret-position="26">
+          <caret line="24" column="13" lean-forward="true" selection-start-line="24" selection-start-column="13" selection-end-line="24" selection-end-column="13" />
           <folding>
             <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/components/onlineUserList.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="156">
+          <caret line="12" column="68" lean-forward="true" selection-start-line="12" selection-start-column="68" selection-end-line="12" selection-end-column="68" />
         </state>
       </provider>
     </entry>

@@ -4,6 +4,7 @@ var http=require('http').Server(app)
 var io=require('socket.io')(http)
 var path=require('path')
 var fs=require('fs')
+var gm=require('gm')   // 获取图片拼接模块
 var router=require('./router/router.js')
 var bodyParser=require('body-parser')
 var session=require('express-session')
@@ -342,16 +343,34 @@ io.on('connection',function(socket){   /*服务端socket只能在服务器启动
     })
 
     socket.on('createGroup', function(groupObject){   // 监听创建群组事件
-        groupObject.members.forEach(function(item, index){   // 遍历群组中的每一个成员，并在其相应群组列表文件中增加群组信息
-            let groupListData, groupList, socket
-            groupListData=fs.readFileSync(path.join(__dirname, './src/public/userFile/'+item.name+'/friendsList/groupList.json'))
-            groupList=JSON.parse(groupListData.toString())
-            groupList.push(groupObject)
-            fs.writeFileSync(path.join(__dirname, './src/public/userFile/'+item.name+'/friendsList/groupList.json'), JSON.stringify(groupList))
-            socket=_.findWhere(io.sockets.sockets, { id: hashName[item.name] })
-            if(socket){    // 向每个在线的群组用户广播创建群组成功事件
-                socket.emit('createGroupSuccess', userList)
+        new Promise((resolve, reject)=>{    // promise对象代替异步回调，创建组合图片的过程是异步的
+            let argumentsList=[]
+            argumentsList.push(groupObject.numbers)
+            if(groupObject.numbers<9){
+                groupObject.members.forEach((item)=>{
+                    argumentsList.push('./src/public/images/'+item.name+'.jpg')
+                })
             }
+            else {
+                for(let i=0;i<9;i++){
+                    argumentsList.push('./src/public/images/'+groupObject.members[i].name+'.jpg')
+                }
+            }
+            argumentsList.push(groupObject.name.slice(0, groupObject.name.length-11)+'.jpg')  // 图片名称中不能含有*
+            argumentsList.push(resolve)
+            merge.apply(null, argumentsList)   // 此函数中的创建组合图片是异步的，resolve函数在此函数中被调用
+        }).then(()=>{
+            groupObject.members.forEach(function(item, index){   // 遍历群组中的每一个成员，并在其相应群组列表文件中增加群组信息
+                let groupListData, groupList, socket
+                groupListData=fs.readFileSync(path.join(__dirname, './src/public/userFile/'+item.name+'/friendsList/groupList.json'))
+                groupList=JSON.parse(groupListData.toString())
+                groupList.push(groupObject)
+                fs.writeFileSync(path.join(__dirname, './src/public/userFile/'+item.name+'/friendsList/groupList.json'), JSON.stringify(groupList))
+                socket=_.findWhere(io.sockets.sockets, { id: hashName[item.name] })
+                if(socket){    // 向每个在线的群组用户广播创建群组成功事件
+                    socket.emit('createGroupSuccess', userList)
+                }
+            })
         })
     })
 })
@@ -359,3 +378,234 @@ io.on('connection',function(socket){   /*服务端socket只能在服务器启动
 http.listen(5000,function(){
     console.log('server is runing')
 })
+
+
+
+
+function merge(){     // 群组头像拼接函数
+    let argumentsList=arguments
+    switch(argumentsList[0]){
+        case 3: {
+            gm(argumentsList[1]).resize('15','15','!').write('./src/public/images/groups/small#1.jpg', function(){
+                gm(argumentsList[2]).resize('15','15','!').write('./src/public/images/groups/small#2.jpg', function(){
+                    gm(argumentsList[3]).resize('15','15','!').write('./src/public/images/groups/small#3.jpg', function(){
+                        gm('./src/public/images/groups/small#1.jpg').append('./src/public/images/groups/small#2.jpg').write('./src/public/images/groups/result#1.jpg', function(){
+                            gm('./src/public/images/groups/result#1.jpg').append('./src/public/images/groups/small#3.jpg', true).write('./src/public/images/groups/'+argumentsList[4], function(){
+                                console.log('done')
+                                console.log(argumentsList[4])
+                                argumentsList[5]()
+                            })
+                        })
+                    })
+                })
+            })
+            break
+        }
+        case 4:{
+            gm(argumentsList[1]).resize('15','15','!').write('./src/public/images/groups/small#1.jpg', function(){
+                gm(argumentsList[2]).resize('15','15','!').write('./src/public/images/groups/small#2.jpg', function(){
+                    gm(argumentsList[3]).resize('15','15','!').write('./src/public/images/groups/small#3.jpg', function(){
+                        gm(argumentsList[4]).resize('15','15','!').write('./src/public/images/groups/small#4.jpg', function(){
+                            gm('./src/public/images/groups/small#1.jpg').append('./src/public/images/groups/small#2.jpg').write('./src/public/images/groups/result#1.jpg', function(){
+                                gm('./src/public/images/groups/small#3.jpg').append('./src/public/images/groups/small#4.jpg').write('./src/public/images/groups/result#2.jpg', function(){
+                                    gm('./src/public/images/groups/result#1.jpg').append('./src/public/images/groups/result#2.jpg', true).write('./src/public/images/groups/'+argumentsList[5], function(){
+                                        argumentsList[6]()
+                                    })
+                                })
+                            })
+                        })
+                    })
+                })
+            })
+            break
+        }
+        case 5:{
+            gm(argumentsList[1]).resize('15','15','!').write('./src/public/images/groups/small#1.jpg', function(){
+                gm(argumentsList[2]).resize('15','15','!').write('./src/public/images/groups/small#2.jpg', function(){
+                    gm(argumentsList[3]).resize('15','15','!').write('./src/public/images/groups/small#3.jpg', function(){
+                        gm(argumentsList[4]).resize('15','15','!').write('./src/public/images/groups/small#4.jpg', function(){
+                            gm(argumentsList[5]).resize('15','15','!').write('./src/public/images/groups/small#5.jpg',function(){
+                                gm('./src/public/images/groups/small#1.jpg').append('./src/public/images/groups/small#2.jpg',true).write('./src/public/images/groups/result#1.jpg', function(){
+                                    gm('./src/public/images/groups/result#1.jpg').append('./src/public/images/groups/small#3.jpg',true).write('./src/public/images/groups/result#2.jpg', function(){
+                                        gm('./src/public/images/groups/small#4.jpg').append('./src/public/images/groups/small#5.jpg',true).write('./src/public/images/groups/result#3.jpg', function(){
+                                            gm('./src/public/images/groups/result#2.jpg').append('./src/public/images/groups/result#3.jpg').write('./src/public/images/groups/'+argumentsList[6], function(){
+                                                argumentsList[7]()
+                                            })
+                                        })
+                                    })
+                                })
+                            })
+                        })
+                    })
+                })
+            })
+            break
+        }
+        case 6:{
+            gm(argumentsList[1]).resize('15','15','!').write('./src/public/images/groups/small#1.jpg', function(){
+                gm(argumentsList[2]).resize('15','15','!').write('./src/public/images/groups/small#2.jpg', function(){
+                    gm(argumentsList[3]).resize('15','15','!').write('./src/public/images/groups/small#3.jpg', function(){
+                        gm(argumentsList[4]).resize('15','15','!').write('./src/public/images/groups/small#4.jpg', function(){
+                            gm(argumentsList[5]).resize('15','15','!').write('./src/public/images/groups/small#5.jpg',function(){
+                                gm(argumentsList[6]).resize('15','15','!').write('./src/public/images/groups/small#6.jpg',function(){
+                                    gm('./src/public/images/groups/small#1.jpg').append('./src/public/images/groups/small#2.jpg',true).write('./src/public/images/groups/result#1.jpg', function(){
+                                        gm('./src/public/images/groups/result#1.jpg').append('./src/public/images/groups/small#3.jpg',true).write('./src/public/images/groups/result#2.jpg', function(){
+                                            gm('./src/public/images/groups/small#4.jpg').append('./src/public/images/groups/small#5.jpg',true).write('./src/public/images/groups/result#3.jpg', function(){
+                                                gm('./src/public/images/groups/result#3.jpg').append('./src/public/images/groups/small#6.jpg',true).write('./src/public/images/groups/result#4.jpg', function(){
+                                                    gm('./src/public/images/groups/result#2.jpg').append('./src/public/images/groups/result#4.jpg').write('./src/public/images/groups/'+argumentsList[7], function(){
+                                                        argumentsList[8]()
+                                                    })
+                                                })
+                                            })
+                                        })
+                                    })
+                                })
+                            })
+                        })
+                    })
+                })
+            })
+            break
+        }
+        case 7:{
+            gm(argumentsList[1]).resize('15','15','!').write('./src/public/images/groups/small#1.jpg', function(){
+                gm(argumentsList[2]).resize('15','15','!').write('./src/public/images/groups/small#2.jpg', function(){
+                    gm(argumentsList[3]).resize('15','15','!').write('./src/public/images/groups/small#3.jpg', function(){
+                        gm(argumentsList[4]).resize('15','15','!').write('./src/public/images/groups/small#4.jpg', function(){
+                            gm(argumentsList[5]).resize('15','15','!').write('./src/public/images/groups/small#5.jpg',function(){
+                                gm(argumentsList[6]).resize('15','15','!').write('./src/public/images/groups/small#6.jpg',function(){
+                                    gm(argumentsList[7]).resize('15','15','!').write('./src/public/images/groups/small#7.jpg',function(){
+                                        gm('./src/public/images/groups/small#1.jpg').append('./src/public/images/groups/small#2.jpg',true).write('./src/public/images/groups/result#1.jpg', function(){
+                                            gm('./src/public/images/groups/result#1.jpg').append('./src/public/images/groups/small#3.jpg',true).write('./src/public/images/groups/result#2.jpg', function(){
+                                                gm('./src/public/images/groups/small#4.jpg').append('./src/public/images/groups/small#5.jpg',true).write('./src/public/images/groups/result#3.jpg', function(){
+                                                    gm('./src/public/images/groups/result#3.jpg').append('./src/public/images/groups/small#6.jpg',true).write('./src/public/images/groups/result#4.jpg', function(){
+                                                        gm('./src/public/images/groups/result#2.jpg').append('./src/public/images/groups/result#4.jpg').write('./src/public/images/groups/result#5.jpg', function(){
+                                                            gm('./src/public/images/groups/result#5.jpg').append('./src/public/images/groups/small#7.jpg').write('./src/public/images/groups/'+argumentsList[8], function(){
+                                                                argumentsList[9]()
+                                                            })
+                                                        })
+                                                    })
+                                                })
+                                            })
+                                        })
+                                    })
+                                })
+                            })
+                        })
+                    })
+                })
+            })
+            break
+        }
+        case 8:{
+            gm(argumentsList[1]).resize('15','15','!').write('./src/public/images/groups/small#1.jpg', function(){
+                gm(argumentsList[2]).resize('15','15','!').write('./src/public/images/groups/small#2.jpg', function(){
+                    gm(argumentsList[3]).resize('15','15','!').write('./src/public/images/groups/small#3.jpg', function(){
+                        gm(argumentsList[4]).resize('15','15','!').write('./src/public/images/groups/small#4.jpg', function(){
+                            gm(argumentsList[5]).resize('15','15','!').write('./src/public/images/groups/small#5.jpg',function(){
+                                gm(argumentsList[6]).resize('15','15','!').write('./src/public/images/groups/small#6.jpg',function(){
+                                    gm(argumentsList[7]).resize('15','15','!').write('./src/public/images/groups/small#7.jpg',function(){
+                                        gm(argumentsList[8]).resize('15','15','!').write('./src/public/images/groups/small#8.jpg',function(){
+                                            gm('./src/public/images/groups/small#1.jpg').append('./src/public/images/groups/small#2.jpg',true).write('./src/public/images/groups/result#1.jpg', function(){
+                                                gm('./src/public/images/groups/result#1.jpg').append('./src/public/images/groups/small#3.jpg',true).write('./src/public/images/groups/result#2.jpg', function(){
+                                                    gm('./src/public/images/groups/small#4.jpg').append('./src/public/images/groups/small#5.jpg',true).write('./src/public/images/groups/result#3.jpg', function(){
+                                                        gm('./src/public/images/groups/result#3.jpg').append('./src/public/images/groups/small#6.jpg',true).write('./src/public/images/groups/result#4.jpg', function(){
+                                                            gm('./src/public/images/groups/result#2.jpg').append('./src/public/images/groups/result#4.jpg').write('./src/public/images/groups/result#5.jpg', function(){
+                                                                gm('./src/public/images/groups/small#7.jpg').append('./src/public/images/groups/small#8.jpg',true).write('./src/public/images/groups/result#6.jpg', function(){
+                                                                    gm('./src/public/images/groups/result#5.jpg').append('./src/public/images/groups/result#6.jpg').write('./src/public/images/groups/'+argumentsList[9], function(){
+                                                                        argumentsList[10]()
+                                                                    })
+                                                                })
+                                                            })
+                                                        })
+                                                    })
+                                                })
+                                            })
+                                        })
+                                    })
+                                })
+                            })
+                        })
+                    })
+                })
+            })
+            break
+        }
+        case 9:{
+            gm(argumentsList[1]).resize('15','15','!').write('./src/public/images/groups/small#1.jpg', function(){
+                gm(argumentsList[2]).resize('15','15','!').write('./src/public/images/groups/small#2.jpg', function(){
+                    gm(argumentsList[3]).resize('15','15','!').write('./src/public/images/groups/small#3.jpg', function(){
+                        gm(argumentsList[4]).resize('15','15','!').write('./src/public/images/groups/small#4.jpg', function(){
+                            gm(argumentsList[5]).resize('15','15','!').write('./src/public/images/groups/small#5.jpg',function(){
+                                gm(argumentsList[6]).resize('15','15','!').write('./src/public/images/groups/small#6.jpg',function(){
+                                    gm(argumentsList[7]).resize('15','15','!').write('./src/public/images/groups/small#7.jpg',function(){
+                                        gm(argumentsList[8]).resize('15','15','!').write('./src/public/images/groups/small#8.jpg',function(){
+                                            gm(argumentsList[9]).resize('15','15','!').write('./src/public/images/groups/small#9.jpg',function(){
+                                                gm('./src/public/images/groups/small#1.jpg').append('./src/public/images/groups/small#2.jpg',true).write('./src/public/images/groups/result#1.jpg', function(){
+                                                    gm('./src/public/images/groups/result#1.jpg').append('./src/public/images/groups/small#3.jpg',true).write('./src/public/images/groups/result#2.jpg', function(){
+                                                        gm('./src/public/images/groups/small#4.jpg').append('./src/public/images/groups/small#5.jpg',true).write('./src/public/images/groups/result#3.jpg', function(){
+                                                            gm('./src/public/images/groups/result#3.jpg').append('./src/public/images/groups/small#6.jpg',true).write('./src/public/images/groups/result#4.jpg', function(){
+                                                                gm('./src/public/images/groups/result#2.jpg').append('./src/public/images/groups/result#4.jpg').write('./src/public/images/groups/result#5.jpg', function(){
+                                                                    gm('./src/public/images/groups/small#7.jpg').append('./src/public/images/groups/small#8.jpg',true).write('./src/public/images/groups/result#6.jpg', function(){
+                                                                        gm('./src/public/images/groups/result#6.jpg').append('./src/public/images/groups/small#9.jpg',true).write('./src/public/images/groups/result#7.jpg', function(){
+                                                                            gm('./src/public/images/groups/result#5.jpg').append('./src/public/images/groups/result#7.jpg').write('./src/public/images/groups/'+argumentsList[10], function(){
+                                                                                argumentsList[11]()
+                                                                            })
+                                                                        })
+                                                                    })
+                                                                })
+                                                            })
+                                                        })
+                                                    })
+                                                })
+                                            })
+                                        })
+                                    })
+                                })
+                            })
+                        })
+                    })
+                })
+            })
+            break
+        }
+        default: {
+            gm(argumentsList[1]).resize('15','15','!').write('./src/public/images/groups/small#1.jpg', function(){
+                gm(argumentsList[2]).resize('15','15','!').write('./src/public/images/groups/small#2.jpg', function(){
+                    gm(argumentsList[3]).resize('15','15','!').write('./src/public/images/groups/small#3.jpg', function(){
+                        gm(argumentsList[4]).resize('15','15','!').write('./src/public/images/groups/small#4.jpg', function(){
+                            gm(argumentsList[5]).resize('15','15','!').write('./src/public/images/groups/small#5.jpg',function(){
+                                gm(argumentsList[6]).resize('15','15','!').write('./src/public/images/groups/small#6.jpg',function(){
+                                    gm(argumentsList[7]).resize('15','15','!').write('./src/public/images/groups/small#7.jpg',function(){
+                                        gm(argumentsList[8]).resize('15','15','!').write('./src/public/images/groups/small#8.jpg',function(){
+                                            gm(argumentsList[9]).resize('15','15','!').write('./src/public/images/groups/small#9.jpg',function(){
+                                                gm('./src/public/images/groups/small#1.jpg').append('./src/public/images/groups/small#2.jpg',true).write('./src/public/images/groups/result#1.jpg', function(){
+                                                    gm('./src/public/images/groups/result#1.jpg').append('./src/public/images/groups/small#3.jpg',true).write('./src/public/images/groups/result#2.jpg', function(){
+                                                        gm('./src/public/images/groups/small#4.jpg').append('./src/public/images/groups/small#5.jpg',true).write('./src/public/images/groups/result#3.jpg', function(){
+                                                            gm('./src/public/images/groups/result#3.jpg').append('./src/public/images/groups/small#6.jpg',true).write('./src/public/images/groups/result#4.jpg', function(){
+                                                                gm('./src/public/images/groups/result#2.jpg').append('./src/public/images/groups/result#4.jpg').write('./src/public/images/groups/result#5.jpg', function(){
+                                                                    gm('./src/public/images/groups/small#7.jpg').append('./src/public/images/groups/small#8.jpg',true).write('./src/public/images/groups/result#6.jpg', function(){
+                                                                        gm('./src/public/images/groups/result#6.jpg').append('./src/public/images/groups/small#9.jpg',true).write('./src/public/images/groups/result#7.jpg', function(){
+                                                                            gm('./src/public/images/groups/result#5.jpg').append('./src/public/images/groups/result#7.jpg').write('./src/public/images/groups/'+argumentsList[10], function(){
+                                                                                argumentsList[11]()
+                                                                            })
+                                                                        })
+                                                                    })
+                                                                })
+                                                            })
+                                                        })
+                                                    })
+                                                })
+                                            })
+                                        })
+                                    })
+                                })
+                            })
+                        })
+                    })
+                })
+            })
+            break
+        }
+    }
+}

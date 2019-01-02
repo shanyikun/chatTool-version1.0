@@ -711,9 +711,9 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              })
              name=name+this.$store.state.name+'&&&'+'***group***'    // 同时加上自己的名字
              members=this.selectedFriends
-             members.push({name: this.$store.state.name, url: this.$store.state.url})   // 加上自己的信息
+             members.push({name: this.$store.state.name, url: this.$store.state.url})   // 加上自己的信息,对象引用的改变会改变对象本身，因此this.selectedFriends也会随之改变
              numbers=members.length
-             url='/src/public/images/default.jpg'
+             url='/src/public/images/groups/'+name.slice(0, name.length-11)+'.jpg'  // 图片命名时名字中不能出现*，所以要删除
              newNameArray=name.split('&&&')
 
              isExist=this.$store.state.groupList.some((item)=>{
@@ -742,6 +742,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
                      alert('请重新创建，并写入群组名字！')
                  }
              }
+             this.selectedFriends.pop()  // 去除最后一项的个人信息
          }
      },
      watch: {
@@ -892,6 +893,7 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
 
          this.$store.state.socket.on('createGroupSuccess', (userList)=>{  // 监听服务器广播的群组创建成功事件
              this.$http.get('/getGroupList').then((data)=>{  // 获取群组列表
+                 console.log(data.body.message)
                  this.$store.commit('getGroupList', data.body.message)
              }).then(()=>{
                      this.$store.commit('getOnlineUserList', userList)

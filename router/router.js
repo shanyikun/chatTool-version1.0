@@ -86,16 +86,18 @@ router.post('/register',function(request, response){
                                     fs.writeFileSync(path.join(__dirname, '../src/public/userFile/'+data.name+'/friendsList/ableFriendsList.json'),JSON.stringify([]))
                                     fs.writeFileSync(path.join(__dirname, '../src/public/userFile/'+data.name+'/friendsList/acceptFriendsList.json'), JSON.stringify([]))
                                     fs.writeFileSync(path.join(__dirname, '../src/public/userFile/'+data.name+'/friendsList/requestFriendsList.json'), JSON.stringify([]))
-                                    let messagesGroupObject, name, url, members, numbers
+                                    let messagesGroupObject, name, url, members, numbers, nickname
                                     name='messages'   // 群组名字
                                     url='/src/public/images/messages.gif'
                                     members='所有注册用户'   // 一般群中这是个数组，里面有每个成员的信息
                                     numbers='n'     // 成员总数量
+                                    nickname='messages'
                                     messagesGroupObject={
                                         name: name,
                                         url: url,
                                         members: members,
-                                        numbers: numbers
+                                        numbers: numbers,
+                                        nickname: nickname
                                     }
                                     fs.writeFileSync(path.join(__dirname, '../src/public/userFile/'+data.name+'/friendsList/groupList.json'), JSON.stringify([messagesGroupObject]))  // 群组列表,默认只有一个群
                                     request.session.user=data
