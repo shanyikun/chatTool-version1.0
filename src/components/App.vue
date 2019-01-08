@@ -15,7 +15,8 @@
             <div id="messageContainer">
                 <router-view name="chatPage" :key="flag()"
                              @friend-information-pop="friendInformationPop"
-                             @picture-message-enlargement="pictureMessagePop"> <!--监听好友信息弹窗自定义事件, 监听图片信息点击放大事件-->
+                             @group-member-head-portrait-enlargement="groupMemberHeadEnlargement"
+                             @picture-message-enlargement="pictureMessagePop"> <!--监听好友信息弹窗自定义事件, 监听图片信息点击放大事件,监听群组详情页面头像放大事件-->
                 </router-view>    <!--渲染同一个组件时禁止复用-->
             </div>
         </div>
@@ -326,8 +327,13 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
              this.friendUrl=friend.url
              this.isDisplayFriendInformation=true
          },
-         biggerFriendHeadPortrait: function(){    //显示放大版好友头像
+         biggerFriendHeadPortrait: function(){    //显示放大版好友头像,从弹窗中点击获得的放大头像
              this.isDisplayFriendInformation=false
+             this.isDisplayFriendHeadPortrait=true
+         },
+         groupMemberHeadEnlargement: function(groupMember){  // 显示放大的群组成员头像，从群组详情页面点击获得，以子组件触发父组件形式
+             this.friendName=groupMember.name
+             this.friendUrl=groupMember.url
              this.isDisplayFriendHeadPortrait=true
          },
          userHeadPortraitPop: function(){    //显示放大版用户头像

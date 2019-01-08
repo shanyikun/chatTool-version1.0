@@ -21,7 +21,7 @@
              @click.self="closeMemberInformationPop">   <!--用户详细信息弹窗，绝对定位,相对于groupInformationContainer-->
             <div class="popMemberInformation" @click.self="closeMemberInformationPop">
                 <div class="popMemberName">{{memberName}}</div>
-                <img class="popMemberUrl" :src="memberUrl" width="45px" height="45px">
+                <img class="popMemberUrl" :src="memberUrl" width="45px" height="45px" @click="biggerMemberHeadPortrait">
             </div>
             <div class="popButtonContainer" @click.self="closeMemberInformationPop">
                 <div class="iconfont icon-xiaoxi" v-if="isFriend" @click="sendMessageToMember(memberName)"></div>
@@ -72,6 +72,13 @@
                 if(this.isDisplayMemberInfoPop){
                     this.isDisplayMemberInfoPop=false
                 }
+            },
+            biggerMemberHeadPortrait: function(){   // 群组成员头像放大，以子组件触发父组件函数的形式
+                let memberObject={}
+                memberObject.name=this.memberName
+                memberObject.url=this.memberUrl
+                this.$emit('group-member-head-portrait-enlargement', memberObject)
+                this.closeMemberInformationPop()   // 触发关闭群粗成员详情弹窗函数
             },
             sendMessageToMember: function(memberName){   // 向成员发送信息
                 let isOnline=this.$store.state.onlineUserList.some((item)=>{
@@ -254,6 +261,9 @@
         margin-bottom: 30px;
         padding-bottom: 20px;
         border-bottom: 1px solid lightgray;
+    }
+    .memberInformationPop .popMemberInformation .popMemberUrl:hover{
+        cursor: pointer;
     }
     .memberInformationPop .popButtonContainer{
         display: flex;
