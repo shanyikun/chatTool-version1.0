@@ -157,16 +157,32 @@ io.on('connection',function(socket){   /*服务端socket只能在服务器启动
     })
 
     socket.on('addFriendRequest', function(selfData, otherData){    // 监听添加好友请求， 包括请求者的信息，发起者的信息
-        let requestListData, acceptListData, requestFriendsList, acceptFriendsList
+        let requestListData, acceptListData, requestFriendsList, acceptFriendsList, isRequestExist, isAcceptExist
         // 同步读取并重新写入请求列表信息， 发起者文件夹
         requestListData=fs.readFileSync(path.join(__dirname, './src/public/userFile/'+selfData.name+'/friendsList/requestFriendsList.json'))
         requestFriendsList=JSON.parse(requestListData.toString())
-        requestFriendsList.push({name: otherData.name, url: otherData.url, isAccept: false})
+        isRequestExist=requestFriendsList.findIndex((item)=>{  // 判断请求是否已存在，可能是暂未通过的重复请求，也可能是删除后重新添加
+            return item.name===otherData.name
+        })
+        if(isRequestExist===-1){   // 若不存在，则加入
+            requestFriendsList.push({name: otherData.name, url: otherData.url, isAccept: false})
+        }
+        else {    // 若存在则替换
+            requestFriendsList.splice(isRequestExist, 1, {name: otherData.name, url: otherData.url, isAccept: false})
+        }
         fs.writeFileSync(path.join(__dirname, './src/public/userFile/'+selfData.name+'/friendsList/requestFriendsList.json'), JSON.stringify(requestFriendsList))
         // 同步读取并重新写入接受列表信息， 被请求者文件夹
         acceptListData=fs.readFileSync(path.join(__dirname, './src/public/userFile/'+otherData.name+'/friendsList/acceptFriendsList.json'))
         acceptFriendsList=JSON.parse(acceptListData.toString())
-        acceptFriendsList.push({name: selfData.name, url: selfData.url, isAccept: false})
+        isAcceptExist=acceptFriendsList.findIndex((item)=>{   // 判断请求是否已存在，可能是暂未通过的重复请求，也可能是删除后重新添加
+            return item.name===selfData.name
+        })
+        if(isAcceptExist===-1){     // 若不存在，则加入
+            acceptFriendsList.push({name: selfData.name, url: selfData.url, isAccept: false})
+        }
+        else {   // 若存在则替换
+            acceptFriendsList.splice(isAcceptExist, 1, {name: selfData.name, url: selfData.url, isAccept: false})
+        }
         fs.writeFileSync(path.join(__dirname, './src/public/userFile/'+otherData.name+'/friendsList/acceptFriendsList.json'),JSON.stringify(acceptFriendsList))
        // 向发起者和被请求者广播请求事件，以用于更新请求列表
         let selfSocket = _.findWhere(io.sockets.sockets, { id: hashName[selfData.name] })   //利用socket.id寻找特定的socket对象
@@ -340,6 +356,33 @@ io.on('connection',function(socket){   /*服务端socket只能在服务器启动
                 })
             }
         })*/
+    })
+
+    socket.on('deleteFriend', function(bothNameObject){
+        let selfAbleFriendsData, selfAbleFriendsList, selfIndex, otherAbleFriendsData, otherAbleFriendsList, otherIndex
+        // 读取并改变删除发起者好友文件
+        selfAbleFriendsData=fs.readFileSync(path.join(__dirname, './src/public/userFile/'+bothNameObject.selfName+'/friendsList/ableFriendsList.json'))
+        selfAbleFriendsList=JSON.parse(selfAbleFriendsData.toString())
+        selfIndex=selfAbleFriendsList.findIndex((item)=>{
+            return item===bothNameObject.otherName
+        })
+        selfAbleFriendsList.splice(selfIndex, 1)
+        fs.writeFileSync(path.join(__dirname, './src/public/userFile/'+bothNameObject.selfName+'/friendsList/ableFriendsList.json'), JSON.stringify(selfAbleFriendsList))
+        // 读取并改变被删除者好友文件
+        otherAbleFriendsData=fs.readFileSync(path.join(__dirname, './src/public/userFile/'+bothNameObject.otherName+'/friendsList/ableFriendsList.json'))
+        otherAbleFriendsList=JSON.parse(otherAbleFriendsData.toString())
+        otherIndex=otherAbleFriendsList.findIndex((item)=>{
+            return item===bothNameObject.selfName
+        })
+        otherAbleFriendsList.splice(otherIndex, 1)
+        fs.writeFileSync(path.join(__dirname, './src/public/userFile/'+bothNameObject.otherName+'/friendsList/ableFriendsList.json'), JSON.stringify(otherAbleFriendsList))
+        // 向删除发起者以及被删除者广播删除完成事件， 用于更新好友列表以及在线好友列表
+        let selfSocket = _.findWhere(io.sockets.sockets, { id: hashName[bothNameObject.selfName] })   //利用socket.id寻找特定的socket对象
+        let otherSocket=_.findWhere(io.sockets.sockets, { id: hashName[bothNameObject.otherName] })
+        selfSocket.emit('finishDeleteFriend', userList)
+        if(otherSocket){
+            otherSocket.emit('finishDeleteFriend', userList)
+        }
     })
 
     socket.on('createGroup', function(groupObject){   // 监听创建群组事件

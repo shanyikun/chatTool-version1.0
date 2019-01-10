@@ -95,7 +95,9 @@ var store=new Vuex.Store({        //Vuex存储对象
             '/src/public/images/emotions/picture32.gif',
             '/src/public/images/emotions/picture33.gif',
             '/src/public/images/emotions/picture34.gif',
-            ]  // 表情包base64格式数据列表， 在App.vue的created函数中通过get请求获取
+            ],  // 表情包base64格式数据列表， 在App.vue的created函数中通过get请求获取
+        contextMenuFlag: false,  // 右击菜单标志位，用于单击空白处关闭右击菜单，有右击菜单时为true，关闭后为false
+        deleteFriendSuccessFlag: false   // 删除好友成功标志位，一旦删除成功即取反
     },
     mutations: {
         getUserInformation: function(state, userObj){   //第一个参数一定是state

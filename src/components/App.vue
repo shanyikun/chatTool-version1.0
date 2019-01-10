@@ -1,6 +1,6 @@
 <template>
     <div id="page">
-        <div id="container">
+        <div id="container" @click="closeContextMenu">
             <div id="userInfo">
                 <userinfo
                         @user-head-portrait-pop="userHeadPortraitPop"
@@ -321,6 +321,9 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
      methods: {
          flag: function(){  // 为每一个聊天框加上一个唯一标识，防止组件复用
              return Date.now()
+         },
+         closeContextMenu: function(){
+             this.$store.state.contextMenuFlag=false
          },
          friendInformationPop : function(friend){  //第一个参数默认是子组件传递过来的参数
              this.friendName=friend.name
@@ -893,6 +896,24 @@ import userInfo from './userInfo.vue'     //引入用户详情组件   绝对路
                              this.acceptFriendsList=data.body.message
                          }
                      })
+                 })
+             })
+         })
+
+         this.$store.state.socket.on('finishDeleteFriend', (userList)=>{   // 监听删除好友成功事件，更新好友列表及在线用户列表
+             this.$store.state.deleteFriendSuccessFlag=!this.$store.state.deleteFriendSuccessFlag  // 取反删除好友成功标志位
+             this.$http.get('/getAbleFriendsList').then((data)=>{
+                 if(data.body.err_code===500){
+                     return alert('server error')
+                 }
+                 else {
+                     this.$store.state.ableFriendsList=data.body.message
+                 }
+                 this.$http.get('/getFriendsList').then((data)=>{  //回调函数中的this仍然是外部的this，无需使用箭头函数
+                     this.$store.commit('getFriendsList', data.body.message)                 //若回调函数中还有函数，则内层函数需要使用箭头函数
+                 }).then(()=>{
+                     this.$store.commit('getOnlineUserList', userList)
+                     window.alert('删除好友成功！')
                  })
              })
          })
